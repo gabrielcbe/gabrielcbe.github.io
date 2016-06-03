@@ -703,5 +703,5 @@
 		url: 'http://emnik.github.io/scratchx-mbot/makeblock.js'
 	}
 
-	ScratchExtensions.register('Makeblock mBot greek', descriptor, ext, hid_info);
+	ScratchExtensions.register('Makeblock mBot', descriptor, ext, hid_info);
 })({});
