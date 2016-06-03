@@ -651,7 +651,7 @@
 		};
 
 
-    var menus: {
+    var menus = {
     	en:{
 			motorPort:["M1","M2"],
 			slot:["Slot1","Slot2"],
@@ -700,7 +700,7 @@
   var descriptor = {
 		blocks : blocks[lang],
 		menus : menus[lang],
-		url: 'http://emnik.github.io/makeblock.js'
+		url: 'http://emnik.github.io/scratchx-mbot/makeblock.js'
 	}
 
 	ScratchExtensions.register('Makeblock mBot', descriptor, ext, hid_info);
