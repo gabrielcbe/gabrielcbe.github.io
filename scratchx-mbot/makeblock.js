@@ -311,8 +311,7 @@
 			slot = slots[slot];
 		}
 		if(port==ports["on board"]){
-			//slot = 2;
-			port=7;
+			slot = 2;
 		}
 		if(index == "all"){
 			index = 0;
@@ -704,5 +703,5 @@
 		url: 'http://emnik.github.io/scratchx-mbot/makeblock.js'
 	}
 
-	ScratchExtensions.register('Makeblock mBot #2', descriptor, ext, hid_info);
+	ScratchExtensions.register('Makeblock mBot', descriptor, ext, hid_info);
 })({});
