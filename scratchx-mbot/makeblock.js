@@ -311,7 +311,8 @@
 			slot = slots[slot];
 		}
 		if(port==ports["on board"]){
-			slot = 2;
+			//slot = 2;
+			port=7;
 		}
 		if(index == "all"){
 			index = 0;
