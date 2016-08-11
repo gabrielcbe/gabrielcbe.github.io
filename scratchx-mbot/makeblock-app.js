@@ -276,12 +276,21 @@
  		});
     }
     ext.runLedOnBoard = function(index,red,green,blue){
+		//the index here is realy the slot. I leave it because the slot does not have the "all" option
 		if(index == "all"){
 			index = 0;
 		}
-		runLed(7,2,index,red,green,blue)
+		var port=7; //led on board
+		var deviceId = 8;
+		var extId = 0;
+		var data = [extId, 0x02, deviceId, port, index, red*1, green*1, blue*1];
+		data = [data.length+3, 0xff, 0x55, data.length].concat(data);
+ 		addPackage(arrayBufferFromArray(data), function(){
+ 		});		
     }
     ext.runLed = function(port,slot,index,red,green,blue){
+    	//this would propably work for a LED strip. I don't own one to give it a try. 
+    	//We should make a new block named Set LedStrip for this function to be used...
     	if(typeof port == "string"){
 			port = ports[port];
 		}
@@ -289,15 +298,14 @@
 			slot = slots[slot];
 		}
 		if(port==ports["on board"]){
-			//slot = 2;
-			port=7
+			slot = 2;
 		}
 		if(index == "all"){
 			index = 0;
 		}
 		var deviceId = 8;
 		var extId = 0;
-		var data = [extId, 0x02, deviceId, port, slot, red*1, green*1, blue*1];
+		var data = [extId, 0x02, deviceId, port, slot, index, red*1, green*1, blue*1];
 		data = [data.length+3, 0xff, 0x55, data.length].concat(data);
  		addPackage(arrayBufferFromArray(data), function(){
  		});
@@ -619,7 +627,8 @@
 	        	[" ", "move left %d.motorvalue right %d.motorvalue","runBot", 100, 100],
 				[" ", "set motor%d.motorPort speed %d.motorvalue","runMotor", "M1", 0],
 				[" ", "set servo %d.port %d.slot angle %d.servovalue","runServo", "Port1","Slot1", 90],
-				[" ", "set led %d.lport %d.slot %d.index red%d.value green%d.value blue%d.value","runLed","on board","Slot1","all",0,0,0],
+				//[" ", "set led %d.lport %d.slot %d.index red%d.value green%d.value blue%d.value","runLed","on board","Slot1","all",0,0,0],
+				[" ", "set led %d.index red%d.value green%d.value blue%d.value","runLedOnBoard","all",0,0,0],
 				[" ", "play tone on note %d.note beat %d.beats","runBuzzer", "C4", "Half"],
 				[" ", "show face %d.port x:%n y:%n characters:%s","showCharacters", "Port1", 0,0,"Hello"],
 				[" ", "show time %d.port hour:%n %m.points min:%n","showTime", "Port1", 10,":",20],
@@ -654,7 +663,8 @@
 				[" ", "κινήσου αριστερά %d.motorvalue δεξιά %d.motorvalue","runBot", 100, 100],
 				[" ", "θέσε τον κινητήρα%d.motorPort στην ταχύτητα %d.motorvalue","runMotor", "M1", 0],
 				[" ", "θέσε τον σερβοκινητήρα %d.port %d.slot σε γωνία %d.servovalue","runServo", "Port1","Slot1", 90],
-				[" ", "ορισε το led %d.lport %d.slot %d.index κόκκινο%d.value πράσσινο%d.value μπλέ%d.value","runLed","on board","Slot1","all",0,0,0],
+				//[" ", "ορισε το led %d.lport %d.slot %d.index κόκκινο%d.value πράσσινο%d.value μπλέ%d.value","runLed","on board","Slot1","all",0,0,0],
+				[" ", "ορισε το led %d.index κόκκινο%d.value πράσσινο%d.value μπλέ%d.value","runLedOnBoard","all",0,0,0],
 				[" ", "παίξε τόνο στη νότα %d.note σε ρυθμό %d.beats","runBuzzer", "C4", "Half"],
 				[" ", "δείξε στο πρόσωπο %d.port x:%n y:%n τους χαρακτήρες:%s","showCharacters", "Port1", 0,0,"Hello"],
 				[" ", "δείξε στο ρολόι %d.port ώρα:%n %m.points λεπτά:%n","showTime", "Port1", 10,":",20],
