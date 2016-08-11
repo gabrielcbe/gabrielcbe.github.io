@@ -297,7 +297,7 @@
 		}
 		var deviceId = 8;
 		var extId = 0;
-		var data = [extId, 0x02, deviceId, port, slot, index, red*1, green*1, blue*1];
+		var data = [extId, 0x02, deviceId, port, slot, red*1, green*1, blue*1];
 		data = [data.length+3, 0xff, 0x55, data.length].concat(data);
  		addPackage(arrayBufferFromArray(data), function(){
  		});
@@ -664,13 +664,13 @@
 				[" ", "όρισε τον αισθητήρα φωτός %d.aport ως %d.switchStatus","runLightSensor", "Port3", "On"],
 				[" ", "όρισε το κλείστρο της κάμερας %d.port ως %d.shutter","runShutter","Port1", "Press"],
 				["-"],
-				["h", "όταν πατηθεί το κουμπί %m.buttonStatus","whenButtonPressed","pressed"],
+				["h", "όταν το κουμπί %m.buttonStatus","whenButtonPressed","pressed"],
 				["R", "κουμπί %m.buttonStatus","getButtonOnBoard","pressed"],
 				["R", "αισθητήρας φωτός %d.laport","getLightSensor","light sensor on board"],
 				["-"],
 				["R", "αισθητήρας υπέρηχων %d.port απόστασης","getUltrasonic","Port1"],
 				["R", "αισθητήρας γραμμής %d.port","getLinefollower","Port1"],
-				["R", "joystick %d.aport %d.Axis","getJoystick","Port3","X-Axis"],
+				["R", "χειριστήριο(joystick) %d.aport %d.Axis","getJoystick","Port3","X-Axis"],
 				["R", "ποντεσιόμετρο %d.aport","getPotentiometer","Port3"],
 				["R", "αισθητήρας ήχου %d.aport","getSoundSensor","Port3"],
 				["R", "διακόπτης ορίου %d.port %d.slot","getLimitswitch","Port1","Slot1"],
