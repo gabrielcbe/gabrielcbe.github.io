@@ -14,7 +14,7 @@
 		M1:9,
 		M2:10,
 		'on board':7,
-		'light sensor on board':8
+		'sensor de luz on board':8
     };
     var slots = {
 		Slot1:1,
@@ -711,7 +711,7 @@
 				["-"],
 				["h", "quando botão %m.buttonStatus","whenButtonPressed","pressionado"],
 				["R", "botão %m.buttonStatus","getButtonOnBoard","pressionado"],
-				["R", "sensor de luz %d.laport","getLightSensor","light sensor on board"],
+				["R", "sensor de luz %d.laport","getLightSensor","sensor de luz on board"],
 				["-"],
 				["R", "sensor ultrasom %d.port distance","getUltrasonic","Port1"],
 				["R", "segue linha %d.port","getLinefollower","Port1"],
@@ -784,7 +784,7 @@
 			port:["Port1","Port2","Port3","Port4"],
 			aport:["Port3","Port4"],
 			lport:["led on board","Port1","Port2","Port3","Port4"],
-			laport:["light sensor on board","Port3","Port4"],
+			laport:["sensor de luz on board","Port3","Port4"],
 			direction:["andar para a frente","andar para trás","virar a direita","virar a esquerda"],
 			points:[":"," "],
 			note:["C2","D2","E2","F2","G2","A2","B2","C3","D3","E3","F3","G3","A3","B3","C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C7","D7","E7","F7","G7","A7","B7","C8","D8"],
