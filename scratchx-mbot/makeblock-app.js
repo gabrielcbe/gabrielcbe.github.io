@@ -14,7 +14,7 @@
 		M1:9,
 		M2:10,
 		'on board':7,
-		'light sensor on board':8
+		'sensor de luz on board':8
     };
     var slots = {
 		Slot1:1,
