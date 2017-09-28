@@ -39,7 +39,7 @@
 		'Y-Axis':2,
 		'Z-Axis':3
 	};
-	var ircodes = {	"A":69,
+	var ircodes = {	"A":45,
 		"B":70,
 		"C":71,
 		"D":68,
