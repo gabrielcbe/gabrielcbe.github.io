@@ -722,7 +722,7 @@
 				["R", "temperatura %d.port %d.slot °C","getTemperature","Port3","Slot1"],
 				["R", "sensor de presença %d.port","getPirmotion","Port2"],
 				["-"],
-				["R","controle remoto %m.ircode pressed","getIrRemote","A"],
+				["R","controle remoto %m.ircodes pressionado","getIrRemote","A"],
 				["-"],
 				[" ", "enviar mensagem do mBot %s","runIR", "ola"],
 				["R", "mensagem recebida","getIR"],
