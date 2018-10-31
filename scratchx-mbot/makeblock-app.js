@@ -806,9 +806,7 @@
 	}
 
 
-    var makeblockAppID = "clgdmbbhmdlbcgdffocenbbeclodbndh"; //unique app ID for Hummingbird Scratch App
-    var mConnection;
-    var mStatus = 0;
+    var makeblockAppID = getRequest().id?getRequest().id:"fccjamniakfggblhlnhdhiilkgdcijpj"; //unique app ID for Hummingbird Scratch App
 
 	ext._getStatus = function() {
         return {status: mStatus, msg: mStatus==2?'Ready':'Not Ready'};
