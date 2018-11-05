@@ -682,7 +682,7 @@
 				["-"],
 				["R", "cronometro","getTimer", "0"],
 				[" ", "zerar cronometro","resetTimer", "0"]
-			]		
+			]
 		};
 
 
@@ -727,7 +727,7 @@
 			buttonStatus:["πατήθηκε","αφέθηκε"],
 			shutter:["Press","Release","Focus On","Focus Off"],
 			switchStatus:["Off","On"],
-			ircode:["A","B","C","D","E","F","↑","↓","←","→","Setting","R0","R1","R2","R3","R4","R5","R6","R7","R8","R9"],	
+			ircode:["A","B","C","D","E","F","↑","↓","←","→","Setting","R0","R1","R2","R3","R4","R5","R6","R7","R8","R9"],
 		},
     	pt:{
 			motorPort:["M1","M2"],
@@ -757,7 +757,7 @@
   var descriptor = {
 		blocks : blocks[lang],
 		menus : menus[lang],
-		url: 'http://leleoalmeida.github.io/scratchx-mbot/makeblock.js'
+		url: 'http://gabrielcbe.github.io/scratchx-mbot/makeblock.js'
 	}
 
 	ScratchExtensions.register('Makeblock mBot', descriptor, ext, hid_info);
