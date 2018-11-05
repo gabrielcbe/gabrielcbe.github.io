@@ -1,2 +1,4 @@
 theme: jekyll-theme-slate
-show_downloads: true
+title: Gabrielcbe's page
+description: Testing how this works.
+show_downloads: false
