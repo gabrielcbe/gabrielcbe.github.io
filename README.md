@@ -1,1 +1,1 @@
-See inside scratchx-mbot for mbot specific directions
+Still trying, go to https://github.com/gabrielcbe and see what I'm working on.
