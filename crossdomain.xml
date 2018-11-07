@@ -5,4 +5,5 @@
   <allow-access-from domain="machinelearningforkids.co.uk"/>
   <allow-access-from domain="leleoalmeida.github.io"/>
   <allow-access-from domain="gabrielcbe.github.io"/>
+  <allow-access-from domain="makecode.microbit.org"/>
 </cross-domain-policy>
