@@ -1,4 +1,4 @@
 theme: jekyll-theme-slate
 title: Gabrielcbe's page
 description: Testing how this works.
-show_downloads: false
+show_downloads: true
