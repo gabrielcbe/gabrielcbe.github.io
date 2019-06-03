@@ -1,4 +1,7 @@
 (function(ext) {
+	
+	    
+        
 		var socket = null;
 
         var connected = false;
@@ -7,14 +10,17 @@
         //var digital_inputs = new Array(32);
         var mStatus = 1; // initially yellow
         var myMsg = 'not_ready';
+        //let socket = new WebSocket("ws://localhost:8081");
         
         
         ext.cnct = function (callback) {
-        window.socket = new WebSocket("ws://127.0.0.1:8081");
+        window.socket = new WebSocket("ws://localhost:8081");
         window.socket.onopen = function () {
+            console.log(window.socket);
             var msg = JSON.stringify({
                 "command": "ready"
             });
+            console.log(msg);
             window.socket.send(msg);
             mStatus = 2;
 
