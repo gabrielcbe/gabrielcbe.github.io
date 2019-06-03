@@ -851,7 +851,7 @@ function conectaWebSocket(){
 
     };
 	var hid_info = {type: 'hid', vendor: 0x0416, product: 0xffff};
-conectaWebSocket();
+//conectaWebSocket();
   var descriptor = {
 		blocks : blocks[lang],
 		menus : menus[lang],
