@@ -280,7 +280,6 @@
 	      ws = null;
     };
 	    
-	}
 	var arrayBufferFromArray = function(data){
         var result = new Int8Array(data.length);
         for(var i=0;i<data.length;i++){
