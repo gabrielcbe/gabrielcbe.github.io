@@ -243,28 +243,7 @@
     console.log('Erro:'+e);
   }
 }
-	ext._getStatus = function() {
-		
-        return status?{status: 2, msg: 'Ready'}:{status: 1, msg: 'Not Ready'};
-    };
-	ext._deviceConnected = function(dev) {
-	    if(device) return;
-	    console.log("_deviceConnected");
-	    device = dev;
-	    device.open(deviceOpened);
-	    status = true;
-	    ws = new WebSocket('ws://localhost:8081/', 'echo-protocol');
-
-
-            myStatus = 2;
-
-            // change status light from yellow to green
-            myMsg = 'ready';
-            connected = true;
-
-            // initialize the reporter buffer
-            digital_inputs.fill('0');
-            
+function conectaWebSocket(){     
         ws.onopen = function() {
          console.log('WebSocket Client Connected');
 	      clienteConectado=true;
@@ -307,7 +286,32 @@
       }
 
     };
-         };
+}
+}
+	ext._getStatus = function() {
+		
+        return status?{status: 2, msg: 'Ready'}:{status: 1, msg: 'Not Ready'};
+    };
+	ext._deviceConnected = function(dev) {
+	    if(device) return;
+	    console.log("_deviceConnected");
+	    device = dev;
+	    device.open(deviceOpened);
+	    status = true;
+	    ws = new WebSocket('ws://localhost:8081/', 'echo-protocol');
+	    conectaWebSocket();
+
+
+            myStatus = 2;
+
+            // change status light from yellow to green
+            myMsg = 'ready';
+            connected = true;
+
+            // initialize the reporter buffer
+            digital_inputs.fill('0');
+       
+        
 
 
             // give the connection time establish
