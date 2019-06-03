@@ -14,12 +14,15 @@
             var msg = JSON.stringify({
                 "command": "ready"
             });
+            console.log(window.socket);
+            console.log(msg);
             window.socket.send(msg);
             status = 2;
 
             // change status light from yellow to green
             myMsg = 'ready';
             connected = true;
+            console.log(device);
 
             // initialize the reporter buffer
             digital_inputs.fill('0');
@@ -28,6 +31,7 @@
 	         device = callback;
 	         device.open(deviceOpened);
 	         status = true;
+	         console.log(device);
 
             // give the connection time establish
             window.setTimeout(function() {
@@ -38,7 +42,9 @@
 
         window.socket.onmessage = function (message) {
             var msg = JSON.parse(message.data);
-
+            
+			console.log(msg);
+			console.log(device);
             // handle the only reporter message from the server
             // for changes in digital input state
             var reporter = msg['report'];
@@ -47,6 +53,7 @@
                 digital_inputs[parseInt(pin)] = msg['level']
             }
             console.log(message.data)
+            console.log(device);
         };
         window.socket.onclose = function (e) {
             console.log("Connection closed.");
@@ -54,6 +61,7 @@
             connected = false;
             status = 1;
             myMsg = 'not_ready'
+            console.log(device);
         };
     };
 
@@ -66,6 +74,7 @@
 	    if(device) device.close();
 	    device = null;
 	    status = false;
+	    console.log(device);
         window.socket.send(msg);
     };
 
@@ -291,12 +300,15 @@
 				setTimeout(function(){
 					_isWaiting = false;
 					writePackage();
+					console.log(device);
 				},20);
 			});
 		}
 	}
 	ext._getStatus = function() {
         return status?{status: 2, msg: 'Ready'}:{status: 1, msg: 'Not Ready'};
+        console.log(device);
+        console.log(status);
     };
 	//ext._deviceConnected = function(dev) {
 	    //if(device) return;
@@ -310,6 +322,9 @@
 	    if(poller) poller = clearInterval(poller);
 	    device = null;
 	    status = false;
+	    console.log(device);
+        console.log(status);
+	    
 	};
 	//ext._shutdown = function() {
 	    //if(poller) poller = clearInterval(poller);
@@ -323,6 +338,8 @@
             result[i] = data[i];
         }
         window.socket.send(result);
+        console.log(device);
+        console.log(status);
         return result;
     }
 
