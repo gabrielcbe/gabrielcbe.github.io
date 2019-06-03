@@ -226,6 +226,7 @@
 		}
 	}
 	ext._getStatus = function() {
+		
         return status?{status: 2, msg: 'Ready'}:{status: 1, msg: 'Not Ready'};
     };
 	ext._deviceConnected = function(dev) {
@@ -235,11 +236,8 @@
 	    device.open(deviceOpened);
 	    status = true;
 	    ws = new WebSocket("ws://127.0.0.1:9000");
-        ws.onopen = function () {
-            var msg = JSON.stringify({
-                "command": "ready"
-            });
-            ws.send(msg);
+
+
             myStatus = 2;
 
             // change status light from yellow to green
@@ -248,6 +246,13 @@
 
             // initialize the reporter buffer
             digital_inputs.fill('0');
+            
+        ws.on('open', function open() {
+            var msg = JSON.stringify({
+                "command": "ready"
+            });
+            ws.send(msg);
+		}
 
             // give the connection time establish
             window.setTimeout(function() {
@@ -281,6 +286,9 @@
         for(var i=0;i<data.length;i++){
             result[i] = data[i];
         }
+        ws.on('message', function incoming(result) {
+        console.log(result);
+        });
         return result;
     }
 
