@@ -252,7 +252,7 @@
                 "command": "ready"
             });
             ws.send(msg);
-		}
+		});
 
             // give the connection time establish
             window.setTimeout(function() {
