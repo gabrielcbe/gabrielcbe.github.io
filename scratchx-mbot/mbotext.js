@@ -1,84 +1,5 @@
 (function(ext) {
-	var socket = null;
-
-    var connected = false;
-
-    // an array to hold possible digital input values for the reporter block
-    var digital_inputs = new Array(32);
-    var status = 1; // initially yellow
-    var myMsg = 'not_ready';
-
-    ext.cnct = function (callback) {
-        window.socket = new WebSocket("ws://127.0.0.1:8081");
-        window.socket.onopen = function () {
-            var msg = JSON.stringify({
-                "command": "ready"
-            });
-            console.log(window.socket);
-            console.log(msg);
-            window.socket.send(msg);
-            status = 2;
-
-            // change status light from yellow to green
-            myMsg = 'ready';
-            connected = true;
-            console.log(device);
-
-            // initialize the reporter buffer
-            digital_inputs.fill('0');
-             if(device) return;
-	         console.log("_deviceConnected");
-	         device = callback;
-	         device.open(deviceOpened);
-	         status = true;
-	         console.log(device);
-
-            // give the connection time establish
-            window.setTimeout(function() {
-            callback();
-        }, 1000);
-
-        };
-
-        window.socket.onmessage = function (message) {
-            var msg = JSON.parse(message.data);
-            
-			console.log(msg);
-			console.log(device);
-            // handle the only reporter message from the server
-            // for changes in digital input state
-            var reporter = msg['report'];
-            if(reporter === 'digital_input_change') {
-                var pin = msg['pin'];
-                digital_inputs[parseInt(pin)] = msg['level']
-            }
-            console.log(message.data)
-            console.log(device);
-        };
-        window.socket.onclose = function (e) {
-            console.log("Connection closed.");
-            socket = null;
-            connected = false;
-            status = 1;
-            myMsg = 'not_ready'
-            console.log(device);
-        };
-    };
-
-    // Cleanup function when the extension is unloaded
-    ext._shutdown = function () {
-        var msg = JSON.stringify({
-            "command": "shutdown"
-        });
-        if(poller) poller = clearInterval(poller);
-	    if(device) device.close();
-	    device = null;
-	    status = false;
-	    console.log(device);
-        window.socket.send(msg);
-    };
-
-    
+    var ws;
 	var poller = null;
 	var device = null;
 	var status = false;
@@ -300,46 +221,66 @@
 				setTimeout(function(){
 					_isWaiting = false;
 					writePackage();
-					console.log(device);
 				},20);
 			});
 		}
 	}
 	ext._getStatus = function() {
         return status?{status: 2, msg: 'Ready'}:{status: 1, msg: 'Not Ready'};
-        console.log(device);
-        console.log(status);
     };
-	//ext._deviceConnected = function(dev) {
-	    //if(device) return;
-	    //console.log("_deviceConnected");
-	    //device = dev;
-	    //device.open(deviceOpened);
-	    //status = true;
-	//};
+	ext._deviceConnected = function(dev) {
+	    if(device) return;
+	    console.log("_deviceConnected");
+	    device = dev;
+	    device.open(deviceOpened);
+	    status = true;
+	    ws = new WebSocket("ws://127.0.0.1:9000");
+        ws.onopen = function () {
+            var msg = JSON.stringify({
+                "command": "ready"
+            });
+            ws.send(msg);
+            myStatus = 2;
+
+            // change status light from yellow to green
+            myMsg = 'ready';
+            connected = true;
+
+            // initialize the reporter buffer
+            digital_inputs.fill('0');
+
+            // give the connection time establish
+            window.setTimeout(function() {
+            callback();
+        }, 1000);
+	};
 	ext._deviceRemoved = function(dev) {
 	    if(device != dev) return;
 	    if(poller) poller = clearInterval(poller);
 	    device = null;
 	    status = false;
-	    console.log(device);
-        console.log(status);
-	    
 	};
-	//ext._shutdown = function() {
-	    //if(poller) poller = clearInterval(poller);
-	    //if(device) device.close();
-	    //device = null;
-	    //status = false;
-	//}
+	ext._shutdown = function() {
+	    if(poller) poller = clearInterval(poller);
+	    if(device) device.close();
+	    device = null;
+	    status = false;
+	    
+	      if(! ws) {
+	        console.log("Line-us is already disconnected");
+	      } else {
+	        console.log("Disconnecting Line-us");
+	        ws.close();
+	      }
+	      ws = null;
+    };
+	    
+	}
 	var arrayBufferFromArray = function(data){
         var result = new Int8Array(data.length);
         for(var i=0;i<data.length;i++){
             result[i] = data[i];
         }
-        window.socket.send(result);
-        console.log(device);
-        console.log(status);
         return result;
     }
 
@@ -702,6 +643,41 @@
 				["R", "timer","getTimer", "0"],
 				[" ", "reset timer","resetTimer", "0"]
 			],
+		el: [
+				[" ", "κινήσου αριστερά %d.motorvalue right %d.motorvalue","runBot", 100, 100],
+				[" ", "όρισε τον κινητήρα%d.motorPort speed %d.motorvalue","runMotor", "M1", 0],
+				[" ", "όρισε τον σερβοκινητήρα %d.port %d.slot angle %d.servovalue","runServo", "Port1","Slot1", 90],
+				[" ", "ορισε το led %d.lport %d.slot %d.index red%d.value green%d.value blue%d.value","runLed","on board","Slot1","all",0,0,0],
+				[" ", "παίξε τόνο στη νότα %d.note beat %d.beats","runBuzzer", "C4", "Half"],
+				[" ", "δείξε πρόσωπο %d.port x:%n y:%n characters:%s","showCharacters", "Port1", 0,0,"Hello"],
+				[" ", "δείξε ώρα %d.port hour:%n %m.points min:%n","showTime", "Port1", 10,":",20],
+				[" ", "δείξε ζωγραφιά %d.port x:%n y:%n draw:%m.drawFace","showDraw", "Port1", 0,0,"        "],
+				["-"],
+				[" ", "όρισε την οθόνη 7 τμημάτων %d.port number %n","runSevseg", "Port1", 100],
+				[" ", "όρισε τον αισθητήρα φωτός %d.aport led as %d.switchStatus","runLightSensor", "Port3", "On"],
+				[" ", "όρισε το κλείστρο της κάμερας %d.port as %d.shutter","runShutter","Port1", "Press"],
+				["-"],
+				["h", "όταν πατηθεί το κουμπί %m.buttonStatus","whenButtonPressed","pressed"],
+				["R", "κουμπί %m.buttonStatus","getButtonOnBoard","pressed"],
+				["R", "αισθητήρας φωτός %d.laport","getLightSensor","light sensor on board"],
+				["-"],
+				["R", "αισθητήρας υπέρηχων %d.port distance","getUltrasonic","Port1"],
+				["R", "αισθητήρας γραμμής %d.port","getLinefollower","Port1"],
+				["R", "joystick %d.aport %d.Axis","getJoystick","Port3","X-Axis"],
+				["R", "ποντεσιόμετρο %d.aport","getPotentiometer","Port3"],
+				["R", "αισθητήρας ήχου %d.aport","getSoundSensor","Port3"],
+				["R", "διακόπτης ορίου %d.port %d.slot","getLimitswitch","Port1","Slot1"],
+				["R", "θερμοκρασία %d.port %d.slot °C","getTemperature","Port3","Slot1"],
+				["R", "αισθητήρας κίνησης %d.port","getPirmotion","Port2"],
+				["-"],
+				["R","τηλεχειρηστήριο υπερύθρων %m.ircode pressed","getIrRemote","A"],
+				["-"],
+				[" ", "στείλε το μήνυμα του mBot %s","runIR", "hello"],
+				["R", "το μύνημα του mBot λήφθηκε","getIR"],
+				["-"],
+				["R", "χρονομετρητής","getTimer", "0"],
+				[" ", "επαναφορά χρονομετρητή","resetTimer", "0"]
+			],
 		pt: [
 	        	[" ", "mover esquerdo %d.motorvalue direito %d.motorvalue","runBot", 100, 100],
 				[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue","runMotor", "M1", 0],
@@ -762,6 +738,27 @@
 			switchStatus:["Off","On"],
 			ircode:["A","B","C","D","E","F","↑","↓","←","→","Setting","R0","R1","R2","R3","R4","R5","R6","R7","R8","R9"],
 		},
+		el:{
+			motorPort:["M1","M2"],
+			slot:["Slot1","Slot2"],
+			index:["all",1,2],
+			Axis:["X-Axis","Y-Axis"],
+			port:["Port1","Port2","Port3","Port4"],
+			aport:["Port3","Port4"],
+			lport:["led στην πλακέτα","Port1","Port2","Port3","Port4"],
+			laport:["αισθητήρας φωτός στην πλακέτα","Port3","Port4"],
+			direction:["τρέξε μπροστά","τρέξε πίσω","στρίψε δεξιά","στρίψε αριστερά"],
+			points:[":"," "],
+			note:["C2","D2","E2","F2","G2","A2","B2","C3","D3","E3","F3","G3","A3","B3","C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C7","D7","E7","F7","G7","A7","B7","C8","D8"],
+			beats:["Μισό","Τέταρτο","Όγδοο","Ολόκληρο","Διπλό","Μηδενικό"],
+			servovalue:[0,45,90,135,180],
+			motorvalue:[-255,-100,-50,0,50,100,255],
+			value:[0,20,60,150,255],
+			buttonStatus:["πατήθηκε","αφέθηκε"],
+			shutter:["Press","Release","Focus On","Focus Off"],
+			switchStatus:["Off","On"],
+			ircode:["A","B","C","D","E","F","↑","↓","←","→","Setting","R0","R1","R2","R3","R4","R5","R6","R7","R8","R9"],
+		},
     	pt:{
 			motorPort:["M1","M2"],
 			slot:["Slot1","Slot2"],
@@ -790,7 +787,7 @@
   var descriptor = {
 		blocks : blocks[lang],
 		menus : menus[lang],
-		url: 'http://gabrielcbe.github.io/scratchx-mbot/mbotext.js'
+		url: 'http://gabrielcbe.github.io/scratchx-mbot/makeblock.js'
 	}
 
 	ScratchExtensions.register('Makeblock mBot', descriptor, ext, hid_info);
