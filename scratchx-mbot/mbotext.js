@@ -1,5 +1,6 @@
 (function(ext) {
     var ws;
+    var reconexaoAutomatica=null; 
 	var poller = null;
 	var device = null;
 	var status = false;
@@ -225,6 +226,23 @@
 			});
 		}
 	}
+	function verificaReconexao() {
+  tentativas++;
+  if (tentativas==20 || clienteConectado) {
+     clearInterval(reconexaoAutomatica);
+     tentativas=0;
+  }
+      
+  //console.log('entrou para reconectar');
+  try {
+    conectaWebSocket();
+    clearInterval(reconexaoAutomatica);
+    reconexaoAutomatica=null;
+    //console.log('limpou escalonamento');
+  } catch(e) {
+    console.log('Erro:'+e);
+  }
+}
 	ext._getStatus = function() {
 		
         return status?{status: 2, msg: 'Ready'}:{status: 1, msg: 'Not Ready'};
@@ -235,7 +253,7 @@
 	    device = dev;
 	    device.open(deviceOpened);
 	    status = true;
-	    ws = new WebSocket("ws://127.0.0.1:9000");
+	    ws = new WebSocket('ws://localhost:8081/', 'echo-protocol');
 
 
             myStatus = 2;
@@ -247,12 +265,50 @@
             // initialize the reporter buffer
             digital_inputs.fill('0');
             
-        ws.on('open', function open() {
-            var msg = JSON.stringify({
-                "command": "ready"
-            });
-            ws.send(msg);
-		});
+        ws.onopen = function() {
+         console.log('WebSocket Client Connected');
+	      clienteConectado=true;
+	      
+	     if (reconexaoAutomatica!=null) {
+	      clearInterval(reconexaoAutomatica);
+	      reconexaoAutomatica=null;
+	       }
+	    onmessage = function(e) {
+	
+    if (typeof e.data === 'string') {
+		servidorMBOTConectado=true;
+        //  alert('recebeu '+e.data);
+	//document.getElementById('msg').innerHTML=e.data+'';
+	//	odo.setValue(parseInt(e.data));
+		
+		
+	    if (e.data.toLowerCase().indexOf('desconectado')> -1) {
+		    
+		    registraDesconexao(e.data);
+					    
+	    } else if (e.data.indexOf('conectado')>-1) {
+		
+			setTimeout(function(){ registraConexao(e.data); },1000);
+		    
+	    } else if (e.data.indexOf(COMANDO_FINAL)>-1) {
+		    
+		    // Indica finais de execução
+		    endReturn();
+		    
+	    } else {
+	    
+		  var componenteValor = e.data.split(',');
+		  recebeValor(componenteValor[0],componenteValor[1]);
+    
+	    }
+		
+	    clienteConectado=true;
+		
+      }
+
+    };
+         };
+
 
             // give the connection time establish
             window.setTimeout(function() {
@@ -271,13 +327,14 @@
 	    device = null;
 	    status = false;
 	    
-	      if(! ws) {
-	        console.log("Line-us is already disconnected");
-	      } else {
-	        console.log("Disconnecting Line-us");
-	        ws.close();
-	      }
-	      ws = null;
+	      ws.onclose = function() {
+      console.log('echo-protocol Client Closed');
+	  clienteConectado=false;
+	      registraDesconexao();
+	if (reconexaoAutomatica==null)
+	    reconexaoAutomatica=setInterval(verificaReconexao,3000);
+  };
+  
     };
 	    
 	var arrayBufferFromArray = function(data){
@@ -790,7 +847,7 @@
 
     };
 	var hid_info = {type: 'hid', vendor: 0x0416, product: 0xffff};
-
+conectaWebSocket();
   var descriptor = {
 		blocks : blocks[lang],
 		menus : menus[lang],
