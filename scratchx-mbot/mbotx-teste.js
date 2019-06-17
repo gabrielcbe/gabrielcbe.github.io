@@ -38,10 +38,10 @@
 		};
 
 		window.socket.onmessage = function (message) {
-			var msg = JSON.parse(message.data);
+			//var msg = JSON.parse(message.data);
 
 			servidorMBOTConectado=true;
-			//  alert('recebeu '+e.data);
+			alert('recebeu '+message.data);
 			//document.getElementById('msg').innerHTML=e.data+'';
 			//	odo.setValue(parseInt(e.data));
 
