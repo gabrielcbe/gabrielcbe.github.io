@@ -55,12 +55,12 @@
 
 				setTimeout(function(){ registraConexaoMBOT(message.data); },1000);
 
-			} //else if (message.data.indexOf(COMANDO_FINAL)>-1) {
+			} else if (message.data.indexOf('COMANDO_FINAL')>-1) {
 
 				// Indica finais de execução
-				//endReturn();
+				endReturn();
 
-			//} 
+			} 
 			else {
 
 				var componenteValor = message.data.split(',');
