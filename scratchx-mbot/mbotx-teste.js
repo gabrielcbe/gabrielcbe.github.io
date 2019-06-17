@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.6 led apagou manualmente, tentando pegar o valor do bloco
+	//3.7 led apagou manualmente, tentando pegar o valor do bloco
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -583,9 +583,21 @@
 		//enviaComando('ledboth',0,0,0);
 		
 		//var code = enviaComando('led',red+","green+","blue);
+		
+		enviaComando('led',0+","0+","0);
+		console.log('enviaComando('led',0+","0+","0);');
+		
+		enviaComando('led',0+","0+","0);
+		console.log('enviaComando('led',0+","0+","0);');
+		
+		enviaComando('led',+red+","+green+","+blue);
+		console.log('enviaComando('led',+red+","+green+","+blue);');
+		
 		enviaComando('LEDBOTH',+red+","+green+","+blue);
-		console.log('agora com os +');
+		console.log('enviaComando('LEDBOTH',+red+","+green+","+blue);');
+		
 		enviaComando('LEDBOTH',+red+'","'+green+'","'+blue);
+		console.log('enviaComando('LEDBOTH',+red+'","'+green+'","'+blue);');
 		//enviaComando('ledboth','red+","+green+","+blue');
 		//var code = enviaComando('ledboth','red+","+green+","+blue');
 		//ledboth
