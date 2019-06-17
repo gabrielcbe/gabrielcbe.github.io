@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.6 ja tinha um 1.7 entao devia ser 2.8 se nao tiver atrapalhado nada
+	//version=1.6 ja tinha um 1.7 entao devia ser 2.9 se nao tiver atrapalhado nada
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -584,7 +584,7 @@
 		console.log('runLed: vai fazer code e enviar comando');
 
 		//enviaComando('ledboth',0,0,0);
-		enviaComando('led',0','0','0);
+		enviaComando('led','0","0","0');
 		enviaComando('ledboth','red+","+green+","+blue');
 		var code = enviaComando('ledboth','red+","+green+","+blue');
 		ledboth
