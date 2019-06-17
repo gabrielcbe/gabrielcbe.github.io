@@ -1,26 +1,23 @@
 (function(ext) {
-	//3.4 led apagou manualmente, tentando pegar o valor do bloco
+	//3.5 led apagou manualmente, tentando pegar o valor do bloco
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
 	var myMsg = 'not_ready';
-
+	
 	var clienteConectadoMBOT=false;
 	var servidorMBOTConectado=false;
 	var reconexaoAutomaticaMBOT=null;
-	//var window.socket=null;
 	const PORTA_MBOT="8081";
 	var urlConexaoRecenteMBOT="";
 	var sala="1";
-
+	
 	const LINESENSOR='linesensor';
 	const ULTRASOUNDSENSOR='ultrasoundsensor';
 	const LIGHTSENSOR='lightsensor';
-
 	const BUTTON='button';
 	const BUTTON_PRESSED='pressed';
 	const BUTTON_RELEASED='released';
-
 	const IRSENSOR='irsensor';
 	const BUZZER='buzzer';
 	const DCMOTORM1='dcmotorm1';
@@ -36,56 +33,56 @@
 	const LEDRIGHT='ledright';
 	const LEDBOTH='ledboth';
 	const PLAYNOTE='playnote';
-
+	
 	function enviaComando(com,val) {
-	   console.log('entrou enviaComando: '+com);
-
-	  if (window.socket.readyState !== window.socket.OPEN) {
-	      alert('O serviço de conexão do mBot não está ativo!');
-	      return;
-	  }
-	  console.log('vai enviar '+com+' val='+val);
-	  window.socket.send(JSON.stringify({comando:com,valor:val}));
-
+		//console.log('entrou enviaComando: '+com);
+		
+		if (window.socket.readyState !== window.socket.OPEN) {
+			alert('O serviço de conexão do mBot não está ativo!');
+			return;
+		}
+		console.log('vai enviar '+com+' val='+val);
+		window.socket.send(JSON.stringify({comando:com,valor:val}));
+		
 	}
 	// 0,1,2 ou 3
 	var line;
-
+	
 	// 0 a 1000
 	var light;
 	// pressed ou released
 	var button;
 	// tecla
 	var ir;
-
+	
 	// 0 a 400 cm
 	var ultrasound;
-
+	
 	function recebeValor (componente,valor) {
-
-
-	    //console.log('componente',componente);
-	    //console.log('valor',valor);
-
-	    if (componente==LINESENSOR) {
-	        line=parseInt(valor);
-	        //document.getElementById(componente).innerHTML=valor;
-	    } else if (componente==ULTRASOUNDSENSOR) {
-	        ultrasound=Math.trunc(parseInt(valor));
-	        //document.getElementById(componente).innerHTML=ultrasound+'';
-	    } else if (componente==LIGHTSENSOR) {
-	        light = Math.trunc(parseInt(valor));
-	        //document.getElementById(componente).innerHTML=light+'';
-	    } else if (componente==BUTTON) {
-	        button = valor;
-	        //document.getElementById(componente).innerHTML=valor;
-	    } else if (componente==IRSENSOR) {
-	        ir = valor;
-	        //document.getElementById(componente).innerHTML=valor;
-	    }
-
+		
+		
+		//console.log('componente',componente);
+		//console.log('valor',valor);
+		
+		if (componente==LINESENSOR) {
+			line=parseInt(valor);
+			//document.getElementById(componente).innerHTML=valor;
+		} else if (componente==ULTRASOUNDSENSOR) {
+			ultrasound=Math.trunc(parseInt(valor));
+			//document.getElementById(componente).innerHTML=ultrasound+'';
+		} else if (componente==LIGHTSENSOR) {
+			light = Math.trunc(parseInt(valor));
+			//document.getElementById(componente).innerHTML=light+'';
+		} else if (componente==BUTTON) {
+			button = valor;
+			//document.getElementById(componente).innerHTML=valor;
+		} else if (componente==IRSENSOR) {
+			ir = valor;
+			//document.getElementById(componente).innerHTML=valor;
+		}
+		
 	}
-
+	
 	ext.cnct = function (callback) {
 		window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
 		console.log('WebSocket Client Connected');
@@ -93,81 +90,81 @@
 			var msg = JSON.stringify({
 				"command": "ready"
 			});
-
+			
 			clienteConectadoMBOT=true;
-
+			
 			window.socket.send(msg);
 			console.log('ext.cnct: '+msg);
 			myStatus = 2;
-
+			
 			// change status light from yellow to green
 			myMsg = 'ready';
 			connected = true;
-
-
+			
+			
 			// give the connection time establish
 			window.setTimeout(function() {
 				callback();
 			}, 1000);
-
+			
 		};
-
+		
 		window.socket.onmessage = function (message) {
 			//var msg = JSON.parse(message.data);
-
+			
 			servidorMBOTConectado=true;
 			//alert('recebeu '+message.data);
 			//console.log('recebeu '+message.data);
 			//document.getElementById('msg').innerHTML=e.data+'';
 			//	odo.setValue(parseInt(e.data));
-
-
+			
+			
 			if (message.data.toLowerCase().indexOf('desconectado')> -1) {
-
+				
 				registraDesconexaoMBOT(message.data);
-
+				
 			} else if (message.data.indexOf('conectado')>-1) {
-
+				
 				setTimeout(function(){ registraConexaoMBOT(message.data); },1000);
-
+				
 			} else if (message.data.indexOf('COMANDO_FINAL')>-1) {
-
+				
 				// Indica finais de execução
 				endReturn();
-
+				
 			}
 			else {
-
+				
 				var componenteValor = message.data.split(',');
 				recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else');
 				//console.log('caiu no else, recebeu: '+componenteValor);
-
+				
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
-
+				
 				onMsgApp(message);
-
+				
 			}
 			clienteConectadoMBOT=true;
-
+			
 			//console.log('recebeu '+message.data)
 		};
-
+		
 		window.socket.onclose = function (e) {
 			console.log("Connection closed.");
 			socket = null;
 			connected = false;
 			myStatus = 1;
 			myMsg = 'not_ready'
-
+			
 			console.log('echo-protocol Client Closed');
 			clienteConectadoMBOT=false;
 			registraDesconexaoMBOT();
 		};
 	};
 	function registraConexaoMBOT(dado) {
-
+		
 		//alert('entrou para registrar');
 		// Recebe macaddress da unidade e sala correntemente registrada
 		//console.log(dado);
@@ -175,7 +172,7 @@
 		var mac = msg[0].substring(10).toUpperCase();
 		if (mac.indexOf(':')==-1)
 		mac = mac.substring(0,2)+':'+mac.substring(2,4)+':'+mac.substring(4,6)+':'+mac.substring(6,8)+':'+mac.substring(8,10)+':'+mac.substring(10,12);
-
+		
 		if (msg[1]) {
 			sala= msg[1].substring(5);
 			if (parseInt(msg[2].substring(8))<10 && msg[2].substring(8).indexOf('0')!=0)
@@ -189,11 +186,11 @@
 		//alert('entrou para deregistrar');
 		servidorMBOTConectado=false;
 	}
-
-
-
-
-
+	
+	
+	
+	
+	
 	var poller = null;
 	var device = null;
 	var status = false;
@@ -322,7 +319,7 @@
 		"Dupla": 2000,
 		"Zero": 0
 	};
-
+	
 	function onParse(byte) {
 		//console.log('onParse(byte): '+byte);
 		position = 0
@@ -337,7 +334,7 @@
 			}
 			if (_buffer[len - 1] == 0xa && _buffer[len - 2] == 0xd && _isParseStart == true) {
 				_isParseStart = false;
-
+				
 				var position = _isParseStartIndex + 2;
 				var extId = _buffer[position];
 				position += 1;
@@ -373,7 +370,7 @@
 			}
 		}
 	}
-
+	
 	function readFloat(position) {
 		var buf = new ArrayBuffer(4);
 		var intView = new Uint8Array(buf);
@@ -383,7 +380,7 @@
 		}
 		return floatView[0];
 	}
-
+	
 	function readShort(position) {
 		var buf = new ArrayBuffer(2);
 		var intView = new Uint8Array(buf);
@@ -393,7 +390,7 @@
 		}
 		return shortView[0];
 	}
-
+	
 	function readString(position) {
 		var l = _buffer[position]
 		position += 1
@@ -403,7 +400,7 @@
 		}
 		return s
 	}
-
+	
 	function readDouble(position) {
 		var buf = new ArrayBuffer(8);
 		var intView = new Uint8Array(buf);
@@ -413,7 +410,7 @@
 		}
 		return doubleView[0];
 	}
-
+	
 	function short2array(v) {
 		var buf = new ArrayBuffer(2);
 		var intView = new Uint8Array(buf);
@@ -421,7 +418,7 @@
 		shortView[0] = v;
 		return [intView[0], intView[1]];
 	}
-
+	
 	function float2array(v) {
 		var buf = new ArrayBuffer(4);
 		var intView = new Uint8Array(buf);
@@ -429,7 +426,7 @@
 		floatView[0] = v;
 		return [intView[0], intView[1], intView[2], intView[3]];
 	}
-
+	
 	function string2array(v) {
 		var arr = v.split("");
 		for (var i = 0; i < arr.length; i++) {
@@ -438,12 +435,12 @@
 		console.log(arr);
 		return arr;
 	}
-
+	
 	function deviceOpened(dev) {
 		console.log('deviceOpened(dev): '+dev);
 		// if device fails to open, forget about it
 		if (dev == null) device = null;
-
+		
 		// otherwise start polling
 		poller = setInterval(function() {
 			if (device != null) {
@@ -464,7 +461,7 @@
 	var lastWritten = 0;
 	var _buffers = [];
 	var _isWaiting = false;
-
+	
 	function addPackage(buffer, callback) {
 		_buffers.push(buffer);
 		//console.log('addPackage(_buffers): '+_buffers);
@@ -475,7 +472,7 @@
 		//console.log('addPackage(_selectors): '+_selectors);
 		writePackage();
 	}
-
+	
 	function writePackage() {
 		if (_buffers.length > 0 && _isWaiting == false) {
 			_isWaiting = true;
@@ -484,9 +481,9 @@
 			var msg = {};
 			msg.buffer = buffer;
 			console.log('addPackwritePackageage(msg.buffer): '+msg.buffer);
-
+			
 			window.socket.send(msg);
-				console.log('addPackwritePackageage(msg): '+msg);
+			console.log('addPackwritePackageage(msg): '+msg);
 			//mConnection.postMessage(msg);
 			setTimeout(function() {
 				_isWaiting = false;
@@ -495,7 +492,7 @@
 		}
 	}
 	var arrayBufferFromArray = function(data) {
-    console.log('arrayBufferFromArray(data): '+data);
+		console.log('arrayBufferFromArray(data): '+data);
 		var result = new Int8Array(data.length);
 		for (var i = 0; i < data.length; i++) {
 			result[i] = data[i];
@@ -503,9 +500,9 @@
 		console.log('arrayBufferFromArray(result): '+result);
 		return data;
 	}
-
+	
 	//************* mBot Blocks ***************//
-
+	
 	function genNextID(port, slot) {
 		var nextID = port * 4 + slot;
 		return nextID;
@@ -546,11 +543,11 @@
 	}
 	ext.runLedOnBoard = function(index, red, green, blue) {
 		console.log('runLedOnBoard: vai fazer code e enviar comando');
-
+		
 		enviaComando('"+index+"','"+red+","+green+","+blue+"');
 		console.log('runLedOnBoard: depois funcao');
-
-    //return code;
+		
+		//return code;
 		//the index here is realy the slot. I leave it because the slot does not have the "all" option
 		if (index == "all") {
 			index = 0;
@@ -582,7 +579,7 @@
 		var data = [extId, 0x02, deviceId, port, slot, index, red * 1, green * 1, blue * 1];
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		console.log('runLed: vai fazer code e enviar comando');
-
+		
 		//enviaComando('ledboth',0,0,0);
 		
 		//var code = enviaComando('led',red+","green+","blue);
@@ -704,7 +701,7 @@
 			addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		}
 		return _lastButtonStatus[status];
-
+		
 	}
 	ext.getLightSensor = function(port, callback) {
 		if (typeof port == "string") {
@@ -841,13 +838,13 @@
 			[" ", "estabelecer servo %d.port %d.slot ângulo %d.servovalue", "runServo", "Port1", "Slot1", 90],
 			[" ", "estabelecer led %d.lport %d.slot %d.index R%d.value G%d.value B%d.value", "runLed", "on board", "Slot1", "all", 0, 0, 0],
 			[" ", "tocar tom na nota %d.note batida %d.beats", "runBuzzer", "C4", "Metade"],
-			[" ", "mostrar cara %d.port x:%n y:%n caracteres:%s", "showCharacters", "Port1", 0, 0, "Ola"],
-			[" ", "mostrar tempo %d.port hora:%n %m.points min:%n", "showTime", "Port1", 10, ":", 20],
-			[" ", "mostrar desenho %d.port x:%n y:%n draw:%m.drawFace", "showDraw", "Port1", 0, 0, "    	"],
+			// [" ", "mostrar cara %d.port x:%n y:%n caracteres:%s", "showCharacters", "Port1", 0, 0, "Ola"],
+			// [" ", "mostrar tempo %d.port hora:%n %m.points min:%n", "showTime", "Port1", 10, ":", 20],
+			// [" ", "mostrar desenho %d.port x:%n y:%n draw:%m.drawFace", "showDraw", "Port1", 0, 0, "    	"],
 			["-"],
-			[" ", "estabelecer 7-segmentos display%d.port número %n", "runSevseg", "Port1", 100],
+			// [" ", "estabelecer 7-segmentos display%d.port número %n", "runSevseg", "Port1", 100],
 			[" ", "estabelecer sensor de luz %d.aport led como %d.switchStatus", "runLightSensor", "Port3", "Ligado"],
-			[" ", "estabelecer obturador da câmera %d.port como %d.shutter", "runShutter", "Port1", "Pressionar"],
+			// [" ", "estabelecer obturador da câmera %d.port como %d.shutter", "runShutter", "Port1", "Pressionar"],
 			["-"],
 			["h", "quando botão %m.buttonStatus", "whenButtonPressed", "pressionado"],
 			["R", "botão %m.buttonStatus", "getButtonOnBoard", "pressionado"],
@@ -855,18 +852,18 @@
 			["-"],
 			["R", "distância do sensor ultrasom %d.port", "getUltrasonic", "Port1"],
 			["R", "segue linha %d.port", "getLinefollower", "Port1"],
-			["R", "joystick %d.aport %d.Axis", "getJoystick", "Port3", "Eixo-X"],
+			// ["R", "joystick %d.aport %d.Axis", "getJoystick", "Port3", "Eixo-X"],
 			["R", "potenciometro %d.aport", "getPotentiometer", "Port3"],
 			["R", "sensor de som %d.aport", "getSoundSensor", "Port3"],
-			["R", "chave limite %d.port %d.slot", "getLimitswitch", "Port1", "Slot1"],
+			// ["R", "chave limite %d.port %d.slot", "getLimitswitch", "Port1", "Slot1"],
 			["R", "temperatura %d.port %d.slot °C", "getTemperature", "Port3", "Slot1"],
-			["R", "sensor de presença %d.port", "getPirmotion", "Port2"],
+			// ["R", "sensor de presença %d.port", "getPirmotion", "Port2"],
 			["-"],
 			["R", "controle remoto %m.ircodes pressionado", "getIrRemote", "A"],
 			["-"],
-			[" ", "enviar mensagem do mBot %s", "runIR", "ola"],
-			["R", "mensagem recebida", "getIR"],
-			["-"],
+			// [" ", "enviar mensagem do mBot %s", "runIR", "ola"],
+			// ["R", "mensagem recebida", "getIR"],
+			// ["-"],
 			["R", "cronômetro", "getTimer", "0"],
 			[" ", "zerar cronômetro", "resetTimer", "0"]
 		],
@@ -895,7 +892,7 @@
 	};
 	// var mConnection;
 	var mStatus = 0;
-
+	
 	// function getRequest() {
 	// 		var url = location.search;
 	// 		var theRequest = new Object();
@@ -913,14 +910,14 @@
 	// 		return theRequest;
 	// }
 	//var makeblockAppID = getRequest().id ? getRequest().id : "clgdmbbhmdlbcgdffocenbbeclodbndh"; //unique app ID for Hummingbird Scratch App
-
+	
 	ext._shutdown = function () {
 		var msg = JSON.stringify({
 			"command": "shutdown"
 		});
 		window.socket.send(msg);
 	};
-
+	
 	// Status reporting code
 	// Use this to report missing hardware, plugin or unsupported browser
 	ext._getStatus = function (status, msg) {
@@ -936,7 +933,7 @@
 	// 		if (poller) poller = clearInterval(poller);
 	// 		status = false;
 	// }
-
+	
 	// function getMakeblockAppStatus() {
 	// 		chrome.runtime.sendMessage(makeblockAppID, {
 	// 						message: "STATUS"
@@ -959,19 +956,19 @@
 	// 						}
 	// 				});
 	// };
-
+	
 	function onMsgApp(msg) {
 		//ver o que tem ser passado aqui ou deve tratar que nem no server
 		//console.log('onMsgAppMsg.data: '+msg.data);
-
+		
 		//console.log('onMsgAppMsg.buffer: '+msg.buffer);
-	 		var buffer = msg.data;
-	 		for (var i = 0; i < buffer.length; i++) {
-	 				onParse(buffer[i]);
-	 		}
+		var buffer = msg.data;
+		for (var i = 0; i < buffer.length; i++) {
+			onParse(buffer[i]);
+		}
 	};
 	// var hid_info = {type: 'hid', vendor: 0x0416, product: 0xffff};
-
+	
 	//getMakeblockAppStatus();
 	//ScratchExtensions.register('MindMakers-mBot', descriptor, ext, hid_info);
 	ScratchExtensions.register('MindMakers-mBot', descriptor, ext);
