@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.4
+	//version=1.5
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -67,7 +67,7 @@
 				var componenteValor = message.data.split(',');
 				//recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else');
-				console.log('caiu no else, recebeu: '+message.data);
+				//console.log('caiu no else, recebeu: '+message.data);
 				
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
@@ -731,7 +731,7 @@
 	}
 	var descriptor = {
 		blocks: [
-			["w", 'Connect to s2_pi server.', 'cnct'],
+			["w", 'Connect to mbot server.', 'cnct'],
 			[" ", "mover esquerdo %d.motorvalue direito %d.motorvalue", "runBot", 100, 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue", "runMotor", "M1", 0],
 			[" ", "estabelecer servo %d.port %d.slot ângulo %d.servovalue", "runServo", "Port1", "Slot1", 90],
@@ -859,6 +859,7 @@
 	function onMsgApp(msg) {
 		//ver o que tem ser passado aqui ou deve tratar que nem no server        
 		console.log('onMsgAppMsg.data: '+msg.data);
+		console.log('onMsgAppMsg.buffer: '+msg.buffer);
 	 		var buffer = msg.data;
 	 		for (var i = 0; i < buffer.length; i++) {
 	 				onParse(buffer[i]);
