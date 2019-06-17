@@ -1,4 +1,5 @@
 (function(ext) {
+	//version=1.0
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
