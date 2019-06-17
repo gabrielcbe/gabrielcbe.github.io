@@ -42,7 +42,7 @@
 
 			servidorMBOTConectado=true;
 			//alert('recebeu '+message.data);
-			console.log('recebeu '+message.data);
+			//console.log('recebeu '+message.data);
 			//document.getElementById('msg').innerHTML=e.data+'';
 			//	odo.setValue(parseInt(e.data));
 
@@ -64,12 +64,17 @@
 			else {
 
 				var componenteValor = message.data.split(',');
-				recebeValor(componenteValor[0],componenteValor[1]);
+				//recebeValor(componenteValor[0],componenteValor[1]);
+				console.log('caiu no else');
+				
+				//olhar se é só chamar ou precisa de parametro
+				//precisa mesmo colocar isso aqui.
+				onMsgApp(componenteValor);
 
 			}
 			clienteConectadoMBOT=true;
 
-			console.log(message.data)
+			console.log('recebeu '+message.data)
 		};
 
 		window.socket.onclose = function (e) {
@@ -848,12 +853,12 @@
 	// 				});
 	// };
 
-	// function onMsgApp(msg) {
-	// 		var buffer = msg.buffer;
-	// 		for (var i = 0; i < buffer.length; i++) {
-	// 				onParse(buffer[i]);
-	// 		}
-	// };
+	function onMsgApp(msg) {
+	 		var buffer = msg.buffer;
+	 		for (var i = 0; i < buffer.length; i++) {
+	 				onParse(buffer[i]);
+	 		}
+	};
 	// var hid_info = {type: 'hid', vendor: 0x0416, product: 0xffff};
 
 	//getMakeblockAppStatus();
