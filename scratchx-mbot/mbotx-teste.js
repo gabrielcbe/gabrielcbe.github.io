@@ -324,11 +324,11 @@
 	};
 
 	function onParse(byte) {
-		console.log('onParse(byte): '+byte);
+		//console.log('onParse(byte): '+byte);
 		position = 0
 		value = 0
 		_buffer.push(byte);
-		console.log('onParse(_buffer): '+_buffer);
+		//console.log('onParse(_buffer): '+_buffer);
 		var len = _buffer.length;
 		if (len >= 2) {
 			if (_buffer[len - 1] == 0x55 && _buffer[len - 2] == 0xff) {
@@ -467,12 +467,12 @@
 
 	function addPackage(buffer, callback) {
 		_buffers.push(buffer);
-		console.log('addPackage(_buffers): '+_buffers);
+		//console.log('addPackage(_buffers): '+_buffers);
 		var extId = buffer[4];
 		setTimeout(function() {
 			callback(_selectors["value_" + extId]);
 		}, 100);
-		console.log('addPackage(_selectors): '+_selectors);
+		//console.log('addPackage(_selectors): '+_selectors);
 		writePackage();
 	}
 
