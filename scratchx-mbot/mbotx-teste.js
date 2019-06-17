@@ -581,8 +581,8 @@
 		console.log('runLed: vai fazer code e enviar comando');
 		
 		//enviaComando('ledboth',0,0,0);
-		console.log('1');
-		window.socket.send(JSON.stringify({comando:led,valor:'0+","0+","0'}));
+		//console.log('1');
+		//window.socket.send(JSON.stringify({comando:led,valor:'0+","0+","0'}));
 		
 		console.log('2');
 		window.socket.send(JSON.stringify({comando:led,valor:'0,0,0'}));
