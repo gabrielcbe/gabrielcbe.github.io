@@ -65,11 +65,12 @@
 
 				var componenteValor = message.data.split(',');
 				//recebeValor(componenteValor[0],componenteValor[1]);
-				console.log('caiu no else');
+				//console.log('caiu no else');
+				console.log('caiu no else, recebeu: '+message.data);
 				
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
-				onMsgApp(componenteValor);
+				onMsgApp();
 
 			}
 			clienteConectadoMBOT=true;
@@ -854,7 +855,9 @@
 	// };
 
 	function onMsgApp(msg) {
-	 		var buffer = msg.buffer;
+		       console.log('onMsgAppmsg: '+msg);
+		        console.log('onMsgAppmessage: '+message);
+	 		var buffer = msg.data;
 	 		for (var i = 0; i < buffer.length; i++) {
 	 				onParse(buffer[i]);
 	 		}
