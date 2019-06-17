@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.5
+	//version=1.6
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -13,6 +13,54 @@
 	var urlConexaoRecenteMBOT="";
 	var sala="1";
 
+	const LINESENSOR='linesensor';
+	const ULTRASOUNDSENSOR='ultrasoundsensor';
+	const LIGHTSENSOR='lightsensor';
+
+	const BUTTON='button';
+	const BUTTON_PRESSED='pressed';
+	const BUTTON_RELEASED='released';
+
+	const IRSENSOR='irsensor';
+
+	// 0,1,2 ou 3
+	var line;
+
+	// 0 a 1000
+	var light;
+	// pressed ou released
+	var button;
+	// tecla
+	var ir;
+
+	// 0 a 400 cm
+	var ultrasound;
+
+	function recebeValor (componente,valor) {
+
+
+	    //console.log('componente',componente);
+	    //console.log('valor',valor);
+
+	    if (componente==LINESENSOR) {
+	        line=parseInt(valor);
+	        //document.getElementById(componente).innerHTML=valor;
+	    } else if (componente==ULTRASOUNDSENSOR) {
+	        ultrasound=Math.trunc(parseInt(valor));
+	        //document.getElementById(componente).innerHTML=ultrasound+'';
+	    } else if (componente==LIGHTSENSOR) {
+	        light = Math.trunc(parseInt(valor));
+	        //document.getElementById(componente).innerHTML=light+'';
+	    } else if (componente==BUTTON) {
+	        button = valor;
+	        //document.getElementById(componente).innerHTML=valor;
+	    } else if (componente==IRSENSOR) {
+	        ir = valor;
+	        //document.getElementById(componente).innerHTML=valor;
+	    }
+
+	}
+
 	ext.cnct = function (callback) {
 		window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
 		console.log('WebSocket Client Connected');
@@ -24,6 +72,7 @@
 			clienteConectadoMBOT=true;
 
 			window.socket.send(msg);
+			console.log('ext.cnct: '+msg);
 			myStatus = 2;
 
 			// change status light from yellow to green
@@ -61,17 +110,17 @@
 				// Indica finais de execução
 				endReturn();
 
-			} 
+			}
 			else {
 
 				var componenteValor = message.data.split(',');
-				//recebeValor(componenteValor[0],componenteValor[1]);
+				recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else');
 				//console.log('caiu no else, recebeu: '+message.data);
-				
+
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
-				
+
 				onMsgApp(message);
 
 			}
@@ -250,9 +299,11 @@
 	};
 
 	function onParse(byte) {
+		console.log('onParse(byte): '+byte);
 		position = 0
 		value = 0
 		_buffer.push(byte);
+		console.log('onParse(_buffer): '+_buffer);
 		var len = _buffer.length;
 		if (len >= 2) {
 			if (_buffer[len - 1] == 0x55 && _buffer[len - 2] == 0xff) {
@@ -364,6 +415,7 @@
 	}
 
 	function deviceOpened(dev) {
+		console.log('deviceOpened(dev): '+dev);
 		// if device fails to open, forget about it
 		if (dev == null) device = null;
 
@@ -382,6 +434,7 @@
 				device.read(callback, 30);
 			}
 		}, 20);
+		console.log('deviceOpened(poller): '+poller);
 	};
 	var lastWritten = 0;
 	var _buffers = [];
@@ -389,10 +442,12 @@
 
 	function addPackage(buffer, callback) {
 		_buffers.push(buffer);
+		console.log('addPackage(_buffers): '+_buffers);
 		var extId = buffer[4];
 		setTimeout(function() {
 			callback(_selectors["value_" + extId]);
 		}, 100);
+		console.log('addPackage(_selectors): '+_selectors);
 		writePackage();
 	}
 
@@ -403,7 +458,10 @@
 			_buffers.shift();
 			var msg = {};
 			msg.buffer = buffer;
+			console.log('addPackwritePackageage(msg.buffer): '+msg.buffer);
+
 			window.socket.send(msg);
+				console.log('addPackwritePackageage(msg): '+msg);
 			//mConnection.postMessage(msg);
 			setTimeout(function() {
 				_isWaiting = false;
@@ -412,10 +470,12 @@
 		}
 	}
 	var arrayBufferFromArray = function(data) {
+    console.log('arrayBufferFromArray(data): '+data);
 		var result = new Int8Array(data.length);
 		for (var i = 0; i < data.length; i++) {
 			result[i] = data[i];
 		}
+		console.log('arrayBufferFromArray(result): '+result);
 		return data;
 	}
 
@@ -857,9 +917,10 @@
 	// };
 
 	function onMsgApp(msg) {
-		//ver o que tem ser passado aqui ou deve tratar que nem no server        
-		console.log('onMsgAppMsg.data: '+msg.data);
-		console.log('onMsgAppMsg.buffer: '+msg.buffer);
+		//ver o que tem ser passado aqui ou deve tratar que nem no server
+		//console.log('onMsgAppMsg.data: '+msg.data);
+
+		//console.log('onMsgAppMsg.buffer: '+msg.buffer);
 	 		var buffer = msg.data;
 	 		for (var i = 0; i < buffer.length; i++) {
 	 				onParse(buffer[i]);
