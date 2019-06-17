@@ -41,7 +41,8 @@
 			//var msg = JSON.parse(message.data);
 
 			servidorMBOTConectado=true;
-			alert('recebeu '+message.data);
+			//alert('recebeu '+message.data);
+			console.log('recebeu '+message.data);
 			//document.getElementById('msg').innerHTML=e.data+'';
 			//	odo.setValue(parseInt(e.data));
 
@@ -54,12 +55,13 @@
 
 				setTimeout(function(){ registraConexaoMBOT(message.data); },1000);
 
-			} else if (message.data.indexOf(COMANDO_FINAL)>-1) {
+			} //else if (message.data.indexOf(COMANDO_FINAL)>-1) {
 
 				// Indica finais de execução
-				endReturn();
+				//endReturn();
 
-			} else {
+			//} 
+			else {
 
 				var componenteValor = message.data.split(',');
 				recebeValor(componenteValor[0],componenteValor[1]);
