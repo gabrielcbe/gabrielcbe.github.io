@@ -583,7 +583,7 @@
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		console.log('runLed: vai fazer code e enviar comando');
 
-		var code = "enviaComando('"+index+"','"+red+","+green+","+blue+"');\n";
+		var code = "enviaComando('LEDBOTH','"+red+","+green+","+blue+"');\n";
 		console.log('runLed: '+code);
 		addPackage(arrayBufferFromArray(data), function() {});
 	}
