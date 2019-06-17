@@ -584,11 +584,14 @@
 		console.log('runLed: vai fazer code e enviar comando');
 
 		//enviaComando('ledboth',0,0,0);
-		enviaComando('led','0","0","0');
-		enviaComando('ledboth','red+","+green+","+blue');
-		var code = enviaComando('ledboth','red+","+green+","+blue');
-		ledboth
-		enviaComando(led,red+","+green+","+blue);
+		
+		enviaComando('led','red","green","blue');
+		console.log('agora com os +');
+		enviaComando('led','+red","+green","+blue');
+		//enviaComando('ledboth','red+","+green+","+blue');
+		//var code = enviaComando('ledboth','red+","+green+","+blue');
+		//ledboth
+		//enviaComando(led,red+","+green+","+blue);
 		
 		console.log('runLed: depois');
 		addPackage(arrayBufferFromArray(data), function() {});
