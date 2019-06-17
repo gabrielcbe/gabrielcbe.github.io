@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.6 ja tinha um 1.7 entao devia ser 2.3 se nao tiver atrapalhado nada
+	//version=1.6 ja tinha um 1.7 entao devia ser 2.4 se nao tiver atrapalhado nada
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -547,8 +547,8 @@
 	ext.runLedOnBoard = function(index, red, green, blue) {
 		console.log('runLedOnBoard: vai fazer code e enviar comando');
 
-		var code = "enviaComando('"+index+"','"+red+","+green+","+blue+"');\n";
-		console.log('runLedOnBoard: '+code);
+		enviaComando('"+index+"','"+red+","+green+","+blue+"');
+		console.log('runLedOnBoard: depois funcao');
 
     //return code;
 		//the index here is realy the slot. I leave it because the slot does not have the "all" option
@@ -583,8 +583,8 @@
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		console.log('runLed: vai fazer code e enviar comando');
 
-		var code = "enviaComando('LEDBOTH','"+red+","+green+","+blue+"');\n";
-		console.log('runLed: '+code);
+		enviaComando('LEDBOTH','"+red+","+green+","+blue+"');
+		console.log('runLed: depois');
 		addPackage(arrayBufferFromArray(data), function() {});
 	}
 	ext.runBuzzer = function(tone, beat) {
