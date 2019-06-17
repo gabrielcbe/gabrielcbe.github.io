@@ -8,7 +8,7 @@
 	var clienteConectadoMBOT=false;
 	var servidorMBOTConectado=false;
 	var reconexaoAutomaticaMBOT=null;
-	var window.socket=null;
+	//var window.socket=null;
 	const PORTA_MBOT="8081";
 	var urlConexaoRecenteMBOT="";
 	var sala="1";
