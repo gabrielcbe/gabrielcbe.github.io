@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.0
+	//version=1.1
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -857,7 +857,7 @@
 
 	function onMsgApp(msg) {
 		        console.log('onMsgAppMsg: '+msg);
-	 		var buffer = msg.data;
+	 		var buffer = msg;
 	 		for (var i = 0; i < buffer.length; i++) {
 	 				onParse(buffer[i]);
 	 		}
