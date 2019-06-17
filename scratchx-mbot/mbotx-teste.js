@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.6 ja tinha um 1.7 entao devia ser 2.1 se nao tiver atrapalhado nada
+	//version=1.6 ja tinha um 1.7 entao devia ser 2.2 se nao tiver atrapalhado nada
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -581,6 +581,10 @@
 		var extId = 0;
 		var data = [extId, 0x02, deviceId, port, slot, index, red * 1, green * 1, blue * 1];
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		console.log('runLed: vai fazer code e enviar comando');
+
+		var code = "enviaComando('"+index+"','"+red+","+green+","+blue+"');\n";
+		console.log('runLed: '+code);
 		addPackage(arrayBufferFromArray(data), function() {});
 	}
 	ext.runBuzzer = function(tone, beat) {
