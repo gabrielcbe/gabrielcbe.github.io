@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.2
+	//version=1.3
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -67,7 +67,7 @@
 				var componenteValor = message.data.split(',');
 				//recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else');
-				console.log('caiu no else, recebeu: '+message);
+				console.log('caiu no else, recebeu: '+JSON.stringify(message));
 				
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
@@ -857,7 +857,8 @@
 	// };
 
 	function onMsgApp(msg) {
-		        console.log('onMsgAppMsg.data: '+msg.data);
+		//ver o que tem ser passado aqui ou deve tratar que nem no server        
+		//console.log('onMsgAppMsg.data: '+msg.data);
 	 		var buffer = msg.data;
 	 		for (var i = 0; i < buffer.length; i++) {
 	 				onParse(buffer[i]);
