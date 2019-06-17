@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.7
+	//version=1.6 ja tinha um 1.7 entao devia ser 1.8 se nao tiver atrapalhado nada
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -8,7 +8,7 @@
 	var clienteConectadoMBOT=false;
 	var servidorMBOTConectado=false;
 	var reconexaoAutomaticaMBOT=null;
-	var clientMBOT=null;
+	var window.socket=null;
 	const PORTA_MBOT="8081";
 	var urlConexaoRecenteMBOT="";
 	var sala="1";
@@ -22,7 +22,32 @@
 	const BUTTON_RELEASED='released';
 
 	const IRSENSOR='irsensor';
+	const BUZZER='buzzer';
+	const DCMOTORM1='dcmotorm1';
+	const DCMOTORM2='dcmotorm2';
+	const DCMOTOR_FORWARD='forward';
+	const DCMOTOR_BACK='back';
+	const DCMOTORS='dcmotors';
+	const DCMOTORS_BACK='dcmotorsBack';
+	const DCMOTORS_RIGHT='dcmotorsRight';
+	const DCMOTORS_LEFT='dcmotorsLeft';
+	const SERVOMOTOR='servomotor';
+	const LEDLEFT='ledleft';
+	const LEDRIGHT='ledright';
+	const LEDBOTH='ledboth';
+	const PLAYNOTE='playnote';
 
+	function enviaComando(com,val) {
+		//console.log('enrou enviaComando: '+com);
+
+	  if (window.socket.readyState !== window.socket.OPEN) {
+	      alert('O serviço de conexão do mBot não está ativo!');
+	      return;
+	  }
+	  console.log('vai enviar '+com+' val='+val);
+	  window.socket.send(JSON.stringify({comando:com,valor:val}));
+
+	}
 	// 0,1,2 ou 3
 	var line;
 
@@ -116,7 +141,7 @@
 				var componenteValor = message.data.split(',');
 				recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else');
-				//console.log('caiu no else, recebeu: '+message.data);
+				console.log('caiu no else, recebeu: '+componenteValor);
 
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
@@ -299,11 +324,11 @@
 	};
 
 	function onParse(byte) {
-		//console.log('onParse(byte): '+byte);
+		console.log('onParse(byte): '+byte);
 		position = 0
 		value = 0
 		_buffer.push(byte);
-		//console.log('onParse(_buffer): '+_buffer);
+		console.log('onParse(_buffer): '+_buffer);
 		var len = _buffer.length;
 		if (len >= 2) {
 			if (_buffer[len - 1] == 0x55 && _buffer[len - 2] == 0xff) {
@@ -520,6 +545,12 @@
 		addPackage(arrayBufferFromArray(data), function() {});
 	}
 	ext.runLedOnBoard = function(index, red, green, blue) {
+		console.log('runLedOnBoard: '+vai fazer code e enviar comando);
+
+		var code = "enviaComando('"+index+"','"+red+","+green+","+blue+"');\n";
+		console.log('runLedOnBoard: '+code);
+
+    //return code;
 		//the index here is realy the slot. I leave it because the slot does not have the "all" option
 		if (index == "all") {
 			index = 0;
