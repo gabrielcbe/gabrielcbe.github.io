@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.6 ja tinha um 1.7 entao devia ser 2.2 se nao tiver atrapalhado nada
+	//version=1.6 ja tinha um 1.7 entao devia ser 2.3 se nao tiver atrapalhado nada
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -38,7 +38,7 @@
 	const PLAYNOTE='playnote';
 
 	function enviaComando(com,val) {
-		//console.log('enrou enviaComando: '+com);
+	   console.log('entrou enviaComando: '+com);
 
 	  if (window.socket.readyState !== window.socket.OPEN) {
 	      alert('O serviço de conexão do mBot não está ativo!');
