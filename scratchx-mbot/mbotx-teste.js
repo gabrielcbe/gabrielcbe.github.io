@@ -777,7 +777,7 @@
 			switchStatus: ["Desligado", "Ligado"],
 			ircode: ["A", "B", "C", "D", "E", "F", "↑", "↓", "←", "→", "Configuração", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
 		},
-		url: 'http://gabrielcbe.github.io/scratchx-mbot/makeblock.js'
+		url: 'http://gabrielcbe.github.io/scratchx-mbot/mbotx-teste.js'
 	};
 	// var mConnection;
 	var mStatus = 0;
