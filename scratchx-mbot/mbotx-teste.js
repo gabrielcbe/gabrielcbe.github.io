@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.3 led apagou manualmente, tentando pegar o valor do bloco
+	//3.4 led apagou manualmente, tentando pegar o valor do bloco
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -587,7 +587,7 @@
 		
 		//var code = enviaComando('led',red+","green+","blue);
 		console.log('agora com os +');
-		enviaComando('led',+red","+green","+blue);
+		enviaComando('led',+red+'","'+green+'","'+blue);
 		//enviaComando('ledboth','red+","+green+","+blue');
 		//var code = enviaComando('ledboth','red+","+green+","+blue');
 		//ledboth
