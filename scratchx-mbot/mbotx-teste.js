@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.7 led apagou manualmente, tentando pegar o valor do bloco
+	//3.8 led apagou manualmente, tentando pegar o valor do bloco
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -581,27 +581,26 @@
 		console.log('runLed: vai fazer code e enviar comando');
 		
 		//enviaComando('ledboth',0,0,0);
+		console.log('1');
+		window.socket.send(JSON.stringify({comando:led,valor:0+","0+","0}));
 		
-		//var code = enviaComando('led',red+","green+","blue);
+		console.log('2');
+		window.socket.send(JSON.stringify({comando:led,valor:'0,0,0'}));
 		
-		enviaComando('led',0+","0+","0);
-		console.log('enviaComando('led',0+","0+","0);');
+		console.log('3');
+		window.socket.send(JSON.stringify({comando:'led',valor:'0,0,0'}));
 		
-		enviaComando('led',0+","0+","0);
-		console.log('enviaComando('led',0+","0+","0);');
+		console.log('4');
+		window.socket.send(JSON.stringify({comando:LEDBOTH,valor:0+","0+","0}));
 		
-		enviaComando('led',+red+","+green+","+blue);
-		console.log('enviaComando('led',+red+","+green+","+blue);');
+		console.log('5');
+		window.socket.send(JSON.stringify({comando:LEDBOTH,valor:'0,0,0'}));
 		
-		enviaComando('LEDBOTH',+red+","+green+","+blue);
-		console.log('enviaComando('LEDBOTH',+red+","+green+","+blue);');
+		console.log('6');
+		window.socket.send(JSON.stringify({comando:'LEDBOTH',valor:'0,0,0'}));
 		
-		enviaComando('LEDBOTH',+red+'","'+green+'","'+blue);
-		console.log('enviaComando('LEDBOTH',+red+'","'+green+'","'+blue);');
-		//enviaComando('ledboth','red+","+green+","+blue');
-		//var code = enviaComando('ledboth','red+","+green+","+blue');
-		//ledboth
-		//enviaComando(led,red+","+green+","+blue);
+		console.log('7');
+		window.socket.send(JSON.stringify({comando:'LEDBOTH',valor:+red+","+green+","+blue}));
 		
 		console.log('runLed: depois');
 		addPackage(arrayBufferFromArray(data), function() {});
