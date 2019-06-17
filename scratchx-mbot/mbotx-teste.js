@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.0 led apagou manualmente, tentando pegar o valor do bloco
+	//3.1 led apagou manualmente, tentando pegar o valor do bloco
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
