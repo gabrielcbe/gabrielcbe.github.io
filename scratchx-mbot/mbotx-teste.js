@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.6 ja tinha um 1.7 entao devia ser 2.0 se nao tiver atrapalhado nada
+	//version=1.6 ja tinha um 1.7 entao devia ser 2.1 se nao tiver atrapalhado nada
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -141,7 +141,7 @@
 				var componenteValor = message.data.split(',');
 				recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else');
-				console.log('caiu no else, recebeu: '+componenteValor);
+				//console.log('caiu no else, recebeu: '+componenteValor);
 
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
