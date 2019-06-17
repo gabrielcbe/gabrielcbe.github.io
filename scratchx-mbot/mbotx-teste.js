@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.1
+	//version=1.2
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -67,16 +67,17 @@
 				var componenteValor = message.data.split(',');
 				//recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else');
-				console.log('caiu no else, recebeu: '+message.data);
+				console.log('caiu no else, recebeu: '+message);
 				
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
-				onMsgApp(message.data);
+				
+				onMsgApp(message);
 
 			}
 			clienteConectadoMBOT=true;
 
-			console.log('recebeu '+message.data)
+			//console.log('recebeu '+message.data)
 		};
 
 		window.socket.onclose = function (e) {
@@ -856,8 +857,8 @@
 	// };
 
 	function onMsgApp(msg) {
-		        console.log('onMsgAppMsg: '+msg);
-	 		var buffer = msg;
+		        console.log('onMsgAppMsg.data: '+msg.data);
+	 		var buffer = msg.data;
 	 		for (var i = 0; i < buffer.length; i++) {
 	 				onParse(buffer[i]);
 	 		}
