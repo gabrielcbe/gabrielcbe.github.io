@@ -585,9 +585,9 @@
 
 		//enviaComando('ledboth',0,0,0);
 		
-		enviaComando('led','red","green","blue');
+		enviaComando('led',red+","green+","blue);
 		console.log('agora com os +');
-		enviaComando('led','+red","+green","+blue');
+		enviaComando('led',+red+","+green+","+blue);
 		//enviaComando('ledboth','red+","+green+","+blue');
 		//var code = enviaComando('ledboth','red+","+green+","+blue');
 		//ledboth
