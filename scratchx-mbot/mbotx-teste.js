@@ -70,7 +70,7 @@
 				
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
-				onMsgApp();
+				onMsgApp(message.data);
 
 			}
 			clienteConectadoMBOT=true;
@@ -855,8 +855,7 @@
 	// };
 
 	function onMsgApp(msg) {
-		       console.log('onMsgAppmsg: '+msg);
-		        console.log('onMsgAppmessage: '+message);
+		        console.log('onMsgAppMsg: '+msg);
 	 		var buffer = msg.data;
 	 		for (var i = 0; i < buffer.length; i++) {
 	 				onParse(buffer[i]);
