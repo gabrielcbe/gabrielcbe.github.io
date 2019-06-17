@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.6
+	//version=1.7
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -299,11 +299,11 @@
 	};
 
 	function onParse(byte) {
-		console.log('onParse(byte): '+byte);
+		//console.log('onParse(byte): '+byte);
 		position = 0
 		value = 0
 		_buffer.push(byte);
-		console.log('onParse(_buffer): '+_buffer);
+		//console.log('onParse(_buffer): '+_buffer);
 		var len = _buffer.length;
 		if (len >= 2) {
 			if (_buffer[len - 1] == 0x55 && _buffer[len - 2] == 0xff) {
