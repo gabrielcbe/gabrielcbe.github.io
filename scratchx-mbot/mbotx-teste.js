@@ -1,5 +1,5 @@
 (function(ext) {
-	//version=1.6 ja tinha um 1.7 entao devia ser 1.8 se nao tiver atrapalhado nada
+	//version=1.6 ja tinha um 1.7 entao devia ser 1.9 se nao tiver atrapalhado nada
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -545,7 +545,7 @@
 		addPackage(arrayBufferFromArray(data), function() {});
 	}
 	ext.runLedOnBoard = function(index, red, green, blue) {
-		console.log('runLedOnBoard: '+vai fazer code e enviar comando);
+		console.log('runLedOnBoard: vai fazer code e enviar comando');
 
 		var code = "enviaComando('"+index+"','"+red+","+green+","+blue+"');\n";
 		console.log('runLedOnBoard: '+code);
