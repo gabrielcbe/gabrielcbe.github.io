@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.8 led apagou manualmente, tentando pegar o valor do bloco
+	//3.9 led apagou manualmente, tentando pegar o valor do bloco
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -582,7 +582,7 @@
 		
 		//enviaComando('ledboth',0,0,0);
 		console.log('1');
-		window.socket.send(JSON.stringify({comando:led,valor:0+","0+","0}));
+		window.socket.send(JSON.stringify({comando:led,valor:'0+","0+","0'}));
 		
 		console.log('2');
 		window.socket.send(JSON.stringify({comando:led,valor:'0,0,0'}));
@@ -591,7 +591,7 @@
 		window.socket.send(JSON.stringify({comando:'led',valor:'0,0,0'}));
 		
 		console.log('4');
-		window.socket.send(JSON.stringify({comando:LEDBOTH,valor:0+","0+","0}));
+		window.socket.send(JSON.stringify({comando:LEDBOTH,valor:'0+","0+","0'}));
 		
 		console.log('5');
 		window.socket.send(JSON.stringify({comando:LEDBOTH,valor:'0,0,0'}));
