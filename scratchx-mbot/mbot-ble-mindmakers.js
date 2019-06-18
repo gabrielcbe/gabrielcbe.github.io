@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.6 teste mudanca drastica
+	//3.7 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -653,15 +653,15 @@
 
 	}
 	ext.getLightSensor = function(port, callback) {
-		// if (typeof port == "string") {
-		// 	port = ports[port];
-		// }
-		// var deviceId = 3;
-		// var extId = genNextID(port, 0);
-		// var data = [extId, 0x01, deviceId, port];
-		// data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		// _selectors["callback_" + extId] = callback;
-		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		if (typeof port == "string") {
+			port = ports[port];
+		}
+		var deviceId = 3;
+		var extId = genNextID(port, 0);
+		var data = [extId, 0x01, deviceId, port];
+		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		_selectors["callback_" + extId] = callback;
+		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 
 		if (connected == false) {
 			alert("Server Not Connected");
@@ -672,17 +672,17 @@
 
 	}
 	ext.getUltrasonic = function(port, callback) {
-		// if (typeof port == "string") {
-		// 	port = ports[port];
-		// }
-		// var deviceId = 1;
-		// var extId = 0; //genNextID(port,0);
-		// var data = [extId, 0x01, deviceId, port];
-		// data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		// _selectors["callback_" + extId] = function(v) {
-		// 	callback(Math.floor(v * 100.0) / 100.0);
-		// }
-		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		if (typeof port == "string") {
+			port = ports[port];
+		}
+		var deviceId = 1;
+		var extId = 0; //genNextID(port,0);
+		var data = [extId, 0x01, deviceId, port];
+		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		_selectors["callback_" + extId] = function(v) {
+			callback(Math.floor(v * 100.0) / 100.0);
+		}
+		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 
 		if (connected == false) {
 			alert("Server Not Connected");
@@ -693,15 +693,15 @@
 
 	}
 	ext.getLinefollower = function(port, callback) {
-		// if (typeof port == "string") {
-		// 	port = ports[port];
-		// }
-		// var deviceId = 17;
-		// var extId = genNextID(port, 0);
-		// var data = [extId, 0x01, deviceId, port];
-		// data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		// _selectors["callback_" + extId] = callback;
-		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		if (typeof port == "string") {
+			port = ports[port];
+		}
+		var deviceId = 17;
+		var extId = genNextID(port, 0);
+		var data = [extId, 0x01, deviceId, port];
+		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		_selectors["callback_" + extId] = callback;
+		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
@@ -710,22 +710,22 @@
 		}
 	}
 	ext.getIrRemote = function(code, callback) {
-		// var deviceId = 14;
-		// if (typeof code == "string") {
-		// 	code = ircodes[code];
-		// }
-		// var port = 11;
-		// var slot = __irCodes.indexOf(code);
-		// var halfSize = __irCodes.length >> 1;
-		// if (slot >= halfSize) {
-		// 	++port;
-		// 	slot -= halfSize;
-		// }
-		// var extId = genNextID(port, slot);
-		// var data = [extId, 0x01, deviceId, 0, code];
-		// data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		// _selectors["callback_" + extId] = callback;
-		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		var deviceId = 14;
+		if (typeof code == "string") {
+			code = ircodes[code];
+		}
+		var port = 11;
+		var slot = __irCodes.indexOf(code);
+		var halfSize = __irCodes.length >> 1;
+		if (slot >= halfSize) {
+			++port;
+			slot -= halfSize;
+		}
+		var extId = genNextID(port, slot);
+		var data = [extId, 0x01, deviceId, 0, code];
+		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		_selectors["callback_" + extId] = callback;
+		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 
 		if (connected == false) {
 			alert("Server Not Connected");
