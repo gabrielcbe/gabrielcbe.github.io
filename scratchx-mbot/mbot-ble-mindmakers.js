@@ -1,5 +1,5 @@
 (function(ext) {
-	//1.1 teste mudanca drastica
+	//1.2 teste mudanca drastica 
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -58,11 +58,27 @@
 	// 0 a 400 cm
 	var ultrasound;
 
+	function getLine() {
+	   return line;
+	}
+
+	function getLight() {
+	     return light;
+	}
+
 	function recebeValor (componente,valor) {
 
 		console.log('componente',componente);
 		console.log('valor',valor);
-
+		// ext.digital_read = function (pin) {
+		//         if (connected == false) {
+		//             alert("Server Not Connected");
+		//         }
+		//         else {
+		//                 return digital_inputs[parseInt(pin)]
+		//
+		//         }
+		//     };
 		if (componente==LINESENSOR) {
 			line=parseInt(valor);
 		} else if (componente==ULTRASOUNDSENSOR) {
@@ -616,6 +632,10 @@
 		var data = [extId, 0x02, deviceId, port, status];
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		addPackage(arrayBufferFromArray(data), function() {});
+
+		return light;
+
+
 	}
 	// ext.runShutter = function(port, shutter) {
 	// 	if (typeof port == "string") {
@@ -676,6 +696,9 @@
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		_selectors["callback_" + extId] = callback;
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+
+		return light;
+ };
 	}
 	ext.getUltrasonic = function(port, callback) {
 		if (typeof port == "string") {
