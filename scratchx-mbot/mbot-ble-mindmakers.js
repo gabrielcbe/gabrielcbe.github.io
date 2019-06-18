@@ -1,5 +1,5 @@
 (function(ext) {
-	//1.7 teste mudanca drastica
+	//1.8 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -490,12 +490,12 @@
 		}
 	}
 	var arrayBufferFromArray = function(data) {
-		console.log('arrayBufferFromArray(data): '+data);
+		//console.log('arrayBufferFromArray(data): '+data);
 		var result = new Int8Array(data.length);
 		for (var i = 0; i < data.length; i++) {
 			result[i] = data[i];
 		}
-		console.log('arrayBufferFromArray(result): '+result);
+		//console.log('arrayBufferFromArray(result): '+result);
 		return data;
 	}
 
@@ -520,14 +520,14 @@
 		// enviaComando(DCMOTORM2,acaoMotor2+","+potenciaMotor2);
 		if (port == "M1") {
 			console.log('M1');
-			if (speed >= "0") {
+			if (speed >= 0) {
 				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+speed}));
 			} else  {
 				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+speed}));
 			}
 		}else if (port == "M2") {
 			console.log('M2');
-			if (speed >= "0") {
+			if (speed >= 0) {
 				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+speed}));
 			} else  {
 				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+speed}));
@@ -563,12 +563,11 @@
 	}
 	ext.runBuzzer = function(tone, beat) {
 		//funcionando
-		//var code = "enviaComando('"+PLAYNOTE+"','"+nota+","+tempo+"');\n";
 		window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:+tone+","+beat}));
-
 	};
 	ext.stopBuzzer = function() {
 		//runBuzzer(0, 0);
+		alert('stop buzzer');
 		window.socket.send(JSON.stringify({comando:BUZZER}));
 		//enviaComando(BUZZER);
 	};
@@ -682,10 +681,10 @@
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 
 
-		console.log('retorno de light: ');
+		//console.log('retorno de light: ');
 		return light;
 
-		//console.log('callback de light: '+light);
+		console.log('callback de light: '+light);
 		callback(light);
 
 	}
@@ -808,7 +807,7 @@
 	var descriptor = {
 		blocks: [
 			["w", 'Connect to mbot server.', 'cnct'],
-			[" ", "mover esquerdo %d.motorvalue direito %d.motorvalue", "runBot", 100],
+			[" ", "mover motores %d.motorvalue", "runBot", 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue", "runMotor", "M1", 0],
 			[" ", "estabelecer servo %d.port %d.slot ângulo %d.servovalue", "runServo", "Port1", "Slot1", 90],
 			[" ", "estabelecer led onboard %d.index R%d.value G%d.value B%d.value", "runLed" , "all", 0, 0, 0],
@@ -816,7 +815,7 @@
 			["-"],
 			["h", "quando botão %m.buttonStatus", "whenButtonPressed", "pressionado"],
 			["R", "botão %m.buttonStatus", "getButtonOnBoard", "pressionado"],
-			["R", "sensor de luz %d.laport", "getLightSensor", "sensor de luz on board"],
+			["R", "sensor de luz", "getLightSensor"],
 			["-"],
 			["R", "distância do sensor ultrasom %d.port", "getUltrasonic", "Port1"],
 			["R", "segue linha %d.port", "getLinefollower", "Port1"],
