@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.2 teste mudanca drastica
+	//3.3 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -545,7 +545,7 @@
 		
 	}
 	ext.runServo = function(port, slot, angle) {
-		//testando
+		//funcionando
 		console.log('servo');
 		if (port == "Port1") {
 			if (slot == "Slot1") {
@@ -771,7 +771,7 @@
 	}
 	var descriptor = {
 		blocks: [
-			["w", 'Connect to mbot server.', 'cnct'],
+			["w", 'conectar ao servidor mBot', 'cnct'],
 			[" ", "mover motores %d.motorvalue", "runBot", 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue", "runMotor", "M1", 0],
 			[" ", "estabelecer servo %d.port %d.slot ângulo %d.servovalue", "runServo", "Port1", "Slot1", 90],
@@ -806,7 +806,7 @@
 			points: [":", " "],
 			note: ["C2", "D2", "E2", "F2", "G2", "A2", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7", "D7", "E7", "F7", "G7", "A7", "B7", "C8", "D8"],
 			beats: ["Metade", "Quarto", "Oitavo", "Inteira", "Dupla"],
-			servovalue: [0, 45, 90, 135, 180],
+			servovalue: [0, 45, 90, 135],
 			motorvalue: [255, 100, 75, 50, 0, -50, -75, -100, -255],
 			value: [0, 20, 60, 150, 255],
 			buttonStatus: ["pressionado", "liberado"],
