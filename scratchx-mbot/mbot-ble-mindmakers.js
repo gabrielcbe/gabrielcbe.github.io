@@ -1,5 +1,5 @@
 (function(ext) {
-	//1.3 teste mudanca drastica 
+	//1.4 teste mudanca drastica 
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -698,7 +698,6 @@
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 
 		return light;
- };
 	}
 	ext.getUltrasonic = function(port, callback) {
 		if (typeof port == "string") {
