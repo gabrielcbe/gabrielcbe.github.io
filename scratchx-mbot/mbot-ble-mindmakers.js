@@ -1,5 +1,5 @@
 (function(ext) {
-	//2.1 teste mudanca drastica
+	//2.2 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -508,7 +508,7 @@
 	ext.resetAll = function() {
 		var data = [0x5, 0xff, 0x55, 0x02, 0x0, 0x04];
 		addPackage(arrayBufferFromArray(data), function() {})
-	};
+	}
 	ext.runBot = function(speed) {
 		// var code = "enviaComando('"+DCMOTORM1+"','"+acaoMotor1+","+potenciaMotor1Int+"');\n"+
 		// "enviaComando('"+DCMOTORM2+"','"+acaoMotor2+","+potenciaMotor2Int+"');\n";
@@ -528,19 +528,19 @@
 			console.log('M1');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:+DCMOTOR_FORWARD+","+speed}));
-			} else  {
-				console.log('speed else');
 				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:+DCMOTOR_BACK+","+speed}));
+			} else  {DCMOTOR_BACK
+				console.log('speed else');
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:+DCMOTOR_FORWARD+","+speed}));
 			}
 		}else if (port == "M2") {
 			console.log('M2');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:+DCMOTOR_BACK+","+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:+DCMOTOR_FORWARD+","+speed}));
 			} else  {
 				console.log('speed else');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:+DCMOTOR_FORWARD+","+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:+DCMOTOR_BACK+","+speed}));
 			}
 		}else{
 			console.log('foi pra nenhuma');
@@ -552,7 +552,7 @@
 		//var code = "enviaComando('"+SERVOMOTOR+"','"+porta+","+conector+","+angulo+"');\n";
 		console.log('servo');
 
-		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:+port+","+slot+","+angle}));
+		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'+port+","+slot+","+angle'}));
 
 	}
 	ext.runLedOnBoard = function(index, red, green, blue) {
@@ -576,36 +576,14 @@
 		//funcionando
 		console.log('runBuzzertone: '+tone);
 		console.log('runBuzzerbeat: '+beat);
-		window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:+tone+","+beat}));
-	};
+		window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:'+tone+","+beat'}));
+	}
 	ext.stopBuzzer = function() {
 		//runBuzzer(0, 0);
 		alert('stop buzzer');
 		window.socket.send(JSON.stringify({comando:BUZZER}));
 		//enviaComando(BUZZER);
-	};
-	// ext.showCharacters = function(port, x, y, msg) {
-	// 	if (typeof port == "string") {
-	// 		port = ports[port];
-	// 	}
-	// 	var deviceId = 41;
-	// 	var extId = 0;
-	// 	var brightness = 6;
-	// 	var data = [extId, 0x02, deviceId, port, 1, brightness, 3].concat(short2array(x)).concat(short2array(7 + y)).concat([msg.length].concat(string2array(msg)));
-	// 	data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-	// 	addPackage(arrayBufferFromArray(data), function() {});
-	// }
-	// ext.showTime = function(port, hour, dot, min) {
-	// 	if (typeof port == "string") {
-	// 		port = ports[port];
-	// 	}
-	// 	var deviceId = 41;
-	// 	var extId = 0;
-	// 	var brightness = 6;
-	// 	var data = [extId, 0x02, deviceId, port, 3, brightness, dot == ":" ? 1 : 0].concat(short2array(hour)).concat(short2array(min));
-	// 	data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-	// 	addPackage(arrayBufferFromArray(data), function() {});
-	// }
+	}
 	ext.runSevseg = function(port, num) {
 		if (typeof port == "string") {
 			port = ports[port];
