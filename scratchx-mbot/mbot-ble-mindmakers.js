@@ -1,5 +1,5 @@
 (function(ext) {
-	//2.4 teste mudanca drastica
+	//2.5 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -537,10 +537,10 @@
 			console.log('M2');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+","+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+","+speed}));
 			} else  {
 				console.log('speed else');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+","+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+","+speed}));
 			}
 		}else{
 			console.log('foi pra nenhuma');
@@ -548,6 +548,7 @@
 
 	}
 	ext.runServo = function(port, slot, angle) {
+		//enviando as mensagens, falta fazer a porta e o slot ser os que o paulo programou.
 
 		//var code = "enviaComando('"+SERVOMOTOR+"','"+porta+","+conector+","+angulo+"');\n";
 		console.log('servo');
@@ -573,7 +574,7 @@
 		}
 	}
 	ext.runBuzzer = function(tone, beat) {
-		//funcionando
+		//funcionando falta fazer o tempo funcionar.
 		//console.log('runBuzzertone: '+tone);
 		//console.log('runBuzzerbeat: '+beat);
 		window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+','+beat}));
@@ -638,10 +639,9 @@
 
 		//console.log('retorno de light: ');
 		console.log('callback de light: '+light);
-		return light;
+		return callback;
 
 		
-		//callback(light);
 
 	}
 	ext.getUltrasonic = function(port, callback) {
