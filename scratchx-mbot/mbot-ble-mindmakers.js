@@ -1,5 +1,5 @@
 (function(ext) {
-	//1.8 teste mudanca drastica
+	//1.9 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -512,7 +512,13 @@
 	ext.runBot = function(speed) {
 		// var code = "enviaComando('"+DCMOTORM1+"','"+acaoMotor1+","+potenciaMotor1Int+"');\n"+
 		// "enviaComando('"+DCMOTORM2+"','"+acaoMotor2+","+potenciaMotor2Int+"');\n";
-		window.socket.send(JSON.stringify({comando:DCMOTORS,valor:+speed+",0,0"}));
+		if (speed >= 0) {
+			window.socket.send(JSON.stringify({comando:DCMOTORS,valor:+speed+",0,0"}));
+		} else  {
+			console.log('speed menor que zero')
+			//window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+","+speed}));
+		}
+		
 	}
 	ext.runMotor = function(port, speed) {
 		//enviaComando(DCMOTORS,'0,0,0');
@@ -521,25 +527,30 @@
 		if (port == "M1") {
 			console.log('M1');
 			if (speed >= 0) {
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+speed}));
+				console.log('speed >0');
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+","+speed}));
 			} else  {
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+speed}));
+				console.log('speed else');
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+","+speed}));
 			}
 		}else if (port == "M2") {
 			console.log('M2');
 			if (speed >= 0) {
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+speed}));
+				console.log('speed >0');
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK","+speed}));
 			} else  {
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+speed}));
+				console.log('speed else');
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD","+speed}));
 			}
 		}else{
-			console.log('foi pra nenhuma')
+			console.log('foi pra nenhuma');
 		}
 
 	}
 	ext.runServo = function(port, slot, angle) {
 
 		//var code = "enviaComando('"+SERVOMOTOR+"','"+porta+","+conector+","+angulo+"');\n";
+		console.log('servo');
 
 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:+port+","+slot+","+angle}));
 
@@ -563,6 +574,8 @@
 	}
 	ext.runBuzzer = function(tone, beat) {
 		//funcionando
+		console.log('runBuzzertone: '+tone);
+		console.log('runBuzzerbeat: '+beat);
 		window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:+tone+","+beat}));
 	};
 	ext.stopBuzzer = function() {
@@ -603,36 +616,6 @@
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		addPackage(arrayBufferFromArray(data), function() {});
 	}
-	// ext.runLightSensor = function(port, status) {
-	// 	if (typeof port == "string") {
-	// 		port = ports[port];
-	// 	}
-	// 	if (typeof status == "string") {
-	// 		status = switchStatus[status];
-	// 	}
-	// 	var deviceId = 3;
-	// 	var extId = 0;
-	// 	var data = [extId, 0x02, deviceId, port, status];
-	// 	data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-	// 	addPackage(arrayBufferFromArray(data), function() {});
-	//
-	// 	return light;
-	//
-	//
-	// }
-	// ext.runShutter = function(port, shutter) {
-	// 	if (typeof port == "string") {
-	// 		port = ports[port];
-	// 	}
-	// 	if (typeof shutter == "string") {
-	// 		shutter = shutterStatus[shutter];
-	// 	}
-	// 	var deviceId = 20;
-	// 	var extId = 0;
-	// 	var data = [extId, 0x02, deviceId, port, shutter];
-	// 	data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-	// 	addPackage(arrayBufferFromArray(data), function() {});
-	// }
 	ext.getButtonOnBoard = function(status, callback) {
 		if (typeof status == "string") {
 			status = buttonStatus[status];
@@ -682,10 +665,11 @@
 
 
 		//console.log('retorno de light: ');
+		console.log('callback de light: '+light);
 		return light;
 
-		console.log('callback de light: '+light);
-		callback(light);
+		
+		//callback(light);
 
 	}
 	ext.getUltrasonic = function(port, callback) {
@@ -712,20 +696,6 @@
 		_selectors["callback_" + extId] = callback;
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 	}
-	//ext.getJoystick = function(port, ax, callback) {
-	//	if (typeof port == "string") {
-	//		port = ports[port];
-	//	}
-	//	if (typeof ax == "string") {
-	//		ax = axis[ax];
-	//	}
-	//	var deviceId = 5;
-	//	var extId = genNextID(port, ax);
-	//	var data = [extId, 0x01, deviceId, port, ax];
-	//	data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-	//	_selectors["callback_" + extId] = callback;
-	//	addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-	//}
 	ext.getPotentiometer = function(port, callback) {
 		if (typeof port == "string") {
 			port = ports[port];
@@ -855,12 +825,14 @@
 	var mStatus = 0;
 
 	ext._shutdown = function () {
+		console.log('_shutdown ');
 		var msg = JSON.stringify({
 			"command": "shutdown"
 		});
 		if (poller) poller = clearInterval(poller);
 		status = false;
 		window.socket.send(msg);
+		
 	};
 
 	ext._getStatus = function (status, msg) {
