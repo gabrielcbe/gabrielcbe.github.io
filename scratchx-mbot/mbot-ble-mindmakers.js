@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.7 teste mudanca drastica
+	//3.8 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -462,9 +462,9 @@
 		//console.log('addPackage(_buffers): '+_buffers);
 		var extId = buffer[4];
 		setTimeout(function() {
-			//callback(_selectors["value_" + extId]);
+			callback(_selectors["value_" + extId]);
 		}, 100);
-		//console.log('addPackage(_selectors): '+_selectors);
+		console.log('addPackage(_selectors): '+_selectors);
 		writePackage();
 	}
 
@@ -492,7 +492,7 @@
 		for (var i = 0; i < data.length; i++) {
 			result[i] = data[i];
 		}
-		//console.log('arrayBufferFromArray(result): '+result);
+		console.log('arrayBufferFromArray(result): '+result);
 		return data;
 	}
 
