@@ -1,5 +1,5 @@
 (function(ext) {
-	//2.8 teste mudanca drastica
+	//2.9 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -523,21 +523,21 @@
 			console.log('M1');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD','+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+','+speed}));
 			} else  {
 				speed = -speed;
 				console.log('speed else' ,+speed);
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK','+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+','+speed}));
 			}
 		}else if (port == "M2") {
 			console.log('M2');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD','+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+','+speed}));
 			} else  {
 				speed = -speed;
 				console.log('speed else' ,+speed);
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK','+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+','+speed}));
 			}
 		}else{
 			console.log('foi pra nenhuma');
