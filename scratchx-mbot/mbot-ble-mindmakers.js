@@ -1,5 +1,5 @@
 (function(ext) {
-	//4.1 testes sensores
+	//4.2 testes sensores
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -72,23 +72,53 @@
 		//console.log('valor',valor);
 
 		if (componente==LINESENSOR) {
-			line=valor;
-			console.log('line:',line);
+			line=parseInt(valor);
+			console.log('line:',+line);
+			console.log('e tem tipo');
+			console.log(typeof(line));
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
+			console.log(typeof(ultrasound));
 		} else if (componente==LIGHTSENSOR) {
 			light = Math.trunc(parseInt(valor));
+			console.log(typeof(light));
 		} else if (componente==BUTTON) {
 			button = valor;
+			console.log(typeof(button));
 		} else if (componente==IRSENSOR) {
 			ir = valor;
+			console.log(typeof(ir));
 		}
 
 	}
+	// function getMakeblockAppStatus() {
+	// 		chrome.runtime.sendMessage(makeblockAppID, {
+	// 						message: "STATUS"
+	// 				}, function(response) {
+	// 						if (response === undefined) { //Chrome app not found
+	// 								console.log("Chrome app not found");
+	// 								mStatus = 0;
+	// 								setTimeout(getMakeblockAppStatus, 1000);
+	// 						} else if (response.status === false) { //Chrome app says not connected
+	// 								mStatus = 1;
+	// 								setTimeout(getMakeblockAppStatus, 1000);
+	// 						} else { // successfully connected
+	// 								if (mStatus !== 2) {
+	// 										console.log("Connected");
+	// 										mConnection = chrome.runtime.connect(makeblockAppID);
+	// 										mConnection.onMessage.addListener(onMsgApp);
+	// 								}
+	// 								mStatus = 2;
+	// 								setTimeout(getMakeblockAppStatus, 1000);
+	// 						}
+	// 				});
+	// };
+	function statusConnection (callback) {
+		if(clienteConectadoMBOT == 'false'){
+			window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
+			console.log('WebSocket Client Connected');
+	  }
 
-	ext.cnct = function (callback) {
-		window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
-		console.log('WebSocket Client Connected');
 		window.socket.onopen = function () {
 			var msg = JSON.stringify({
 				"command": "ready"
@@ -161,7 +191,14 @@
 			clienteConectadoMBOT=false;
 			registraDesconexaoMBOT();
 		};
+
+		if(clienteConectadoMBOT == 'false'){
+				setTimeout(statusConnection, 1000);
+	  }
 	};
+
+	//chama a primeira vez
+	statusConnection();
 	function registraConexaoMBOT(dado) {
 
 		//alert('entrou para registrar');
@@ -673,7 +710,7 @@
 		_selectors["callback_" + extId] = callback;
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		//ate aqui.
-		
+
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
@@ -708,7 +745,6 @@
 	}
 	var descriptor = {
 		blocks: [
-			["w", 'conectar ao servidor mBot', 'cnct'],
 			[" ", "mover motores %d.motorvalue", "runBot", 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue", "runMotor", "M1", 0],
 			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue", "runServo", "1", "1", 90],
@@ -766,28 +802,6 @@
 	};
 
 
-	// function getMakeblockAppStatus() {
-	// 		chrome.runtime.sendMessage(makeblockAppID, {
-	// 						message: "STATUS"
-	// 				}, function(response) {
-	// 						if (response === undefined) { //Chrome app not found
-	// 								console.log("Chrome app not found");
-	// 								mStatus = 0;
-	// 								setTimeout(getMakeblockAppStatus, 1000);
-	// 						} else if (response.status === false) { //Chrome app says not connected
-	// 								mStatus = 1;
-	// 								setTimeout(getMakeblockAppStatus, 1000);
-	// 						} else { // successfully connected
-	// 								if (mStatus !== 2) {
-	// 										console.log("Connected");
-	// 										mConnection = chrome.runtime.connect(makeblockAppID);
-	// 										mConnection.onMessage.addListener(onMsgApp);
-	// 								}
-	// 								mStatus = 2;
-	// 								setTimeout(getMakeblockAppStatus, 1000);
-	// 						}
-	// 				});
-	// };
 
 	function onMsgApp(msg) {
 		//ver o que tem ser passado aqui ou deve tratar que nem no server
