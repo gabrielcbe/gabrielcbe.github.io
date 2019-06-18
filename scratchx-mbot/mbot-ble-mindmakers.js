@@ -1,5 +1,5 @@
 (function(ext) {
-	//2.2 teste mudanca drastica
+	//2.3 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -528,19 +528,19 @@
 			console.log('M1');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:+DCMOTOR_BACK+","+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+","+speed}));
 			} else  {DCMOTOR_BACK
 				console.log('speed else');
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:+DCMOTOR_FORWARD+","+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+","+speed}));
 			}
 		}else if (port == "M2") {
 			console.log('M2');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:+DCMOTOR_FORWARD+","+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+","+speed}));
 			} else  {
 				console.log('speed else');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:+DCMOTOR_BACK+","+speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+","+speed}));
 			}
 		}else{
 			console.log('foi pra nenhuma');
@@ -552,7 +552,7 @@
 		//var code = "enviaComando('"+SERVOMOTOR+"','"+porta+","+conector+","+angulo+"');\n";
 		console.log('servo');
 
-		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'+port+","+slot+","+angle'}));
+		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:port+','+slot+','+angle}));
 
 	}
 	ext.runLedOnBoard = function(index, red, green, blue) {
@@ -576,7 +576,7 @@
 		//funcionando
 		console.log('runBuzzertone: '+tone);
 		console.log('runBuzzerbeat: '+beat);
-		window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:'+tone+","+beat'}));
+		window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+','+beat}));
 	}
 	ext.stopBuzzer = function() {
 		//runBuzzer(0, 0);
