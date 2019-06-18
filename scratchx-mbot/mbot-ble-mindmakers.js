@@ -1,5 +1,5 @@
 (function(ext) {
-	//1.5 teste mudanca drastica 
+	//1.6 teste mudanca drastica 
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -146,7 +146,7 @@
 			}
 			clienteConectadoMBOT=true;
 
-			console.log('recebeu '+message.data)
+			//console.log('recebeu '+message.data)
 		};
 
 		window.socket.onclose = function (e) {
