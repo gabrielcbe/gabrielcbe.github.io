@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.0 teste mudanca drastica
+	//3.1 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -547,14 +547,36 @@
 	ext.runServo = function(port, slot, angle) {
 		//testando
 		console.log('servo');
-		console.log('port' ,+port);
-		console.log('slot' ,+slot);
-		let porta = port.parseInt();
-		let conector = slot.parseInt();
-		console.log('porta' ,+porta);
-		console.log('conector' ,+conector);
-		
-		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:porta+','+conector+','+angle}));
+		if (port == "Port1") {
+			if (slot == "Slot1") {
+				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'1,1'+angle}));
+			}else{
+				console.log('entrou no slot2 porta1');
+				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'1,2'+angle}));
+			}
+		}else if (port == "Port2") {
+			if (slot == "Slot1") {
+				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'2,1'+angle}));
+			}else{
+				console.log('entrou no slot2 porta1');
+				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'2,2'+angle}));
+			}
+		}else if (port == "Port3") {
+			if (slot == "Slot1") {
+				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'3,1'+angle}));
+			}else{
+				console.log('entrou no slot2 porta1');
+				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'3,2'+angle}));
+			}
+		}else if (port == "Port4") {
+			if (slot == "Slot1") {
+				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'4,1'+angle}));
+			}else{
+				console.log('entrou no slot2 porta1');
+				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'4,2'+angle}));
+			}
+		}
+
 	}
 	ext.runLed = function(index, red, green, blue) {
 		//funcionando
