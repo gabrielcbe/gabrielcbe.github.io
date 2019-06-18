@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.9 testes sensores
+	//4.0 testes sensores
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -73,6 +73,7 @@
 
 		if (componente==LINESENSOR) {
 			line=parseInt(valor);
+			console.log('line:',line);
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
 		} else if (componente==LIGHTSENSOR) {
@@ -547,37 +548,6 @@
 		//funcionando
 		console.log('servo');
 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:port+','+slot+','+angle}));
-
-		// if (port == "Port1") {
-		// 	if (slot == "Slot1") {
-		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'1,1,'+angle}));
-		// 	}else{
-		// 		console.log('entrou no slot2 porta1');
-		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'1,2,'+angle}));
-		// 	}
-		// }else if (port == "Port2") {
-		// 	if (slot == "Slot1") {
-		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'2,1,'+angle}));
-		// 	}else{
-		// 		console.log('entrou no slot2 porta1');
-		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'2,2,'+angle}));
-		// 	}
-		// }else if (port == "Port3") {
-		// 	if (slot == "Slot1") {
-		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'3,1,'+angle}));
-		// 	}else{
-		// 		console.log('entrou no slot2 porta1');
-		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'3,2,'+angle}));
-		// 	}
-		// }else if (port == "Port4") {
-		// 	if (slot == "Slot1") {
-		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'4,1,'+angle}));
-		// 	}else{
-		// 		console.log('entrou no slot2 porta1');
-		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'4,2,'+angle}));
-		// 	}
-		// }
-
 	}
 	ext.runLed = function(index, red, green, blue) {
 		//funcionando
@@ -692,19 +662,22 @@
 
 	}
 	ext.getLinefollower = function(port, callback) {
-		//if (typeof port == "string") {
-		//	port = ports[port];
-		//}
-		//var deviceId = 17;
-		//var extId = genNextID(port, 0);
-		//var data = [extId, 0x01, deviceId, port];
-		//data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		//_selectors["callback_" + extId] = callback;
-		//addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		//se tirar so pega uma vez
+		if (typeof port == "string") {
+			port = ports[port];
+		}
+		var deviceId = 17;
+		var extId = genNextID(port, 0);
+		var data = [extId, 0x01, deviceId, port];
+		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		_selectors["callback_" + extId] = callback;
+		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		//ate aqui.
+		
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
-			console.log('vai retornar line: ',+line);
+			console.log('vai retornar line:',+line);
 			return line
 		}
 	}
