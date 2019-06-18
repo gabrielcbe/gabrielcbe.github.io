@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.3 teste mudanca drastica
+	//3.4 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -661,7 +661,6 @@
 		_selectors["callback_" + extId] = callback;
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		
-		
 		//console.log('retorno de light: ');
 		console.log('callback de light: '+light);
 		return light;
@@ -775,17 +774,15 @@
 			[" ", "mover motores %d.motorvalue", "runBot", 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue", "runMotor", "M1", 0],
 			[" ", "estabelecer servo %d.port %d.slot ângulo %d.servovalue", "runServo", "Port1", "Slot1", 90],
-			[" ", "estabelecer led onboard %d.index R%d.value G%d.value B%d.value", "runLed" , "all", 0, 0, 0],
+			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value", "runLed" , "todos", 0, 0, 0],
 			[" ", "tocar tom na nota %d.note batida %d.beats", "runBuzzer", "C4", "Metade"],
 			["-"],
-			["h", "quando botão %m.buttonStatus", "whenButtonPressed", "pressionado"],
-			["R", "botão %m.buttonStatus", "getButtonOnBoard", "pressionado"],
-			["R", "sensor de luz", "getLightSensor"],
+			["h", "quando botão onBoard %m.buttonStatus", "whenButtonPressed", "pressionado"],
+			["R", "botão onBoard %m.buttonStatus", "getButtonOnBoard", "pressionado"],
 			["-"],
+			["R", "sensor de luz onBoard", "getLightSensor"],
 			["R", "distância do sensor ultrasom %d.port", "getUltrasonic", "Port1"],
 			["R", "segue linha %d.port", "getLinefollower", "Port1"],
-			["R", "potenciometro %d.aport", "getPotentiometer", "Port3"],
-			["R", "sensor de som %d.aport", "getSoundSensor", "Port3"],
 			["R", "temperatura %d.port %d.slot °C", "getTemperature", "Port3", "Slot1"],
 			["-"],
 			["R", "controle remoto %m.ircodes pressionado", "getIrRemote", "A"],
