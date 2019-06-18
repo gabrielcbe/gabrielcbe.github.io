@@ -664,8 +664,8 @@
 		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 
 		if (connected == false) {
-    	alert("Server Not Connected");
-    }else {
+			alert("Server Not Connected");
+		}else {
 			console.log('vai retornar light: ',+light);
 			return light
 		}
@@ -703,8 +703,8 @@
 		// _selectors["callback_" + extId] = callback;
 		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		if (connected == false) {
-    	alert("Server Not Connected");
-    }else {
+			alert("Server Not Connected");
+		}else {
 			console.log('vai retornar line: ',+line);
 			return line
 		}
@@ -728,8 +728,8 @@
 		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 
 		if (connected == false) {
-    	alert("Server Not Connected");
-    }else {
+			alert("Server Not Connected");
+		}else {
 			console.log('vai retornar ir: ',+ir);
 			return ir
 		}
