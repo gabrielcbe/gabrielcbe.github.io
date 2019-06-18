@@ -1,5 +1,5 @@
 (function(ext) {
-	//1.4 teste mudanca drastica 
+	//1.5 teste mudanca drastica 
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -68,17 +68,9 @@
 
 	function recebeValor (componente,valor) {
 
-		console.log('componente',componente);
-		console.log('valor',valor);
-		// ext.digital_read = function (pin) {
-		//         if (connected == false) {
-		//             alert("Server Not Connected");
-		//         }
-		//         else {
-		//                 return digital_inputs[parseInt(pin)]
-		//
-		//         }
-		//     };
+		//console.log('componente',componente);
+		//console.log('valor',valor);
+
 		if (componente==LINESENSOR) {
 			line=parseInt(valor);
 		} else if (componente==ULTRASOUNDSENSOR) {
@@ -443,7 +435,7 @@
 	}
 
 	function deviceOpened(dev) {
-		console.log('deviceOpened(dev): '+dev);
+		alert('deviceOpened(dev): '+dev);
 		// if device fails to open, forget about it
 		if (dev == null) device = null;
 
@@ -542,40 +534,14 @@
 		}
 	}
 	ext.runLed = function(index, red, green, blue) {
+		//funcionando
 		if (index == "1") {
 			window.socket.send(JSON.stringify({comando:LEDLEFT,valor:+red+","+green+","+blue}));
 		}else if (index == "2") {
 			window.socket.send(JSON.stringify({comando:LEDRIGHT,valor:+red+","+green+","+blue}));
 		}else {
-			window.socket.send(JSON.stringify({comando:'LEDBOTH',valor:+red+","+green+","+blue}));
+			window.socket.send(JSON.stringify({comando:LEDBOTH,valor:+red+","+green+","+blue}));
 		}
-
-		// console.log('runLed: vai fazer code e enviar comando');
-		//
-		// //enviaComando('ledboth',0,0,0);
-		// //console.log('1');
-		// //window.socket.send(JSON.stringify({comando:led,valor:'0+","0+","0'}));
-		//
-		// //console.log('2');
-		// //window.socket.send(JSON.stringify({comando:led,valor:'0,0,0'}));
-		//
-		// console.log('3');
-		// window.socket.send(JSON.stringify({comando:'led',valor:'0,0,0'}));
-		//
-		// console.log('4');
-		// window.socket.send(JSON.stringify({comando:LEDBOTH,valor:'0+","0+","0'}));
-		//
-		// console.log('5');
-		// window.socket.send(JSON.stringify({comando:LEDBOTH,valor:'0,0,0'}));
-		//
-		// console.log('6');
-		// window.socket.send(JSON.stringify({comando:'LEDBOTH',valor:'0,0,0'}));
-		//
-		// console.log('7');
-		// window.socket.send(JSON.stringify({comando:'LEDBOTH',valor:+red+","+green+","+blue}));
-		//
-		// console.log('runLed: depois');
-		// addPackage(arrayBufferFromArray(data), function() {});
 	}
 	ext.runBuzzer = function(tone, beat) {
 
@@ -696,8 +662,11 @@
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		_selectors["callback_" + extId] = callback;
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		
 
+		console.log('getLightSensor(var light): '+light);
 		return light;
+		
 	}
 	ext.getUltrasonic = function(port, callback) {
 		if (typeof port == "string") {
@@ -723,20 +692,20 @@
 		_selectors["callback_" + extId] = callback;
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 	}
-	ext.getJoystick = function(port, ax, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		if (typeof ax == "string") {
-			ax = axis[ax];
-		}
-		var deviceId = 5;
-		var extId = genNextID(port, ax);
-		var data = [extId, 0x01, deviceId, port, ax];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-	}
+	//ext.getJoystick = function(port, ax, callback) {
+	//	if (typeof port == "string") {
+	//		port = ports[port];
+	//	}
+	//	if (typeof ax == "string") {
+	//		ax = axis[ax];
+	//	}
+	//	var deviceId = 5;
+	//	var extId = genNextID(port, ax);
+	//	var data = [extId, 0x01, deviceId, port, ax];
+	//	data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+	//	_selectors["callback_" + extId] = callback;
+	//	addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+	//}
 	ext.getPotentiometer = function(port, callback) {
 		if (typeof port == "string") {
 			port = ports[port];
