@@ -1,17 +1,17 @@
 (function(ext) {
-	//3.5 teste mudanca drastica
+	//3.6 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
 	var myMsg = 'not_ready';
-	
+
 	var clienteConectadoMBOT=false;
 	var servidorMBOTConectado=false;
 	var reconexaoAutomaticaMBOT=null;
 	const PORTA_MBOT="8081";
 	var urlConexaoRecenteMBOT="";
 	var sala="1";
-	
+
 	const LINESENSOR='linesensor';
 	const ULTRASOUNDSENSOR='ultrasoundsensor';
 	const LIGHTSENSOR='lightsensor';
@@ -33,44 +33,44 @@
 	const LEDRIGHT='ledright';
 	const LEDBOTH='ledboth';
 	const PLAYNOTE='playnote';
-	
+
 	function enviaComando(com,val) {
 		console.log('entrou enviaComando: ');
-		
+
 		if (window.socket.readyState !== window.socket.OPEN) {
 			alert('O serviço de conexão do mBot não está ativo!');
 			return;
 		}
 		console.log('vai enviar '+com+' val='+val);
 		window.socket.send(JSON.stringify({comando:com,valor:val}));
-		
+
 	}
 	// 0,1,2 ou 3
 	var line;
-	
+
 	// 0 a 1000
 	var light;
 	// pressed ou released
 	var button;
 	// tecla
 	var ir;
-	
+
 	// 0 a 400 cm
 	var ultrasound;
-	
+
 	function getLine() {
 		return line;
 	}
-	
+
 	function getLight() {
 		return light;
 	}
-	
+
 	function recebeValor (componente,valor) {
-		
+
 		//console.log('componente',componente);
 		//console.log('valor',valor);
-		
+
 		if (componente==LINESENSOR) {
 			line=parseInt(valor);
 		} else if (componente==ULTRASOUNDSENSOR) {
@@ -82,9 +82,9 @@
 		} else if (componente==IRSENSOR) {
 			ir = valor;
 		}
-		
+
 	}
-	
+
 	ext.cnct = function (callback) {
 		window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
 		console.log('WebSocket Client Connected');
@@ -92,77 +92,77 @@
 			var msg = JSON.stringify({
 				"command": "ready"
 			});
-			
+
 			clienteConectadoMBOT=true;
-			
+
 			window.socket.send(msg);
 			console.log('ext.cnct: '+msg);
 			myStatus = 2;
-			
+
 			// change status light from yellow to green
 			myMsg = 'ready';
 			connected = true;
-			
+
 			// give the connection time establish
 			window.setTimeout(function() {
 				callback();
 			}, 1000);
-			
+
 		};
-		
+
 		window.socket.onmessage = function (message) {
 			//var msg = JSON.parse(message.data);
-			
+
 			servidorMBOTConectado=true;
 			//alert('recebeu '+message.data);
 			//console.log('recebeu '+message.data);
-			
+
 			if (message.data.toLowerCase().indexOf('desconectado')> -1) {
-				
+
 				registraDesconexaoMBOT(message.data);
-				
+
 			} else if (message.data.indexOf('conectado')>-1) {
-				
+
 				setTimeout(function(){ registraConexaoMBOT(message.data); },1000);
-				
+
 			} else if (message.data.indexOf('COMANDO_FINAL')>-1) {
-				
+
 				// Indica finais de execução
 				endReturn();
-				
+
 			}
 			else {
-				
+
 				var componenteValor = message.data.split(',');
 				recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else');
 				//console.log('caiu no else, recebeu: '+componenteValor);
-				
+
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
-				
+
 				onMsgApp(message);
-				
+
 			}
 			clienteConectadoMBOT=true;
-			
+
 			//console.log('recebeu '+message.data)
 		};
-		
+
 		window.socket.onclose = function (e) {
 			console.log("Connection closed.");
 			socket = null;
 			connected = false;
 			myStatus = 1;
 			myMsg = 'not_ready'
-			
+
 			console.log('echo-protocol Client Closed');
 			clienteConectadoMBOT=false;
 			registraDesconexaoMBOT();
 		};
 	};
 	function registraConexaoMBOT(dado) {
-		
+
 		//alert('entrou para registrar');
 		// Recebe macaddress da unidade e sala correntemente registrada
 		//console.log(dado);
@@ -170,7 +170,7 @@
 		var mac = msg[0].substring(10).toUpperCase();
 		if (mac.indexOf(':')==-1)
 		mac = mac.substring(0,2)+':'+mac.substring(2,4)+':'+mac.substring(4,6)+':'+mac.substring(6,8)+':'+mac.substring(8,10)+':'+mac.substring(10,12);
-		
+
 		if (msg[1]) {
 			sala= msg[1].substring(5);
 			if (parseInt(msg[2].substring(8))<10 && msg[2].substring(8).indexOf('0')!=0)
@@ -184,7 +184,7 @@
 		alert('entrou para deregistrar');
 		servidorMBOTConectado=false;
 	}
-	
+
 
 	var poller = null;
 	var device = null;
@@ -314,7 +314,7 @@
 		"Dupla": 2000,
 		"Zero": 0
 	};
-	
+
 	function onParse(byte) {
 		//console.log('onParse(byte): '+byte);
 		position = 0
@@ -329,7 +329,7 @@
 			}
 			if (_buffer[len - 1] == 0xa && _buffer[len - 2] == 0xd && _isParseStart == true) {
 				_isParseStart = false;
-				
+
 				var position = _isParseStartIndex + 2;
 				var extId = _buffer[position];
 				position += 1;
@@ -365,7 +365,7 @@
 			}
 		}
 	}
-	
+
 	function readFloat(position) {
 		var buf = new ArrayBuffer(4);
 		var intView = new Uint8Array(buf);
@@ -375,7 +375,7 @@
 		}
 		return floatView[0];
 	}
-	
+
 	function readShort(position) {
 		var buf = new ArrayBuffer(2);
 		var intView = new Uint8Array(buf);
@@ -385,7 +385,7 @@
 		}
 		return shortView[0];
 	}
-	
+
 	function readString(position) {
 		var l = _buffer[position]
 		position += 1
@@ -395,7 +395,7 @@
 		}
 		return s
 	}
-	
+
 	function readDouble(position) {
 		var buf = new ArrayBuffer(8);
 		var intView = new Uint8Array(buf);
@@ -405,7 +405,7 @@
 		}
 		return doubleView[0];
 	}
-	
+
 	function short2array(v) {
 		var buf = new ArrayBuffer(2);
 		var intView = new Uint8Array(buf);
@@ -413,7 +413,7 @@
 		shortView[0] = v;
 		return [intView[0], intView[1]];
 	}
-	
+
 	function float2array(v) {
 		var buf = new ArrayBuffer(4);
 		var intView = new Uint8Array(buf);
@@ -421,7 +421,7 @@
 		floatView[0] = v;
 		return [intView[0], intView[1], intView[2], intView[3]];
 	}
-	
+
 	function string2array(v) {
 		var arr = v.split("");
 		for (var i = 0; i < arr.length; i++) {
@@ -430,12 +430,12 @@
 		console.log(arr);
 		return arr;
 	}
-	
+
 	function deviceOpened(dev) {
 		alert('deviceOpened(dev): '+dev);
 		// if device fails to open, forget about it
 		if (dev == null) device = null;
-		
+
 		// otherwise start polling
 		poller = setInterval(function() {
 			if (device != null) {
@@ -456,7 +456,7 @@
 	var lastWritten = 0;
 	var _buffers = [];
 	var _isWaiting = false;
-	
+
 	function addPackage(buffer, callback) {
 		_buffers.push(buffer);
 		//console.log('addPackage(_buffers): '+_buffers);
@@ -467,7 +467,7 @@
 		//console.log('addPackage(_selectors): '+_selectors);
 		writePackage();
 	}
-	
+
 	function writePackage() {
 		if (_buffers.length > 0 && _isWaiting == false) {
 			_isWaiting = true;
@@ -476,7 +476,7 @@
 			var msg = {};
 			msg.buffer = buffer;
 			console.log('addPackwritePackageage(msg.buffer): '+msg.buffer);
-			
+
 			window.socket.send(msg);
 			console.log('addPackwritePackageage(msg): '+msg);
 			//mConnection.postMessage(msg);
@@ -495,9 +495,9 @@
 		//console.log('arrayBufferFromArray(result): '+result);
 		return data;
 	}
-	
+
 	//************* mBot Blocks ***************//
-	
+
 	function genNextID(port, slot) {
 		var nextID = port * 4 + slot;
 		return nextID;
@@ -515,7 +515,7 @@
 			console.log('speed else' ,+speed);
 			window.socket.send(JSON.stringify({comando:DCMOTORS_BACK,valor:speed+",0,0"}));
 		}
-		
+
 	}
 	ext.runMotor = function(port, speed) {
 		//funcionando
@@ -542,40 +542,42 @@
 		}else{
 			console.log('foi pra nenhuma');
 		}
-		
+
 	}
 	ext.runServo = function(port, slot, angle) {
 		//funcionando
 		console.log('servo');
-		if (port == "Port1") {
-			if (slot == "Slot1") {
-				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'1,1,'+angle}));
-			}else{
-				console.log('entrou no slot2 porta1');
-				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'1,2,'+angle}));
-			}
-		}else if (port == "Port2") {
-			if (slot == "Slot1") {
-				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'2,1,'+angle}));
-			}else{
-				console.log('entrou no slot2 porta1');
-				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'2,2,'+angle}));
-			}
-		}else if (port == "Port3") {
-			if (slot == "Slot1") {
-				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'3,1,'+angle}));
-			}else{
-				console.log('entrou no slot2 porta1');
-				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'3,2,'+angle}));
-			}
-		}else if (port == "Port4") {
-			if (slot == "Slot1") {
-				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'4,1,'+angle}));
-			}else{
-				console.log('entrou no slot2 porta1');
-				window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'4,2,'+angle}));
-			}
-		}
+		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:port+','+slot+','+angle}));
+
+		// if (port == "Port1") {
+		// 	if (slot == "Slot1") {
+		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'1,1,'+angle}));
+		// 	}else{
+		// 		console.log('entrou no slot2 porta1');
+		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'1,2,'+angle}));
+		// 	}
+		// }else if (port == "Port2") {
+		// 	if (slot == "Slot1") {
+		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'2,1,'+angle}));
+		// 	}else{
+		// 		console.log('entrou no slot2 porta1');
+		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'2,2,'+angle}));
+		// 	}
+		// }else if (port == "Port3") {
+		// 	if (slot == "Slot1") {
+		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'3,1,'+angle}));
+		// 	}else{
+		// 		console.log('entrou no slot2 porta1');
+		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'3,2,'+angle}));
+		// 	}
+		// }else if (port == "Port4") {
+		// 	if (slot == "Slot1") {
+		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'4,1,'+angle}));
+		// 	}else{
+		// 		console.log('entrou no slot2 porta1');
+		// 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:'4,2,'+angle}));
+		// 	}
+		// }
 
 	}
 	ext.runLed = function(index, red, green, blue) {
@@ -648,132 +650,96 @@
 			addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		}
 		return _lastButtonStatus[status];
-		
+
 	}
 	ext.getLightSensor = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
+		// if (typeof port == "string") {
+		// 	port = ports[port];
+		// }
+		// var deviceId = 3;
+		// var extId = genNextID(port, 0);
+		// var data = [extId, 0x01, deviceId, port];
+		// data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		// _selectors["callback_" + extId] = callback;
+		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+
+		if (connected == false) {
+    	alert("Server Not Connected");
+    }else {
+			console.log('vai retornar light: ',+light);
+			return light
 		}
-		var deviceId = 3;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-		
-		//console.log('retorno de light: ');
-		console.log('callback de light: '+light);
-		return light;
 
 	}
 	ext.getUltrasonic = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
+		// if (typeof port == "string") {
+		// 	port = ports[port];
+		// }
+		// var deviceId = 1;
+		// var extId = 0; //genNextID(port,0);
+		// var data = [extId, 0x01, deviceId, port];
+		// data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		// _selectors["callback_" + extId] = function(v) {
+		// 	callback(Math.floor(v * 100.0) / 100.0);
+		// }
+		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+
+		if (connected == false) {
+			alert("Server Not Connected");
+		}else {
+			console.log('vai retornar ultrasound: ',+ultrasound);
+			return ultrasound
 		}
-		var deviceId = 1;
-		var extId = 0; //genNextID(port,0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = function(v) {
-			callback(Math.floor(v * 100.0) / 100.0);
-		}
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+
 	}
 	ext.getLinefollower = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
+		// if (typeof port == "string") {
+		// 	port = ports[port];
+		// }
+		// var deviceId = 17;
+		// var extId = genNextID(port, 0);
+		// var data = [extId, 0x01, deviceId, port];
+		// data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		// _selectors["callback_" + extId] = callback;
+		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		if (connected == false) {
+    	alert("Server Not Connected");
+    }else {
+			console.log('vai retornar line: ',+line);
+			return line
 		}
-		var deviceId = 17;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-	}
-	ext.getPotentiometer = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 4;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-	}
-	ext.getSoundSensor = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 7;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-	}
-	ext.getLimitswitch = function(port, slot, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		if (typeof slot == "string") {
-			slot = slots[slot];
-		}
-		var deviceId = 21;
-		var extId = genNextID(port, slot);
-		var data = [extId, 0x01, deviceId, port, slot];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-	}
-	ext.getTemperature = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 2;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = function(v) {
-			callback(Math.floor(v * 100) / 100);
-		}
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-	}
-	ext.getPirmotion = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 6;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 	}
 	ext.getIrRemote = function(code, callback) {
-		var deviceId = 14;
-		if (typeof code == "string") {
-			code = ircodes[code];
+		// var deviceId = 14;
+		// if (typeof code == "string") {
+		// 	code = ircodes[code];
+		// }
+		// var port = 11;
+		// var slot = __irCodes.indexOf(code);
+		// var halfSize = __irCodes.length >> 1;
+		// if (slot >= halfSize) {
+		// 	++port;
+		// 	slot -= halfSize;
+		// }
+		// var extId = genNextID(port, slot);
+		// var data = [extId, 0x01, deviceId, 0, code];
+		// data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		// _selectors["callback_" + extId] = callback;
+		// addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+
+		if (connected == false) {
+    	alert("Server Not Connected");
+    }else {
+			console.log('vai retornar ir: ',+ir);
+			return ir
 		}
-		var port = 11;
-		var slot = __irCodes.indexOf(code);
-		var halfSize = __irCodes.length >> 1;
-		if (slot >= halfSize) {
-			++port;
-			slot -= halfSize;
-		}
-		var extId = genNextID(port, slot);
-		var data = [extId, 0x01, deviceId, 0, code];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 	}
 	var descriptor = {
 		blocks: [
 			["w", 'conectar ao servidor mBot', 'cnct'],
 			[" ", "mover motores %d.motorvalue", "runBot", 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue", "runMotor", "M1", 0],
-			[" ", "estabelecer servo %d.port %d.slot ângulo %d.servovalue", "runServo", "Port1", "Slot1", 90],
+			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue", "runServo", "1", "1", 90],
 			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value", "runLed" , "todos", 0, 0, 0],
 			[" ", "tocar tom na nota %d.note batida %d.beats", "runBuzzer", "C4", "Metade"],
 			["-"],
@@ -791,12 +757,11 @@
 		],
 		menus: {
 			motorPort: ["M1", "M2"],
-			slot: ["Slot1", "Slot2"],
+			slot: ["1", "2"],
 			index: ["todos", 1, 2],
 			port: ["Port1", "Port2", "Port3", "Port4"],
-			aport: ["Port3", "Port4"],
+			aport: ["1","2","3","4"],
 			lport: ["led on board", "Port1", "Port2", "Port3", "Port4"],
-			laport: ["sensor de luz on board", "Port3", "Port4"],
 			direction: ["andar para a frente", "andar para trás", "virar à direita", "virar à esquerda"],
 			points: [":", " "],
 			note: ["C2", "D2", "E2", "F2", "G2", "A2", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7", "D7", "E7", "F7", "G7", "A7", "B7", "C8", "D8"],
@@ -810,9 +775,9 @@
 		},
 		url: 'http://gabrielcbe.github.io/scratchx-mbot/mbot-ble-mindmakers.js'
 	};
-	
+
 	var mStatus = 0;
-	
+
 	ext._shutdown = function () {
 		console.log('_shutdown ');
 		var msg = JSON.stringify({
@@ -821,14 +786,14 @@
 		if (poller) poller = clearInterval(poller);
 		status = false;
 		window.socket.send(msg);
-		
+
 	};
-	
+
 	ext._getStatus = function (status, msg) {
 		return {status: myStatus, msg: myMsg};
 	};
-	
-	
+
+
 	// function getMakeblockAppStatus() {
 	// 		chrome.runtime.sendMessage(makeblockAppID, {
 	// 						message: "STATUS"
@@ -851,18 +816,18 @@
 	// 						}
 	// 				});
 	// };
-	
+
 	function onMsgApp(msg) {
 		//ver o que tem ser passado aqui ou deve tratar que nem no server
 		//console.log('onMsgAppMsg.data: '+msg.data);
-		
+
 		//console.log('onMsgAppMsg.buffer: '+msg.buffer);
 		var buffer = msg.data;
 		for (var i = 0; i < buffer.length; i++) {
 			onParse(buffer[i]);
 		}
 	};
-	
+
 	//getMakeblockAppStatus();
 	ScratchExtensions.register('MindMakers-mBot', descriptor, ext);
 })({});
