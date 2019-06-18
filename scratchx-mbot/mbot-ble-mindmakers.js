@@ -1,5 +1,5 @@
 (function(ext) {
-	//2.9 teste mudanca drastica
+	//3.0 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -518,7 +518,7 @@
 		
 	}
 	ext.runMotor = function(port, speed) {
-		//testando
+		//funcionando
 		if (port == "M1") {
 			console.log('M1');
 			if (speed >= 0) {
@@ -547,8 +547,10 @@
 	ext.runServo = function(port, slot, angle) {
 		//testando
 		console.log('servo');
-		let porta = parseInt(port);
-		let conector = parseInt(slot);
+		console.log('port' ,+port);
+		console.log('slot' ,+slot);
+		let porta = port.parseInt();
+		let conector = slot.parseInt();
 		console.log('porta' ,+porta);
 		console.log('conector' ,+conector);
 		
