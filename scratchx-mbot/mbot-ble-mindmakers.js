@@ -1,5 +1,5 @@
 (function(ext) {
-	//4.0 testes sensores
+	//4.1 testes sensores
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -72,7 +72,7 @@
 		//console.log('valor',valor);
 
 		if (componente==LINESENSOR) {
-			line=parseInt(valor);
+			line=valor;
 			console.log('line:',line);
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
