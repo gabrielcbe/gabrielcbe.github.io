@@ -1,5 +1,5 @@
 (function(ext) {
-	//2.6 teste mudanca drastica
+	//2.7 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -163,7 +163,7 @@
 	};
 	function registraConexaoMBOT(dado) {
 		
-		alert('entrou para registrar');
+		//alert('entrou para registrar');
 		// Recebe macaddress da unidade e sala correntemente registrada
 		//console.log(dado);
 		var msg = dado.split(',');
@@ -185,10 +185,7 @@
 		servidorMBOTConectado=false;
 	}
 	
-	
-	
-	
-	
+
 	var poller = null;
 	var device = null;
 	var status = false;
@@ -510,12 +507,10 @@
 		addPackage(arrayBufferFromArray(data), function() {})
 	}
 	ext.runBot = function(speed) {
-		// var code = "enviaComando('"+DCMOTORM1+"','"+acaoMotor1+","+potenciaMotor1Int+"');\n"+
-		// "enviaComando('"+DCMOTORM2+"','"+acaoMotor2+","+potenciaMotor2Int+"');\n";
+		//funcionando
 		if (speed >= 0) {
 			window.socket.send(JSON.stringify({comando:DCMOTORS,valor:speed+",0,0"}));
 		} else  {
-			console.log('speed menor que zero ',+speed)
 			speed = -speed;
 			console.log('speed else' ,+speed);
 			window.socket.send(JSON.stringify({comando:DCMOTORS_BACK,valor:speed+",0,0"}));
@@ -523,20 +518,16 @@
 		
 	}
 	ext.runMotor = function(port, speed) {
-		//enviaComando(DCMOTORS,'0,0,0');
-		//enviaComando(DCMOTORM1,acaoMotor1+","+potenciaMotor1);
-		// enviaComando(DCMOTORM2,acaoMotor2+","+potenciaMotor2);
+		//funcionando
 		if (port == "M1") {
 			console.log('M1');
 			if (speed >= 0) {
 				console.log('speed >0');
 				window.socket.send(JSON.stringify({comando:DCMOTORM1+','+DCMOTOR_FORWARD,valor:speed}));
 			} else  {
-				console.log('speed else ',+speed);
 				speed = -speed;
 				console.log('speed else' ,+speed);
 				window.socket.send(JSON.stringify({comando:DCMOTORM1+','+DCMOTOR_BACK,valor:speed}));
-				DCMOTOR_FORWARD
 			}
 		}else if (port == "M2") {
 			console.log('M2');
@@ -544,7 +535,6 @@
 				console.log('speed >0');
 				window.socket.send(JSON.stringify({comando:DCMOTORM2+','+DCMOTOR_FORWARD,valor:speed}));
 			} else  {
-				console.log('speed else' ,+speed);
 				speed = -speed;
 				console.log('speed else' ,+speed);
 				window.socket.send(JSON.stringify({comando:DCMOTORM2+','+DCMOTOR_BACK,valor:speed}));
@@ -555,26 +545,13 @@
 		
 	}
 	ext.runServo = function(port, slot, angle) {
-		//enviando as mensagens, falta fazer a porta e o slot ser os que o paulo programou.
-		
-		//var code = "enviaComando('"+SERVOMOTOR+"','"+porta+","+conector+","+angulo+"');\n";
 		console.log('servo');
-		console.log('port' ,+port);
-		console.log('slot' ,+slot);
-		port = parseInt(port);
-		slot = parseInt(slot);
-		console.log('port' ,+port);
-		console.log('slot' ,+slot);
+		let porta = parseInt(port);
+		let conector = parseInt(slot);
+		console.log('porta' ,+porta);
+		console.log('conector' ,+conector);
 		
-		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:port+','+slot+','+angle}));
-		
-	}
-	ext.runLedOnBoard = function(index, red, green, blue) {
-		if (index == "all") {
-			alert('enviou do runLedOnBoard');
-			index = 0;
-			window.socket.send(JSON.stringify({comando:LEDBOTH,valor:red+","+green+","+blue}));
-		}
+		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:porta+','+conector+','+angle}));
 	}
 	ext.runLed = function(index, red, green, blue) {
 		//funcionando
@@ -587,9 +564,7 @@
 		}
 	}
 	ext.runBuzzer = function(tone, beat) {
-		//funcionando falta fazer o tempo funcionar.
-		//console.log('runBuzzertone: '+tone);
-		//console.log('runBuzzerbeat: '+beat);
+		//funcionando
 		if (beat == "Metade") {
 			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));
 		}else if (beat == "Quarto") {
@@ -603,7 +578,6 @@
 		}else{
 			console.log('entrou em nada');
 		}
-		
 	}
 	ext.runSevseg = function(port, num) {
 		if (typeof port == "string") {
@@ -665,10 +639,8 @@
 		
 		//console.log('retorno de light: ');
 		console.log('callback de light: '+light);
-		return callback;
-		
-		
-		
+		return light;
+
 	}
 	ext.getUltrasonic = function(port, callback) {
 		if (typeof port == "string") {
