@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.8 teste mudanca drastica
+	//3.9 testes sensores
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -476,7 +476,6 @@
 			var msg = {};
 			msg.buffer = buffer;
 			console.log('addPackwritePackageage(msg.buffer): '+msg.buffer);
-
 			window.socket.send(msg);
 			console.log('addPackwritePackageage(msg): '+msg);
 			//mConnection.postMessage(msg);
@@ -693,15 +692,15 @@
 
 	}
 	ext.getLinefollower = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 17;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		//if (typeof port == "string") {
+		//	port = ports[port];
+		//}
+		//var deviceId = 17;
+		//var extId = genNextID(port, 0);
+		//var data = [extId, 0x01, deviceId, port];
+		//data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+		//_selectors["callback_" + extId] = callback;
+		//addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
