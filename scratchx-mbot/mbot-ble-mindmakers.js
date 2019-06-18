@@ -1,5 +1,5 @@
 (function(ext) {
-	//2.7 teste mudanca drastica
+	//2.8 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -518,26 +518,26 @@
 		
 	}
 	ext.runMotor = function(port, speed) {
-		//funcionando
+		//testando
 		if (port == "M1") {
 			console.log('M1');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM1+','+DCMOTOR_FORWARD,valor:speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD','+speed}));
 			} else  {
 				speed = -speed;
 				console.log('speed else' ,+speed);
-				window.socket.send(JSON.stringify({comando:DCMOTORM1+','+DCMOTOR_BACK,valor:speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK','+speed}));
 			}
 		}else if (port == "M2") {
 			console.log('M2');
 			if (speed >= 0) {
 				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2+','+DCMOTOR_FORWARD,valor:speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD','+speed}));
 			} else  {
 				speed = -speed;
 				console.log('speed else' ,+speed);
-				window.socket.send(JSON.stringify({comando:DCMOTORM2+','+DCMOTOR_BACK,valor:speed}));
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK','+speed}));
 			}
 		}else{
 			console.log('foi pra nenhuma');
@@ -545,6 +545,7 @@
 		
 	}
 	ext.runServo = function(port, slot, angle) {
+		//testando
 		console.log('servo');
 		let porta = parseInt(port);
 		let conector = parseInt(slot);
