@@ -1,5 +1,5 @@
 (function(ext) {
-	//3.4 teste mudanca drastica
+	//3.5 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -462,7 +462,7 @@
 		//console.log('addPackage(_buffers): '+_buffers);
 		var extId = buffer[4];
 		setTimeout(function() {
-			callback(_selectors["value_" + extId]);
+			//callback(_selectors["value_" + extId]);
 		}, 100);
 		//console.log('addPackage(_selectors): '+_selectors);
 		writePackage();
@@ -783,7 +783,6 @@
 			["R", "sensor de luz onBoard", "getLightSensor"],
 			["R", "distância do sensor ultrasom %d.port", "getUltrasonic", "Port1"],
 			["R", "segue linha %d.port", "getLinefollower", "Port1"],
-			["R", "temperatura %d.port %d.slot °C", "getTemperature", "Port3", "Slot1"],
 			["-"],
 			["R", "controle remoto %m.ircodes pressionado", "getIrRemote", "A"],
 			["-"],
@@ -794,7 +793,6 @@
 			motorPort: ["M1", "M2"],
 			slot: ["Slot1", "Slot2"],
 			index: ["todos", 1, 2],
-			Axis: ["Eixo-X", "Eixo-Y"],
 			port: ["Port1", "Port2", "Port3", "Port4"],
 			aport: ["Port3", "Port4"],
 			lport: ["led on board", "Port1", "Port2", "Port3", "Port4"],
@@ -807,7 +805,6 @@
 			motorvalue: [255, 100, 75, 50, 0, -50, -75, -100, -255],
 			value: [0, 20, 60, 150, 255],
 			buttonStatus: ["pressionado", "liberado"],
-			shutter: ["Pressionar", "Liberar", "Foco Ligado", "Foco Desligado"],
 			switchStatus: ["Desligado", "Ligado"],
 			ircode: ["A", "B", "C", "D", "E", "F", "↑", "↓", "←", "→", "Configuração", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
 		},
