@@ -1,5 +1,5 @@
 (function(ext) {
-	//1.6 teste mudanca drastica 
+	//1.7 teste mudanca drastica
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -509,14 +509,32 @@
 		var data = [0x5, 0xff, 0x55, 0x02, 0x0, 0x04];
 		addPackage(arrayBufferFromArray(data), function() {})
 	};
-	ext.runBot = function(lSpeed, rSpeed) {
+	ext.runBot = function(speed) {
 		// var code = "enviaComando('"+DCMOTORM1+"','"+acaoMotor1+","+potenciaMotor1Int+"');\n"+
 		// "enviaComando('"+DCMOTORM2+"','"+acaoMotor2+","+potenciaMotor2Int+"');\n";
-		window.socket.send(JSON.stringify({comando:"+DCMOTORM1,+DCMOTOR_FORWARD,+lSpeed+'\n'+DCMOTORM2,DCMOTOR_BACK,+rSpeed+"}));
+		window.socket.send(JSON.stringify({comando:DCMOTORS,valor:+speed+",0,0"}));
 	}
 	ext.runMotor = function(port, speed) {
 		//enviaComando(DCMOTORS,'0,0,0');
-		window.socket.send(JSON.stringify({comando:DCMOTORS,valor:+speed+",0,0"}));
+		//enviaComando(DCMOTORM1,acaoMotor1+","+potenciaMotor1);
+		// enviaComando(DCMOTORM2,acaoMotor2+","+potenciaMotor2);
+		if (port == "M1") {
+			console.log('M1');
+			if (speed >= "0") {
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+speed}));
+			} else  {
+				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+speed}));
+			}
+		}else if (port == "M2") {
+			console.log('M2');
+			if (speed >= "0") {
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+speed}));
+			} else  {
+				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+speed}));
+			}
+		}else{
+			console.log('foi pra nenhuma')
+		}
 
 	}
 	ext.runServo = function(port, slot, angle) {
@@ -528,7 +546,7 @@
 	}
 	ext.runLedOnBoard = function(index, red, green, blue) {
 		if (index == "all") {
-			console.log('enviou do runLedOnBoard');
+			alert('enviou do runLedOnBoard');
 			index = 0;
 			window.socket.send(JSON.stringify({comando:LEDBOTH,valor:+red+","+green+","+blue}));
 		}
@@ -544,7 +562,7 @@
 		}
 	}
 	ext.runBuzzer = function(tone, beat) {
-
+		//funcionando
 		//var code = "enviaComando('"+PLAYNOTE+"','"+nota+","+tempo+"');\n";
 		window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:+tone+","+beat}));
 
@@ -586,23 +604,23 @@
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		addPackage(arrayBufferFromArray(data), function() {});
 	}
-	ext.runLightSensor = function(port, status) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		if (typeof status == "string") {
-			status = switchStatus[status];
-		}
-		var deviceId = 3;
-		var extId = 0;
-		var data = [extId, 0x02, deviceId, port, status];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		addPackage(arrayBufferFromArray(data), function() {});
-
-		return light;
-
-
-	}
+	// ext.runLightSensor = function(port, status) {
+	// 	if (typeof port == "string") {
+	// 		port = ports[port];
+	// 	}
+	// 	if (typeof status == "string") {
+	// 		status = switchStatus[status];
+	// 	}
+	// 	var deviceId = 3;
+	// 	var extId = 0;
+	// 	var data = [extId, 0x02, deviceId, port, status];
+	// 	data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
+	// 	addPackage(arrayBufferFromArray(data), function() {});
+	//
+	// 	return light;
+	//
+	//
+	// }
 	// ext.runShutter = function(port, shutter) {
 	// 	if (typeof port == "string") {
 	// 		port = ports[port];
@@ -662,11 +680,14 @@
 		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
 		_selectors["callback_" + extId] = callback;
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-		
 
-		console.log('getLightSensor(var light): '+light);
+
+		console.log('retorno de light: ');
 		return light;
-		
+
+		//console.log('callback de light: '+light);
+		callback(light);
+
 	}
 	ext.getUltrasonic = function(port, callback) {
 		if (typeof port == "string") {
@@ -787,13 +808,11 @@
 	var descriptor = {
 		blocks: [
 			["w", 'Connect to mbot server.', 'cnct'],
-			[" ", "mover esquerdo %d.motorvalue direito %d.motorvalue", "runBot", 100, 100],
+			[" ", "mover esquerdo %d.motorvalue direito %d.motorvalue", "runBot", 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue", "runMotor", "M1", 0],
 			[" ", "estabelecer servo %d.port %d.slot ângulo %d.servovalue", "runServo", "Port1", "Slot1", 90],
 			[" ", "estabelecer led onboard %d.index R%d.value G%d.value B%d.value", "runLed" , "all", 0, 0, 0],
 			[" ", "tocar tom na nota %d.note batida %d.beats", "runBuzzer", "C4", "Metade"],
-			["-"],
-			[" ", "estabelecer sensor de luz %d.aport led como %d.switchStatus", "runLightSensor", "Port3", "Ligado"],
 			["-"],
 			["h", "quando botão %m.buttonStatus", "whenButtonPressed", "pressionado"],
 			["R", "botão %m.buttonStatus", "getButtonOnBoard", "pressionado"],
