@@ -1,5 +1,5 @@
 (function(ext) {
-	//1.2 teste mudanca drastica 
+	//1.3 teste mudanca drastica 
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -520,7 +520,7 @@
 	ext.runBot = function(lSpeed, rSpeed) {
 		// var code = "enviaComando('"+DCMOTORM1+"','"+acaoMotor1+","+potenciaMotor1Int+"');\n"+
 		// "enviaComando('"+DCMOTORM2+"','"+acaoMotor2+","+potenciaMotor2Int+"');\n";
-		window.socket.send(JSON.stringify({comando:+DCMOTORM1,+DCMOTOR_FORWARD,+lSpeed+'\n'+DCMOTORM2,DCMOTOR_BACK,+rSpeed+}));
+		window.socket.send(JSON.stringify({comando:"+DCMOTORM1,+DCMOTOR_FORWARD,+lSpeed+'\n'+DCMOTORM2,DCMOTOR_BACK,+rSpeed+"}));
 	}
 	ext.runMotor = function(port, speed) {
 		//enviaComando(DCMOTORS,'0,0,0');
