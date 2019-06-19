@@ -75,10 +75,10 @@
 	//----Inicia websocket----//
 
 	function statusConnection (callback) {
-		if(clienteConectadoMBOT == 'false'){
-			window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
-			console.log('WebSocket Client Connected');
-	  }
+		
+		window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
+		console.log('WebSocket Client Connected');
+	  	
 
 		window.socket.onopen = function () {
 			var msg = JSON.stringify({
@@ -615,23 +615,23 @@
 
 	var descriptor = {
 		blocks: [
-			[" ", "mover motores %d.motorvalue"																					, "runBot", 100],
-			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue"							, "runMotor", "M1", 0],
+			[" ", "mover motores %d.motorvalue"						, "runBot", 100],
+			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue"			, "runMotor", "M1", 0],
 			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue"	, "runServo", "1", "1", 90],
-			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value"			, "runLed" , "todos", 0, 0, 0],
+			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value"		, "runLed" , "todos", 0, 0, 0],
 			[" ", "tocar tom na nota %d.note batida %d.beats"														, "runBuzzer", "C4", "Metade"],
 			["-"],
-			["h", "quando botão onBoard %m.buttonStatus"																, "whenButtonPressed", "pressionado"],
-			["R", "botão onBoard %m.buttonStatus"																				, "getButtonOnBoard", "pressionado"],
+			["h", "quando botão onBoard %m.buttonStatus"					, "whenButtonPressed", "pressionado"],
+			["R", "botão onBoard %m.buttonStatus"						, "getButtonOnBoard", "pressionado"],
 			["-"],
-			["R", "sensor de luz onBoard"																								, "getLightSensor"],
-			["R", "distância do sensor ultrasom %d.port"																, "getUltrasonic", "Port1"],
-			["R", "segue linha %d.port"																									, "getLinefollower", "Port1", getLine()],
+			["R", "sensor de luz onBoard"							, "getLightSensor"],
+			["R", "distância do sensor ultrasom %d.port"					, "getUltrasonic", "Port1"],
+			["R", "segue linha %d.port"							, "getLinefollower", "Port1", getLine()],
 			["-"],
-			["R", "controle remoto %m.ircodes pressionado"															, "getIrRemote", "A"],
+			["R", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
 			["-"],
-			["R", "cronômetro"																													, "getTimer", "0"],
-			[" ", "zerar cronômetro"																										, "resetTimer", "0"]
+			["R", "cronômetro"								, "getTimer", "0"],
+			[" ", "zerar cronômetro"							, "resetTimer", "0"]
 		],
 		menus: {
 			motorPort: ["M1", "M2"],
@@ -640,13 +640,22 @@
 			port: ["Port1", "Port2", "Port3", "Port4"],
 			aport: ["1","2","3","4"],
 			direction: ["andar para a frente", "andar para trás", "virar à direita", "virar à esquerda"],
-			note: ["C2", "D2", "E2", "F2", "G2", "A2", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7", "D7", "E7", "F7", "G7", "A7", "B7", "C8", "D8"],
+			note: ["C2", "D2", "E2", "F2", "G2", "A2", "B2", 
+			       "C3", "D3", "E3", "F3", "G3", "A3", "B3", 
+			       "C4", "D4", "E4", "F4", "G4", "A4", "B4", 
+			       "C5", "D5", "E5", "F5", "G5", "A5", "B5", 
+			       "C6", "D6", "E6", "F6", "G6", "A6", "B6", 
+			       "C7", "D7", "E7", "F7", "G7", "A7", "B7", 
+			       "C8", "D8"],
 			beats: ["Metade", "Quarto", "Oitavo", "Inteira", "Dupla"],
 			servovalue: [0, 45, 90, 135],
 			motorvalue: [255, 100, 75, 50, 0, -50, -75, -100, -255],
 			value: [0, 20, 60, 150, 255],
 			buttonStatus: ["pressionado", "liberado"],
-			ircode: ["A", "B", "C", "D", "E", "F", "↑", "↓", "←", "→", "Configuração", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
+			ircode: ["A", "B", "C", "D", "E", "F", 
+				 "↑", "↓", "←", "→",
+				 "Configuração", 
+				 "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
 		},
 		url: 'http://gabrielcbe.github.io/scratchx-mbot/mbot-ble-mindmakers.js'
 	};
