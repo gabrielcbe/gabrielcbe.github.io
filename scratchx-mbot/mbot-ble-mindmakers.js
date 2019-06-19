@@ -1,15 +1,11 @@
 (function(ext) {
-	//4.2 testes sensores
+	//4.3 teste simplificação codigo e conexão automatica WebSocket
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
 	var myMsg = 'not_ready';
-
 	var clienteConectadoMBOT=false;
 	var servidorMBOTConectado=false;
-	var reconexaoAutomaticaMBOT=null;
-	const PORTA_MBOT="8081";
-	var urlConexaoRecenteMBOT="";
 	var sala="1";
 
 	const LINESENSOR='linesensor';
@@ -34,43 +30,28 @@
 	const LEDBOTH='ledboth';
 	const PLAYNOTE='playnote';
 
-	function enviaComando(com,val) {
-		console.log('entrou enviaComando: ');
 
-		if (window.socket.readyState !== window.socket.OPEN) {
-			alert('O serviço de conexão do mBot não está ativo!');
-			return;
-		}
-		console.log('vai enviar '+com+' val='+val);
-		window.socket.send(JSON.stringify({comando:com,valor:val}));
-
-	}
 	// 0,1,2 ou 3
 	var line;
-
 	// 0 a 1000
 	var light;
 	// pressed ou released
 	var button;
 	// tecla
 	var ir;
-
 	// 0 a 400 cm
 	var ultrasound;
 
 	function getLine() {
 		return line;
 	}
-
 	function getLight() {
 		return light;
 	}
 
 	function recebeValor (componente,valor) {
-
 		//console.log('componente',componente);
 		//console.log('valor',valor);
-
 		if (componente==LINESENSOR) {
 			line=parseInt(valor);
 			console.log('line:',+line);
@@ -89,30 +70,10 @@
 			ir = valor;
 			console.log(typeof(ir));
 		}
-
 	}
-	// function getMakeblockAppStatus() {
-	// 		chrome.runtime.sendMessage(makeblockAppID, {
-	// 						message: "STATUS"
-	// 				}, function(response) {
-	// 						if (response === undefined) { //Chrome app not found
-	// 								console.log("Chrome app not found");
-	// 								mStatus = 0;
-	// 								setTimeout(getMakeblockAppStatus, 1000);
-	// 						} else if (response.status === false) { //Chrome app says not connected
-	// 								mStatus = 1;
-	// 								setTimeout(getMakeblockAppStatus, 1000);
-	// 						} else { // successfully connected
-	// 								if (mStatus !== 2) {
-	// 										console.log("Connected");
-	// 										mConnection = chrome.runtime.connect(makeblockAppID);
-	// 										mConnection.onMessage.addListener(onMsgApp);
-	// 								}
-	// 								mStatus = 2;
-	// 								setTimeout(getMakeblockAppStatus, 1000);
-	// 						}
-	// 				});
-	// };
+
+	//----Inicia websocket----//
+
 	function statusConnection (callback) {
 		if(clienteConectadoMBOT == 'false'){
 			window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
@@ -169,9 +130,9 @@
 				//console.log('caiu no else');
 				//console.log('caiu no else, recebeu: '+componenteValor);
 
+
 				//olhar se é só chamar ou precisa de parametro
 				//precisa mesmo colocar isso aqui.
-
 				onMsgApp(message);
 
 			}
@@ -199,8 +160,8 @@
 
 	//chama a primeira vez
 	statusConnection();
-	function registraConexaoMBOT(dado) {
 
+	function registraConexaoMBOT(dado) {
 		//alert('entrou para registrar');
 		// Recebe macaddress da unidade e sala correntemente registrada
 		//console.log(dado);
@@ -223,6 +184,19 @@
 		servidorMBOTConectado=false;
 	}
 
+	// function enviaComando(com,val) {
+	// 	console.log('entrou enviaComando: ');
+	//
+	// 	if (window.socket.readyState !== window.socket.OPEN) {
+	// 		alert('O serviço de conexão do mBot não está ativo!');
+	// 		return;
+	// 	}
+	// 	console.log('vai enviar '+com+' val='+val);
+	// 	window.socket.send(JSON.stringify({comando:com,valor:val}));
+	//
+	// }
+
+	//----Termina websocket----//
 
 	var poller = null;
 	var device = null;
@@ -245,25 +219,10 @@
 		Slot1: 1,
 		Slot2: 2
 	};
-	var switchStatus = {
-		On: 1,
-		Off: 0
-	};
 	var buttonStatus = {
 		pressed: 0,
 		released: 1
 	}
-	var shutterStatus = {
-		Press: 0,
-		Release: 1,
-		'Focus On': 2,
-		'Focus Off': 3,
-	};
-	var axis = {
-		'X-Axis': 1,
-		'Y-Axis': 2,
-		'Z-Axis': 3
-	};
 	var ircodes = {
 		"A": 45,
 		"B": 70,
@@ -290,68 +249,6 @@
 	for (var key in ircodes) {
 		__irCodes.push(ircodes[key]);
 	}
-	var tones = {
-		"B0": 31,
-		"C1": 33,
-		"D1": 37,
-		"E1": 41,
-		"F1": 44,
-		"G1": 49,
-		"A1": 55,
-		"B1": 62,
-		"C2": 65,
-		"D2": 73,
-		"E2": 82,
-		"F2": 87,
-		"G2": 98,
-		"A2": 110,
-		"B2": 123,
-		"C3": 131,
-		"D3": 147,
-		"E3": 165,
-		"F3": 175,
-		"G3": 196,
-		"A3": 220,
-		"B3": 247,
-		"C4": 262,
-		"D4": 294,
-		"E4": 330,
-		"F4": 349,
-		"G4": 392,
-		"A4": 440,
-		"B4": 494,
-		"C5": 523,
-		"D5": 587,
-		"E5": 659,
-		"F5": 698,
-		"G5": 784,
-		"A5": 880,
-		"B5": 988,
-		"C6": 1047,
-		"D6": 1175,
-		"E6": 1319,
-		"F6": 1397,
-		"G6": 1568,
-		"A6": 1760,
-		"B6": 1976,
-		"C7": 2093,
-		"D7": 2349,
-		"E7": 2637,
-		"F7": 2794,
-		"G7": 3136,
-		"A7": 3520,
-		"B7": 3951,
-		"C8": 4186,
-		"D8": 4699
-	};
-	var beats = {
-		"Metade": 500,
-		"Quarto": 250,
-		"Oitavo": 125,
-		"Inteira": 1000,
-		"Dupla": 2000,
-		"Zero": 0
-	};
 
 	function onParse(byte) {
 		//console.log('onParse(byte): '+byte);
@@ -444,14 +341,6 @@
 		return doubleView[0];
 	}
 
-	function short2array(v) {
-		var buf = new ArrayBuffer(2);
-		var intView = new Uint8Array(buf);
-		var shortView = new Int16Array(buf);
-		shortView[0] = v;
-		return [intView[0], intView[1]];
-	}
-
 	function float2array(v) {
 		var buf = new ArrayBuffer(4);
 		var intView = new Uint8Array(buf);
@@ -460,37 +349,6 @@
 		return [intView[0], intView[1], intView[2], intView[3]];
 	}
 
-	function string2array(v) {
-		var arr = v.split("");
-		for (var i = 0; i < arr.length; i++) {
-			arr[i] = arr[i].charCodeAt(0);
-		}
-		console.log(arr);
-		return arr;
-	}
-
-	function deviceOpened(dev) {
-		alert('deviceOpened(dev): '+dev);
-		// if device fails to open, forget about it
-		if (dev == null) device = null;
-
-		// otherwise start polling
-		poller = setInterval(function() {
-			if (device != null) {
-				function callback(buffer) {
-					var buf = new Uint8Array(buffer);
-					var len = buf[0];
-					if (buf[0] > 0) {
-						for (var i = 0; i < len; i++) {
-							onParse(buf[i + 1]);
-						}
-					}
-				}
-				device.read(callback, 30);
-			}
-		}, 20);
-		console.log('deviceOpened(poller): '+poller);
-	};
 	var lastWritten = 0;
 	var _buffers = [];
 	var _isWaiting = false;
@@ -533,15 +391,22 @@
 		return data;
 	}
 
+	function onMsgApp(msg) {
+		//ver o que tem ser passado aqui ou deve tratar que nem no server
+		//console.log('onMsgAppMsg.data: '+msg.data);
+
+		//console.log('onMsgAppMsg.buffer: '+msg.buffer);
+		var buffer = msg.data;
+		for (var i = 0; i < buffer.length; i++) {
+			onParse(buffer[i]);
+		}
+	};
+
 	//************* mBot Blocks ***************//
 
 	function genNextID(port, slot) {
 		var nextID = port * 4 + slot;
 		return nextID;
-	}
-	ext.resetAll = function() {
-		var data = [0x5, 0xff, 0x55, 0x02, 0x0, 0x04];
-		addPackage(arrayBufferFromArray(data), function() {})
 	}
 	ext.runBot = function(speed) {
 		//funcionando
@@ -611,16 +476,6 @@
 		}else{
 			console.log('entrou em nada');
 		}
-	}
-	ext.runSevseg = function(port, num) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 9;
-		var extId = 0;
-		var data = [extId, 0x02, deviceId, port].concat(float2array(num));
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		addPackage(arrayBufferFromArray(data), function() {});
 	}
 	ext.getButtonOnBoard = function(status, callback) {
 		if (typeof status == "string") {
@@ -743,6 +598,21 @@
 			return ir
 		}
 	}
+
+	ext._shutdown = function () {
+		console.log('_shutdown ');
+		var msg = JSON.stringify({
+			"command": "shutdown"
+		});
+		if (poller) poller = clearInterval(poller);
+		status = false;
+		window.socket.send(msg);
+
+	};
+	ext._getStatus = function (status, msg) {
+		return {status: myStatus, msg: myMsg};
+	};
+
 	var descriptor = {
 		blocks: [
 			[" ", "mover motores %d.motorvalue", "runBot", 100],
@@ -769,51 +639,17 @@
 			index: ["todos", 1, 2],
 			port: ["Port1", "Port2", "Port3", "Port4"],
 			aport: ["1","2","3","4"],
-			lport: ["led on board", "Port1", "Port2", "Port3", "Port4"],
 			direction: ["andar para a frente", "andar para trás", "virar à direita", "virar à esquerda"],
-			points: [":", " "],
 			note: ["C2", "D2", "E2", "F2", "G2", "A2", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7", "D7", "E7", "F7", "G7", "A7", "B7", "C8", "D8"],
 			beats: ["Metade", "Quarto", "Oitavo", "Inteira", "Dupla"],
 			servovalue: [0, 45, 90, 135],
 			motorvalue: [255, 100, 75, 50, 0, -50, -75, -100, -255],
 			value: [0, 20, 60, 150, 255],
 			buttonStatus: ["pressionado", "liberado"],
-			switchStatus: ["Desligado", "Ligado"],
 			ircode: ["A", "B", "C", "D", "E", "F", "↑", "↓", "←", "→", "Configuração", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
 		},
 		url: 'http://gabrielcbe.github.io/scratchx-mbot/mbot-ble-mindmakers.js'
 	};
 
-	var mStatus = 0;
-
-	ext._shutdown = function () {
-		console.log('_shutdown ');
-		var msg = JSON.stringify({
-			"command": "shutdown"
-		});
-		if (poller) poller = clearInterval(poller);
-		status = false;
-		window.socket.send(msg);
-
-	};
-
-	ext._getStatus = function (status, msg) {
-		return {status: myStatus, msg: myMsg};
-	};
-
-
-
-	function onMsgApp(msg) {
-		//ver o que tem ser passado aqui ou deve tratar que nem no server
-		//console.log('onMsgAppMsg.data: '+msg.data);
-
-		//console.log('onMsgAppMsg.buffer: '+msg.buffer);
-		var buffer = msg.data;
-		for (var i = 0; i < buffer.length; i++) {
-			onParse(buffer[i]);
-		}
-	};
-
-	//getMakeblockAppStatus();
 	ScratchExtensions.register('MindMakers-mBot', descriptor, ext);
 })({});
