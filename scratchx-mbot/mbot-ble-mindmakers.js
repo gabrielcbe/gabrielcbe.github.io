@@ -1,5 +1,5 @@
 (function(ext) {
-	//5.4 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//5.5 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -388,7 +388,7 @@
 		//console.log('addPackage(_buffers): '+_buffers);
 		var extId = buffer[4];
 		setTimeout(function() {
-			callback(_selectors["value_" + extId]);
+			_selectors["value_" + extId] = callback;
 		}, 100);
 		console.log('addPackage(_selectors): '+_selectors);
 		writePackage();
