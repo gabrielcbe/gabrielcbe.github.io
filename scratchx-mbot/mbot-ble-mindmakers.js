@@ -1,5 +1,5 @@
 (function(ext) {
-	//4.6 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//4.7 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -48,27 +48,56 @@
 	function getLight() {
 		return light;
 	}
+	
+	var lastline;
+	var lastultrasound;
+	var lastlight;
+	var lastbutton;
+	var lastir;
 
 	function recebeValor (componente,valor) {
 		//console.log('componente',componente);
 		//console.log('valor',valor);
 		if (componente==LINESENSOR) {
 			line=parseInt(valor);
-			console.log('line:',+line);
-			console.log('e tem tipo');
-			console.log(typeof(line));
+			if(lastline != line){
+				lastline = line;
+				console.log('line:',+line);
+				console.log('e tem tipo');
+				console.log(typeof(line));
+			}
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
-			console.log(typeof(ultrasound));
+			if(lastultrasound != ultrasound){
+				lastultrasound = ultrasound;
+				console.log('line:',+ultrasound);
+				console.log('e tem tipo');
+				console.log(typeof(ultrasound));
+			}
 		} else if (componente==LIGHTSENSOR) {
 			light = Math.trunc(parseInt(valor));
-			console.log(typeof(light));
+			if(lastlight != light){
+				lastlight = light;
+				console.log('line:',+light);
+				console.log('e tem tipo');
+				console.log(typeof(light));
+			}
 		} else if (componente==BUTTON) {
 			button = valor;
-			console.log(typeof(button));
+			if(lastbutton != button){
+				lastbutton = button;
+				console.log('line:',+button);
+				console.log('e tem tipo');
+				console.log(typeof(button));
+			}
 		} else if (componente==IRSENSOR) {
 			ir = valor;
-			console.log(typeof(ir));
+			if(lastir != ir){
+				lastir = ir;
+				console.log('line:',+ir);
+				console.log('e tem tipo');
+				console.log(typeof(ir));
+			}
 		}
 	}
 
@@ -78,8 +107,7 @@
 		
 		window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
 		console.log('WebSocket Client Connected');
-	  	
-
+	  
 		window.socket.onopen = function () {
 			var msg = JSON.stringify({
 				"command": "ready"
@@ -183,7 +211,7 @@
 		servidorMBOTConectado=true;
 	}
 	function registraDesconexaoMBOT(dado) {
-		alert('entrou para deregistrar');
+		console.log('entrou para deregistrar');
 		servidorMBOTConectado=false;
 	}
 
@@ -420,7 +448,6 @@
 			console.log('speed else' ,+speed);
 			window.socket.send(JSON.stringify({comando:DCMOTORS_BACK,valor:speed+",0,0"}));
 		}
-
 	}
 	ext.runMotor = function(port, speed) {
 		//funcionando
@@ -447,7 +474,6 @@
 		}else{
 			console.log('foi pra nenhuma');
 		}
-
 	}
 	ext.runServo = function(port, slot, angle) {
 		//funcionando
@@ -514,7 +540,6 @@
 			addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		}
 		return _lastButtonStatus[status];
-
 	}
 	ext.getLightSensor = function(port, callback) {
 		if (typeof port == "string") {
@@ -533,7 +558,6 @@
 			console.log('vai retornar light: ',+light);
 			return JSON.stringify(light)
 		}
-
 	}
 	ext.getUltrasonic = function(port, callback) {
 		if (typeof port == "string") {
@@ -554,7 +578,6 @@
 			console.log('vai retornar ultrasound: ',+ultrasound);
 			return JSON.stringify(ultrasound)
 		}
-
 	}
 	ext.getLinefollower = function(port, callback) {
 		//se tirar so pega uma vez
@@ -601,7 +624,6 @@
 			return ir
 		}
 	}
-
 	ext._shutdown = function () {
 		console.log('_shutdown ');
 		var msg = JSON.stringify({
