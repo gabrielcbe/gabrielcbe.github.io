@@ -1,5 +1,5 @@
 (function(ext) {
-	//4.4 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//4.5 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
