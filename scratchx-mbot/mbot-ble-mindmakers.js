@@ -1,5 +1,5 @@
 (function(ext) {
-	//4.5 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//4.6 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -97,7 +97,7 @@
 
 			// give the connection time establish
 			window.setTimeout(function() {
-				callback();
+				//callback();
 			}, 1000);
 
 		};
@@ -151,11 +151,14 @@
 			console.log('echo-protocol Client Closed');
 			clienteConectadoMBOT=false;
 			registraDesconexaoMBOT();
+			
+			//tenta reconectar
+			setTimeout(statusConnection, 1000);
 		};
 
 		if(clienteConectadoMBOT == 'false'){
-				setTimeout(statusConnection, 1000);
-	  }
+			setTimeout(statusConnection, 1000);
+	  	}
 	};
 
 	//chama a primeira vez
@@ -528,7 +531,7 @@
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar light: ',+light);
-			return light
+			return JSON.stringify(light)
 		}
 
 	}
@@ -549,7 +552,7 @@
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar ultrasound: ',+ultrasound);
-			return ultrasound
+			return JSON.stringify(ultrasound)
 		}
 
 	}
@@ -570,7 +573,7 @@
 		// 	alert("Server Not Connected");
 		// }else {
 			console.log('vai retornar line:',+line);
-			return line
+			return JSON.stringify(line)
 		//}
 	}
 	ext.getIrRemote = function(code, callback) {
