@@ -1,5 +1,5 @@
 (function(ext) {
-	//4.3 teste simplificação codigo e conexão automatica WebSocket
+	//4.4 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -566,12 +566,12 @@
 		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
 		//ate aqui.
 
-		if (connected == false) {
-			alert("Server Not Connected");
-		}else {
+		// if (connected == false) {
+		// 	alert("Server Not Connected");
+		// }else {
 			console.log('vai retornar line:',+line);
 			return line
-		}
+		//}
 	}
 	ext.getIrRemote = function(code, callback) {
 		var deviceId = 14;
@@ -615,23 +615,23 @@
 
 	var descriptor = {
 		blocks: [
-			[" ", "mover motores %d.motorvalue", "runBot", 100],
-			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue", "runMotor", "M1", 0],
-			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue", "runServo", "1", "1", 90],
-			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value", "runLed" , "todos", 0, 0, 0],
-			[" ", "tocar tom na nota %d.note batida %d.beats", "runBuzzer", "C4", "Metade"],
+			[" ", "mover motores %d.motorvalue"																					, "runBot", 100],
+			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue"							, "runMotor", "M1", 0],
+			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue"	, "runServo", "1", "1", 90],
+			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value"			, "runLed" , "todos", 0, 0, 0],
+			[" ", "tocar tom na nota %d.note batida %d.beats"														, "runBuzzer", "C4", "Metade"],
 			["-"],
-			["h", "quando botão onBoard %m.buttonStatus", "whenButtonPressed", "pressionado"],
-			["R", "botão onBoard %m.buttonStatus", "getButtonOnBoard", "pressionado"],
+			["h", "quando botão onBoard %m.buttonStatus"																, "whenButtonPressed", "pressionado"],
+			["R", "botão onBoard %m.buttonStatus"																				, "getButtonOnBoard", "pressionado"],
 			["-"],
-			["R", "sensor de luz onBoard", "getLightSensor"],
-			["R", "distância do sensor ultrasom %d.port", "getUltrasonic", "Port1"],
-			["R", "segue linha %d.port", "getLinefollower", "Port1"],
+			["R", "sensor de luz onBoard"																								, "getLightSensor"],
+			["R", "distância do sensor ultrasom %d.port"																, "getUltrasonic", "Port1"],
+			["R", "segue linha %d.port"																									, "getLinefollower", "Port1", getLine()],
 			["-"],
-			["R", "controle remoto %m.ircodes pressionado", "getIrRemote", "A"],
+			["R", "controle remoto %m.ircodes pressionado"															, "getIrRemote", "A"],
 			["-"],
-			["R", "cronômetro", "getTimer", "0"],
-			[" ", "zerar cronômetro", "resetTimer", "0"]
+			["R", "cronômetro"																													, "getTimer", "0"],
+			[" ", "zerar cronômetro"																										, "resetTimer", "0"]
 		],
 		menus: {
 			motorPort: ["M1", "M2"],
