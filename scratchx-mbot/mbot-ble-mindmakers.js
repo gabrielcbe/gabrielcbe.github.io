@@ -68,7 +68,7 @@
 			}
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
-			if(lastultrasound != ultrasound){
+			if(Math.abs(lastultrasound - ultrasound) > 10 ){
 				lastultrasound = ultrasound;
 				console.log('line:',+ultrasound);
 				console.log('e tem tipo');
@@ -76,7 +76,7 @@
 			}
 		} else if (componente==LIGHTSENSOR) {
 			light = Math.trunc(parseInt(valor));
-			if(lastlight != light){
+			if(Math.abs(lastlight - light) > 10 ){
 				lastlight = light;
 				console.log('line:',+light);
 				console.log('e tem tipo');
