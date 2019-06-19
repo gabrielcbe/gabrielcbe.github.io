@@ -1,5 +1,5 @@
 (function(ext) {
-	//4.8 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//4.9 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -68,7 +68,7 @@
 			}
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
-			if(Math.abs(lastultrasound - ultrasound) > 10 ){
+			if(Math.abs(lastultrasound - ultrasound) > 5 ){
 				lastultrasound = ultrasound;
 				console.log('line:',+ultrasound);
 				console.log('e tem tipo');
@@ -76,7 +76,7 @@
 			}
 		} else if (componente==LIGHTSENSOR) {
 			light = Math.trunc(parseInt(valor));
-			if(Math.abs(lastlight - light) > 10 ){
+			if(Math.abs(lastlight - light) > 5 ){
 				lastlight = light;
 				console.log('line:',+light);
 				console.log('e tem tipo');
@@ -116,7 +116,7 @@
 			clienteConectadoMBOT=true;
 
 			window.socket.send(msg);
-			console.log('ext.cnct: '+msg);
+			console.log('statusConnection: '+msg);
 			myStatus = 2;
 
 			// change status light from yellow to green
@@ -644,7 +644,7 @@
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue"			, "runMotor", "M1", 0],
 			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue"	, "runServo", "1", "1", 90],
 			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value"		, "runLed" , "todos", 0, 0, 0],
-			[" ", "tocar tom na nota %d.note batida %d.beats"														, "runBuzzer", "C4", "Metade"],
+			[" ", "tocar tom na nota %d.note batida %d.beats"				, "runBuzzer", "C4", "Metade"],
 			["-"],
 			["h", "quando botão onBoard %m.buttonStatus"					, "whenButtonPressed", "pressionado"],
 			["R", "botão onBoard %m.buttonStatus"						, "getButtonOnBoard", "pressionado"],
@@ -664,7 +664,8 @@
 			index: ["todos", 1, 2],
 			port: ["Port1", "Port2", "Port3", "Port4"],
 			aport: ["1","2","3","4"],
-			direction: ["andar para a frente", "andar para trás", "virar à direita", "virar à esquerda"],
+			direction: ["andar para a frente", "andar para trás", 
+				    "virar à direita", "virar à esquerda"],
 			note: ["C2", "D2", "E2", "F2", "G2", "A2", "B2", 
 			       "C3", "D3", "E3", "F3", "G3", "A3", "B3", 
 			       "C4", "D4", "E4", "F4", "G4", "A4", "B4", 
