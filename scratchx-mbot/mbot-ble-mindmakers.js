@@ -49,9 +49,9 @@
 		return light;
 	}
 	
-	var lastline;
-	var lastultrasound;
-	var lastlight;
+	var lastline=0;
+	var lastultrasound=0;
+	var lastlight=0;
 	var lastbutton;
 	var lastir;
 
@@ -69,6 +69,8 @@
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
 			var x = lastultrasound - ultrasound;
+			console.log(typeof(lastultrasound));
+			console.log(typeof(ultrasound));
 			console.log('x:',+x);
 			if(Math.abs(x) > 5 ){
 				lastultrasound = ultrasound;
