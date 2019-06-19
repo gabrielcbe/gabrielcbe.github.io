@@ -1,5 +1,5 @@
 (function(ext) {
-	//5.2 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//5.3 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -32,15 +32,15 @@
 
 
 	// 0,1,2 ou 3
-	var line;
+	var line=0;
 	// 0 a 1000
-	var light;
+	var light=0;
 	// pressed ou released
 	var button;
 	// tecla
 	var ir;
 	// 0 a 400 cm
-	var ultrasound;
+	var ultrasound=0;
 
 	function getLine() {
 		return line;
