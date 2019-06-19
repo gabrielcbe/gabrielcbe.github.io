@@ -1,5 +1,5 @@
 (function(ext) {
-	//5.3 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//5.4 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -77,28 +77,25 @@
 		} else if (componente==LIGHTSENSOR) {
 			light = Math.trunc(parseFloat(valor));
 			var y = lastlight - light;
-			console.log('y:',+y);
 			if(Math.abs(y) > 5 ){
 				lastlight = light;
 				console.log('light:',+light);
-				console.log('e tem tipo');
-				console.log(typeof(light));
+				console.log('e tem tipo:',typeof(light));
 			}
 		} else if (componente==BUTTON) {
 			button = valor;
 			if(lastbutton != button){
 				lastbutton = button;
 				console.log('button:',+button);
-				console.log('e tem tipo');
-				console.log(typeof(button));
+				console.log('e tem tipo:',typeof(button));
 			}
 		} else if (componente==IRSENSOR) {
 			ir = valor;
 			if(lastir != ir){
 				lastir = ir;
 				console.log('ir:',+ir);
-				console.log('e tem tipo');
-				console.log(typeof(ir));
+				console.log('e tem tipo:',typeof(ir));
+
 			}
 		}
 	}
