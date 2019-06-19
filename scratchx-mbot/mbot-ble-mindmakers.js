@@ -1,5 +1,5 @@
 (function(ext) {
-	//4.9 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//5.0 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -68,7 +68,8 @@
 			}
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
-			if(Math.abs(lastultrasound - ultrasound) > 5 ){
+			var x = lastultrasound - ultrasound;
+			if(Math.abs(x) > 5 ){
 				lastultrasound = ultrasound;
 				console.log('line:',+ultrasound);
 				console.log('e tem tipo');
@@ -76,7 +77,8 @@
 			}
 		} else if (componente==LIGHTSENSOR) {
 			light = Math.trunc(parseInt(valor));
-			if(Math.abs(lastlight - light) > 5 ){
+			var y = lastlight - light;
+			if(Math.abs(y) > 5 ){
 				lastlight = light;
 				console.log('line:',+light);
 				console.log('e tem tipo');
