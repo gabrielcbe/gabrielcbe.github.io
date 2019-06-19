@@ -560,7 +560,7 @@
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar light: ',+light);
-			return JSON.stringify(light)
+			return light
 		}
 	}
 	ext.getUltrasonic = function(port, callback) {
@@ -580,7 +580,7 @@
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar ultrasound: ',+ultrasound);
-			return JSON.stringify(ultrasound)
+			return ultrasound
 		}
 	}
 	ext.getLinefollower = function(port, callback) {
@@ -600,7 +600,7 @@
 		// 	alert("Server Not Connected");
 		// }else {
 			console.log('vai retornar line:',+line);
-			return JSON.stringify(line)
+			return line
 		//}
 	}
 	ext.getIrRemote = function(code, callback) {
@@ -625,7 +625,7 @@
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar ir: ',+ir);
-			return ir
+			return callback
 		}
 	}
 	ext._shutdown = function () {
@@ -655,7 +655,7 @@
 			["-"],
 			["R", "sensor de luz onBoard"							, "getLightSensor"],
 			["R", "distância do sensor ultrasom %d.port"					, "getUltrasonic", "Port1"],
-			["R", "segue linha %d.port"							, "getLinefollower", "Port1", getLine()],
+			["R", "segue linha %d.port"							, "getLinefollower", "Port1"],
 			["-"],
 			["R", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
 			["-"],
