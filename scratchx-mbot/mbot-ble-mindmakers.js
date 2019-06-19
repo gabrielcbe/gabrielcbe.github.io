@@ -67,7 +67,7 @@
 				console.log(typeof(line));
 			}
 		} else if (componente==ULTRASOUNDSENSOR) {
-			ultrasound=Math.trunc(parseInt(valor));
+			ultrasound=Math.trunc(parseFloat(valor));
 			var x = lastultrasound - ultrasound;
 			if(Math.abs(x) > 5 ){
 				lastultrasound = ultrasound;
@@ -75,7 +75,7 @@
 				console.log('e tem tipo:',typeof(ultrasound));
 			}
 		} else if (componente==LIGHTSENSOR) {
-			light = Math.trunc(parseInt(valor));
+			light = Math.trunc(parseFloat(valor));
 			var y = lastlight - light;
 			console.log('y:',+y);
 			if(Math.abs(y) > 5 ){
