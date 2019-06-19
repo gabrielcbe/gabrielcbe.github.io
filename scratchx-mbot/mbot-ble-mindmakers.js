@@ -1,5 +1,5 @@
 (function(ext) {
-	//5.1 teste simplificação codigo e conexão automatica WebSocket e teste getLine
+	//5.2 teste simplificação codigo e conexão automatica WebSocket e teste getLine
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -69,14 +69,10 @@
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseInt(valor));
 			var x = lastultrasound - ultrasound;
-			console.log(typeof(lastultrasound));
-			console.log(typeof(ultrasound));
-			console.log('x:',+x);
 			if(Math.abs(x) > 5 ){
 				lastultrasound = ultrasound;
-				console.log('line:',+ultrasound);
-				console.log('e tem tipo');
-				console.log(typeof(ultrasound));
+				console.log('ultrasound:',+ultrasound);
+				console.log('e tem tipo:',typeof(ultrasound));
 			}
 		} else if (componente==LIGHTSENSOR) {
 			light = Math.trunc(parseInt(valor));
@@ -84,7 +80,7 @@
 			console.log('y:',+y);
 			if(Math.abs(y) > 5 ){
 				lastlight = light;
-				console.log('line:',+light);
+				console.log('light:',+light);
 				console.log('e tem tipo');
 				console.log(typeof(light));
 			}
@@ -92,7 +88,7 @@
 			button = valor;
 			if(lastbutton != button){
 				lastbutton = button;
-				console.log('line:',+button);
+				console.log('button:',+button);
 				console.log('e tem tipo');
 				console.log(typeof(button));
 			}
@@ -100,7 +96,7 @@
 			ir = valor;
 			if(lastir != ir){
 				lastir = ir;
-				console.log('line:',+ir);
+				console.log('ir:',+ir);
 				console.log('e tem tipo');
 				console.log(typeof(ir));
 			}
