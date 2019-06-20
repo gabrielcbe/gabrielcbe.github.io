@@ -1,5 +1,5 @@
 (function(ext) {
-	//5.8 teste retorno de valores das funções
+	//5.9 teste retorno de valores das funções
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -311,7 +311,7 @@
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar light: ',+light);
-			return digital_inputs[parseInt(light)]
+			return light
 		}
 	}
 	ext.getUltrasonic = function(port, callback) {
@@ -330,7 +330,7 @@
 		 	alert("Server Not Connected");
 		 }else {
 			console.log('vai retornar line:',+line);
-			return digital_inputs[parseInt(line)]
+			return parseInt(line)
 		 }
 	}
 	ext.getIrRemote = function(code, callback) {
