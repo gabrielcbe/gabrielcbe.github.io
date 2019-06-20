@@ -1,5 +1,5 @@
 (function(ext) {
-	//5.9 teste retorno de valores das funções
+	//6.0 agora vai
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -310,27 +310,26 @@
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
-			console.log('vai retornar light: ',+light);
+			//console.log('vai retornar light: ',+light);
 			return light
 		}
 	}
-	ext.getUltrasonic = function(port, callback) {
+	ext.getUltrasonic = function() {
 		//console.log('getUltrasonic', +digital_inputs[parseInt(ultrasound)]);
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar ultrasound: ',+ultrasound);
-			var resultado = digital_inputs[parseInt(ultrasound)]
-			callback(resultado);
+			return ultrasound
 		}
 	}
-	ext.getLinefollower = function(port, callback) {
-		console.log('getLinefollower', +digital_inputs[parseInt(ultrasound)]);
+	ext.getLinefollower = function() {
+		//console.log('getLinefollower', +digital_inputs[parseInt(ultrasound)]);
 		 if (connected == false) {
 		 	alert("Server Not Connected");
 		 }else {
 			console.log('vai retornar line:',+line);
-			return parseInt(line)
+			return line
 		 }
 	}
 	ext.getIrRemote = function(code, callback) {
@@ -338,7 +337,7 @@
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar ir: ',+ir);
-			return digital_inputs[parseInt(ir)]
+			return ir
 		}
 	}
 	ext._shutdown = function () {
