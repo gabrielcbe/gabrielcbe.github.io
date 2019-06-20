@@ -1,5 +1,5 @@
 (function(ext) {
-	//5.6 teste retorno de valores das funções
+	//5.7 teste retorno de valores das funções
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -154,13 +154,8 @@
 
 				var componenteValor = message.data.split(',');
 				recebeValor(componenteValor[0],componenteValor[1]);
-				//console.log('caiu no else');
 				//console.log('caiu no else, recebeu: '+componenteValor);
 
-
-				//olhar se é só chamar ou precisa de parametro
-				//precisa mesmo colocar isso aqui.
-				onMsgApp(message);
 
 			}
 			clienteConectadoMBOT=true;
@@ -233,225 +228,9 @@
 
 	//----Termina websocket----//
 
-	var poller = null;
-	var device = null;
-	var status = false;
-	var _selectors = {};
-	var _buffer = [];
-	var _isParseStartIndex = 0;
-	var _isParseStart = false;
-	var ports = {
-		Port1: 1,
-		Port2: 2,
-		Port3: 3,
-		Port4: 4,
-		M1: 9,
-		M2: 10,
-		'on board': 7,
-		'led on board': 8
-	};
-	var slots = {
-		Slot1: 1,
-		Slot2: 2
-	};
-	var buttonStatus = {
-		pressed: 0,
-		released: 1
-	}
-	var ircodes = {
-		"A": 45,
-		"B": 70,
-		"C": 71,
-		"D": 68,
-		"E": 67,
-		"F": 13,
-		"↑": 64,
-		"↓": 25,
-		"←": 7,
-		"→": 9,
-		"R0": 22,
-		"R1": 12,
-		"R2": 24,
-		"R3": 94,
-		"R4": 8,
-		"R5": 28,
-		"R6": 90,
-		"R7": 66,
-		"R8": 82,
-		"R9": 74
-	};
-	var __irCodes = [];
-	for (var key in ircodes) {
-		__irCodes.push(ircodes[key]);
-	}
-
-	function onParse(byte){
-		position = 0
-		value = 0
-		_buffer.push(byte);
-		var len = _buffer.length;
-		if(len>= 2){
-			if (_buffer[len-1]==0x55 && _buffer[len-2]==0xff){
-				_isParseStartIndex = len-2
-				_isParseStart = true;
-			}
-			if (_buffer[len-1]==0xa && _buffer[len-2]==0xd && _isParseStart == true){
-				_isParseStart = false;
-
-				var position = _isParseStartIndex+2;
-				var extId = _buffer[position];
-				position+=1;
-				var type = _buffer[position];
-				position+=1;
-				var value = 0;
-				// 1 byte 2 float 3 short 4 len+string 5 double
-
-				if (type == 1){
-					value = _buffer[position];
-				}
-				if (type == 2){
-					value = readFloat(position);
-					if(value<-255 || value>1023){
-						value = 0;
-					}
-				}
-				if (type == 3){
-					value = readShort(position);
-				}
-				if (type == 4){
-					value = readString(position);
-				}
-				if (type == 5){
-					value = readDouble(position);
-				}
-				if(type<=5){
-					if(value!=null){
-						_selectors["value_"+extId] = value;
-					}
-					_selectors["callback_"+extId](value);
-				}
-				_buffer = []
-			}
-		}
-	}
-	function readFloat(position){
-		var buf = new ArrayBuffer(4);
-		var intView = new Uint8Array(buf);
-		var floatView = new Float32Array(buf);
-		for(var i=0;i<4;i++){
-			intView[i] = _buffer[position+i];
-		}
-		return floatView[0];
-	}
-	function readShort(position){
-		var buf = new ArrayBuffer(2);
-		var intView = new Uint8Array(buf);
-		var shortView = new Int16Array(buf);
-		for(var i=0;i<2;i++){
-			intView[i] = _buffer[position+i];
-		}
-		return shortView[0];
-	}
-	function readString(position){
-		var l = _buffer[position]
-		position+=1
-		s = ""
-		for(var i=0;i<l;i++){
-			s += self.buffer[position+i].charAt(0)
-		}
-		return s
-	}
-	function readDouble(position){
-		var buf = new ArrayBuffer(8);
-		var intView = new Uint8Array(buf);
-		var doubleView = new Float64Array(buf);
-		for(var i=0;i<8;i++){
-			intView[i] = _buffer[position+i];
-		}
-		return doubleView[0];
-	}
-	function short2array(v){
-		var buf = new ArrayBuffer(2);
-		var intView = new Uint8Array(buf);
-		var shortView = new Int16Array(buf);
-		shortView[0] = v;
-		return [intView[0],intView[1]];
-	}
-	function float2array(v){
-		var buf = new ArrayBuffer(4);
-		var intView = new Uint8Array(buf);
-		var floatView = new Float32Array(buf);
-		floatView[0] = v;
-		return [intView[0],intView[1],intView[2],intView[3]];
-	}
-	function string2array(v){
-		var arr = v.split("");
-		for(var i=0;i<arr.length;i++){
-			arr[i] = arr[i].charCodeAt(0);
-		}
-		console.log(arr);
-		return arr;
-	}
-
-	var lastWritten = 0;
-	var _buffers = [];
-	var _isWaiting = false;
-
-	function addPackage(buffer, callback) {
-		_buffers.push(buffer);
-		//console.log('addPackage(_buffers): '+_buffers);
-		var extId = buffer[4];
-		setTimeout(function() {
-			_selectors["value_" + extId] = callback;
-		}, 100);
-		console.log('addPackage(_selectors): '+_selectors);
-		writePackage();
-	}
-
-	function writePackage() {
-		if (_buffers.length > 0 && _isWaiting == false) {
-			_isWaiting = true;
-			var buffer = _buffers[0];
-			_buffers.shift();
-			var msg = {};
-			msg.buffer = buffer;
-			console.log('addPackwritePackageage(msg.buffer): '+msg.buffer);
-			window.socket.send(msg);
-			console.log('addPackwritePackageage(msg): '+msg);
-			//mConnection.postMessage(msg);
-			setTimeout(function() {
-				_isWaiting = false;
-				writePackage();
-			}, 20);
-		}
-	}
-	var arrayBufferFromArray = function(data) {
-		//console.log('arrayBufferFromArray(data): '+data);
-		var result = new Int8Array(data.length);
-		for (var i = 0; i < data.length; i++) {
-			result[i] = data[i];
-		}
-		console.log('arrayBufferFromArray(result): '+result);
-		return data;
-	}
-
-	function onMsgApp(msg) {
-		//ver o que tem ser passado aqui ou deve tratar que nem no server
-		//console.log('onMsgAppMsg.data: '+msg.data);
-
-		//console.log('onMsgAppMsg.buffer: '+msg.buffer);
-		var buffer = msg.data;
-		for (var i = 0; i < buffer.length; i++) {
-			onParse(buffer[i]);
-		}
-	};
 
 	//************* mBot Blocks ***************//
 
-	function genNextID(port, slot) {
-		var nextID = port * 4 + slot;
-		return nextID;
-	}
 	ext.runBot = function(speed) {
 		//funcionando
 		if (speed >= 0) {
@@ -520,51 +299,14 @@
 		}
 	}
 	ext.getButtonOnBoard = function(status, callback) {
-		if (typeof status == "string") {
-			status = buttonStatus[status];
-		}
-		var deviceId = 31;
-		var port = 7;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = function(v) {
-			callback(status == 1 ? v > 500 : v < 500);
-		}
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
+		alert('getButtonOnBoard não funciona ainda');
 	}
-	var _lastTime = 0;
-	var _lastButtonStatus = [false, false];
+	
 	ext.whenButtonPressed = function(status, callback) {
-		if (typeof status == "string") {
-			status = buttonStatus[status];
-		}
-		if (new Date().getTime() - _lastTime > 150) {
-			_lastTime = new Date().getTime();
-			var deviceId = 31;
-			var port = 7;
-			var extId = genNextID(port, status);
-			var data = [extId, 0x01, deviceId, port];
-			data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-			_selectors["callback_" + extId] = function(v) {
-				_lastButtonStatus[0] = status == 1 ? v > 500 : v < 500;
-				_lastButtonStatus[1] = !_lastButtonStatus[status];
-			}
-			addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-		}
-		return _lastButtonStatus[status];
+		alert('whenButtonPressed não funciona ainda');
 	}
-	ext.getLightSensor = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 3;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-
+	ext.getLightSensor = function() {
+		//console.log('whenButtonPressed não funciona ainda');
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
@@ -573,18 +315,7 @@
 		}
 	}
 	ext.getUltrasonic = function(port, callback) {
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 1;
-		var extId = 0; //genNextID(port,0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = function(v) {
-			callback(Math.floor(v * 100.0) / 100.0);
-		}
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-
+		//console.log('getUltrasonic', +digital_inputs[parseInt(ultrasound)]);
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
@@ -593,43 +324,15 @@
 		}
 	}
 	ext.getLinefollower = function(port, callback) {
-		//se tirar so pega uma vez
-		if (typeof port == "string") {
-			port = ports[port];
-		}
-		var deviceId = 17;
-		var extId = genNextID(port, 0);
-		var data = [extId, 0x01, deviceId, port];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-		//ate aqui.
-
-		// if (connected == false) {
-		// 	alert("Server Not Connected");
-		// }else {
-		console.log('vai retornar line:',+line);
-		return digital_inputs[parseInt(line)]
-		//}
+		console.log('getLinefollower', +digital_inputs[parseInt(ultrasound)]);
+		 if (connected == false) {
+		 	alert("Server Not Connected");
+		 }else {
+			console.log('vai retornar line:',+line);
+			return digital_inputs[parseInt(line)]
+		 }
 	}
 	ext.getIrRemote = function(code, callback) {
-		var deviceId = 14;
-		if (typeof code == "string") {
-			code = ircodes[code];
-		}
-		var port = 11;
-		var slot = __irCodes.indexOf(code);
-		var halfSize = __irCodes.length >> 1;
-		if (slot >= halfSize) {
-			++port;
-			slot -= halfSize;
-		}
-		var extId = genNextID(port, slot);
-		var data = [extId, 0x01, deviceId, 0, code];
-		data = [data.length + 3, 0xff, 0x55, data.length].concat(data);
-		_selectors["callback_" + extId] = callback;
-		addPackage(arrayBufferFromArray(data), _selectors["callback_" + extId]);
-
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
@@ -642,7 +345,6 @@
 		var msg = JSON.stringify({
 			"command": "shutdown"
 		});
-		if (poller) poller = clearInterval(poller);
 		status = false;
 		window.socket.send(msg);
 
