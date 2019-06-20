@@ -1,5 +1,5 @@
 (function(ext) {
-	//5.7 teste retorno de valores das funções
+	//5.8 teste retorno de valores das funções
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -320,7 +320,8 @@
 			alert("Server Not Connected");
 		}else {
 			console.log('vai retornar ultrasound: ',+ultrasound);
-			return digital_inputs[parseInt(ultrasound)]
+			var resultado = digital_inputs[parseInt(ultrasound)]
+			callback(resultado);
 		}
 	}
 	ext.getLinefollower = function(port, callback) {
@@ -364,11 +365,11 @@
 			["h", "quando botão onBoard %m.buttonStatus"					, "whenButtonPressed", "pressionado"],
 			["R", "botão onBoard %m.buttonStatus"						, "getButtonOnBoard", "pressionado"],
 			["-"],
-			["R", "sensor de luz onBoard"							, "getLightSensor"],
-			["R", "distância do sensor ultrasom %d.port"					, "getUltrasonic", "Port1"],
-			["R", "segue linha %d.port"							, "getLinefollower", "Port1"],
+			["r", "sensor de luz onBoard"							, "getLightSensor"],
+			["r", "distância do sensor ultrasom %d.port"					, "getUltrasonic", "Port1"],
+			["r", "segue linha %d.port"							, "getLinefollower", "Port1"],
 			["-"],
-			["R", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
+			["r", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
 			["-"],
 			["R", "cronômetro"								, "getTimer", "0"],
 			[" ", "zerar cronômetro"							, "resetTimer", "0"]
