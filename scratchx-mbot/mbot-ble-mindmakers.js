@@ -1,5 +1,5 @@
 (function(ext) {
-	//6.1 Quase la
+	//6.2 wrapping-up
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -30,29 +30,19 @@
 	const LEDBOTH='ledboth';
 	const PLAYNOTE='playnote';
 
-
 	// 0,1,2 ou 3
 	var line=0;
 	// 0 a 1000
 	var light=0;
-	// pressed ou released
-	var button;
-	// tecla
-	var ir;
 	// 0 a 400 cm
 	var ultrasound=0;
-
-	function getLine() {
-		return line;
-	}
-	function getLight() {
-		return light;
-	}
-
-	var lastline=0;
-	var lastultrasound=0;
-	var lastlight=0;
+	
+	// pressed ou released
+	var button;
 	var lastbutton;
+	
+	// tecla
+	var ir;
 	var lastir;
 
 	function recebeValor (componente,valor) {
@@ -60,28 +50,10 @@
 		//console.log('valor',valor);
 		if (componente==LINESENSOR) {
 			line=parseInt(valor);
-			if(lastline != line){
-				lastline = line;
-				console.log('line:',+line);
-				console.log('e tem tipo');
-				console.log(typeof(line));
-			}
 		} else if (componente==ULTRASOUNDSENSOR) {
 			ultrasound=Math.trunc(parseFloat(valor));
-			var x = lastultrasound - ultrasound;
-			if(Math.abs(x) > 5 ){
-				lastultrasound = ultrasound;
-				console.log('ultrasound:',+ultrasound);
-				console.log('e tem tipo:',typeof(ultrasound));
-			}
 		} else if (componente==LIGHTSENSOR) {
 			light = Math.trunc(parseFloat(valor));
-			var y = lastlight - light;
-			if(Math.abs(y) > 5 ){
-				lastlight = light;
-				console.log('light:',+light);
-				console.log('e tem tipo:',typeof(light));
-			}
 		} else if (componente==BUTTON) {
 			button = valor;
 			if(lastbutton != button){
@@ -95,7 +67,6 @@
 				lastir = ir;
 				console.log('ir:',+ir);
 				console.log('e tem tipo:',typeof(ir));
-
 			}
 		}
 	}
@@ -105,7 +76,7 @@
 	function statusConnection (callback) {
 
 		window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
-		console.log('WebSocket Client Connected');
+		console.log('WebSocket Client Trying to Connect');
 
 		window.socket.onopen = function () {
 			var msg = JSON.stringify({
@@ -115,18 +86,18 @@
 			clienteConectadoMBOT=true;
 
 			window.socket.send(msg);
-			console.log('statusConnection: '+msg);
+			console.log('WebSocket Client Connected');
+			
 			myStatus = 2;
-
 			// change status light from yellow to green
 			myMsg = 'ready';
+			
 			connected = true;
-
 			// give the connection time establish
 			window.setTimeout(function() {
+				//não sei se precisa desse callback
 				callback();
 			}, 1000);
-
 		};
 
 		window.socket.onmessage = function (message) {
@@ -137,30 +108,18 @@
 			//console.log('recebeu '+message.data);
 
 			if (message.data.toLowerCase().indexOf('desconectado')> -1) {
-
 				registraDesconexaoMBOT(message.data);
-
 			} else if (message.data.indexOf('conectado')>-1) {
-
 				setTimeout(function(){ registraConexaoMBOT(message.data); },1000);
-
 			} else if (message.data.indexOf('COMANDO_FINAL')>-1) {
-
 				// Indica finais de execução
 				endReturn();
-
-			}
-			else {
-
+			} else {
 				var componenteValor = message.data.split(',');
-				recebeValor(componenteValor[0],componenteValor[1]);
 				//console.log('caiu no else, recebeu: '+componenteValor);
-
-
+				recebeValor(componenteValor[0],componenteValor[1]);
 			}
 			clienteConectadoMBOT=true;
-
-			//console.log('recebeu '+message.data)
 		};
 
 		window.socket.onerror = function() {
@@ -169,7 +128,7 @@
 		};
 
 		window.socket.onclose = function (e) {
-			console.log("Connection closed.");
+			//console.log("Connection closed.");
 			socket = null;
 			connected = false;
 			myStatus = 1;
@@ -179,7 +138,7 @@
 			clienteConectadoMBOT=false;
 			registraDesconexaoMBOT();
 
-			//tenta reconectar
+			//tenta reconectar ao fechar a conexão
 			setTimeout(statusConnection, 3000);
 		};
 
@@ -188,12 +147,11 @@
 		}
 	};
 
-	//chama a primeira vez
+	//1st time calling function
 	statusConnection();
 
 	function registraConexaoMBOT(dado) {
-		//alert('entrou para registrar');
-		// Recebe macaddress da unidade e sala correntemente registrada
+		//Recebe macaddress da unidade e sala correntemente registrada
 		//console.log(dado);
 		var msg = dado.split(',');
 		var mac = msg[0].substring(10).toUpperCase();
@@ -209,28 +167,17 @@
 		}
 		servidorMBOTConectado=true;
 	}
+	
 	function registraDesconexaoMBOT(dado) {
 		console.log('entrou para deregistrar');
 		servidorMBOTConectado=false;
 	}
-
-	// function enviaComando(com,val) {
-	// 	console.log('entrou enviaComando: ');
-	//
-	// 	if (window.socket.readyState !== window.socket.OPEN) {
-	// 		alert('O serviço de conexão do mBot não está ativo!');
-	// 		return;
-	// 	}
-	// 	console.log('vai enviar '+com+' val='+val);
-	// 	window.socket.send(JSON.stringify({comando:com,valor:val}));
-	//
-	// }
-
+	
 	//----Termina websocket----//
 
 
-	//************* mBot Blocks ***************//
-
+	//-----mBot Blocks----//
+	
 	ext.runBot = function(speed) {
 		//funcionando
 		if (speed >= 0) {
@@ -298,13 +245,16 @@
 			console.log('entrou em nada');
 		}
 	}
+	
 	ext.getButtonOnBoard = function(status, callback) {
+		//TODO
 		alert('getButtonOnBoard não funciona ainda');
 	}
-	
 	ext.whenButtonPressed = function(status, callback) {
+		//TODO
 		alert('whenButtonPressed não funciona ainda');
 	}
+	
 	ext.getLightSensor = function() {
 		//funcionando
 		if (connected == false) {
@@ -324,7 +274,7 @@
 		}
 	}
 	ext.getLinefollower = function() {
-		//funcionando, talvez pode ser melhorado a frequencia
+		//funcionando, talvez pode ser melhorado a frequência de captura
 		 if (connected == false) {
 		 	alert("Server Not Connected");
 		 }else {
@@ -333,6 +283,7 @@
 		 }
 	}
 	ext.getIrRemote = function(code, callback) {
+		//TODO - Test it
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
@@ -340,6 +291,7 @@
 			return ir
 		}
 	}
+	
 	ext._shutdown = function () {
 		console.log('_shutdown ');
 		var msg = JSON.stringify({
