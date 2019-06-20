@@ -1,5 +1,5 @@
 (function(ext) {
-	//6.0 agora vai
+	//6.1 Quase la
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -306,7 +306,7 @@
 		alert('whenButtonPressed não funciona ainda');
 	}
 	ext.getLightSensor = function() {
-		//console.log('whenButtonPressed não funciona ainda');
+		//funcionando
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
@@ -315,20 +315,20 @@
 		}
 	}
 	ext.getUltrasonic = function() {
-		//console.log('getUltrasonic', +digital_inputs[parseInt(ultrasound)]);
+		//funcionando
 		if (connected == false) {
 			alert("Server Not Connected");
 		}else {
-			console.log('vai retornar ultrasound: ',+ultrasound);
+			//console.log('vai retornar ultrasound: ',+ultrasound);
 			return ultrasound
 		}
 	}
 	ext.getLinefollower = function() {
-		//console.log('getLinefollower', +digital_inputs[parseInt(ultrasound)]);
+		//funcionando, talvez pode ser melhorado a frequencia
 		 if (connected == false) {
 		 	alert("Server Not Connected");
 		 }else {
-			console.log('vai retornar line:',+line);
+			//console.log('vai retornar line:',+line);
 			return line
 		 }
 	}
@@ -357,7 +357,7 @@
 		blocks: [
 			[" ", "mover motores %d.motorvalue"						, "runBot", 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue"			, "runMotor", "M1", 0],
-			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue"	, "runServo", "1", "1", 90],
+			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue"	, "runServo", "2", "1", 90],
 			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value"		, "runLed" , "todos", 0, 0, 0],
 			[" ", "tocar tom na nota %d.note batida %d.beats"				, "runBuzzer", "C4", "Metade"],
 			["-"],
@@ -365,8 +365,8 @@
 			["R", "botão onBoard %m.buttonStatus"						, "getButtonOnBoard", "pressionado"],
 			["-"],
 			["r", "sensor de luz onBoard"							, "getLightSensor"],
-			["r", "distância do sensor ultrasom %d.port"					, "getUltrasonic", "Port1"],
-			["r", "segue linha %d.port"							, "getLinefollower", "Port1"],
+			["r", "distância do sensor ultrasom na porta 3"					, "getUltrasonic"],
+			["r", "segue linha na porta 2"							, "getLinefollower"],
 			["-"],
 			["r", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
 			["-"],
