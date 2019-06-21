@@ -1,6 +1,6 @@
 (function(ext) {
 	//MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-	//v1.5
+	//v1.0
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -75,7 +75,7 @@
 
 	//----Inicia websocket----//
 
-	function statusConnection (callback) {
+	function statusConnection () {
 
 		window.socket = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
 		console.log('WebSocket Client Trying to Connect');
@@ -98,7 +98,7 @@
 			// give the connection time establish
 			window.setTimeout(function() {
 				//não sei se precisa desse callback
-				callback();
+				//callback();
 			}, 1000);
 		};
 
@@ -179,12 +179,9 @@
 
 
 	//-----mBot Blocks----//
-	var count = 0;
 
 	ext.runBot = function(speed) {
 		//funcionando
-		var count = count + 1;
-		if(count < 5){
 		var now = +new Date();
 		if (now - lastmsg > 500) { // 500ms
 			lastmsg = now;
@@ -199,12 +196,11 @@
 				window.socket.send(JSON.stringify({comando:DCMOTORS,valor:speed+",0,0"}));
 			} else  {
 				speed = -speed;
-				console.log('speed else' ,+speed);
+				//console.log('speed else' ,+speed);
 				window.socket.send(JSON.stringify({comando:DCMOTORS_BACK,valor:speed+",0,0"}));
 			}
 		}
-			count = 0;
-		}
+
 	}
 	ext.runMotor = function(port, speed) {
 		//funcionando
@@ -220,21 +216,21 @@
 			if (port == "M1") {
 				console.log('M1');
 				if (speed >= 0) {
-					console.log('speed >0');
+					//console.log('speed >0');
 					window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+','+speed}));
 				} else  {
 					speed = -speed;
-					console.log('speed else' ,+speed);
+					//console.log('speed else' ,+speed);
 					window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+','+speed}));
 				}
 			}else if (port == "M2") {
 				console.log('M2');
 				if (speed >= 0) {
-					console.log('speed >0');
+					//console.log('speed >0');
 					window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+','+speed}));
 				} else  {
 					speed = -speed;
-					console.log('speed else' ,+speed);
+					//console.log('speed else' ,+speed);
 					window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+','+speed}));
 				}
 			}else{
@@ -256,7 +252,7 @@
 	ext.runLed = function(index, red, green, blue) {
 		//funcionando
 		var now = +new Date();
-		if (now - lastmsg > 500) { // 500ms
+		if (now - lastmsg > 1000) { // 500ms
 			lastmsg = now;
 			if(red > 255){
 				red = 255;
@@ -267,7 +263,6 @@
 			if(blue > 255){
 				blue = 255;
 			}
-
 			if (index == "1") {
 				window.socket.send(JSON.stringify({comando:LEDLEFT,valor:red+","+green+","+blue}));
 			}else if (index == "2") {
@@ -279,27 +274,24 @@
 	}
 	ext.runBuzzer = function(tone, beat) {
 		//funcionando
-		var count = count + 1;
-		if(count < 5){
 		var now = +new Date();
-		if (now - lastmsg > 500) { // 500ms
+		if (now - lastmsg > 1000) { // 1000ms
 			lastmsg = now;
-			if (beat == "Quarto") {				
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/4'}));	
-			}else if (beat == "Oitavo") {	
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/8'}));	
-			}else if (beat == "Inteira") {	
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1'}));	
-			}else if (beat == "Dupla") {	
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',2'}));	
-			}else{	
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));	
+			if (beat == "Quarto") {
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/4'}));
+			}else if (beat == "Oitavo") {
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/8'}));
+			}else if (beat == "Inteira") {
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1'}));
+			}else if (beat == "Dupla") {
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',2'}));
+			}else{
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));
 			}
 		} else{
 			console.log('too fast');
 		}
-			count=0;
-		}
+
 	}
 
 	ext.getButtonOnBoard = function(status, callback) {
@@ -383,29 +375,29 @@
 			[" ", "zerar cronômetro"							, "resetTimer", "0"]
 		],
 		menus: {
-			motorPort: ["M1", "M2"],
-			slot: ["1", "2"],
-			index: ["todos", 1, 2],
-			port: ["Port1", "Port2", "Port3", "Port4"],
-			aport: ["1","2","3","4"],
-			direction: ["andar para a frente", "andar para trás",
-			"virar à direita", "virar à esquerda"],
-			note: ["C2", "D2", "E2", "F2", "G2", "A2", "B2",
-			"C3", "D3", "E3", "F3", "G3", "A3", "B3",
-			"C4", "D4", "E4", "F4", "G4", "A4", "B4",
-			"C5", "D5", "E5", "F5", "G5", "A5", "B5",
-			"C6", "D6", "E6", "F6", "G6", "A6", "B6",
-			"C7", "D7", "E7", "F7", "G7", "A7", "B7",
-			"C8", "D8"],
-			beats: ["Metade", "Quarto", "Oitavo", "Inteira", "Dupla"],
-			servovalue: [0, 45, 90, 135],
-			motorvalue: [255, 100, 75, 50, 0, -50, -75, -100, -255],
-			value: [0, 20, 60, 150, 255],
-			buttonStatus: ["pressionado", "liberado"],
-			ircode: ["A", "B", "C", "D", "E", "F",
-			"↑", "↓", "←", "→",
-			"Configuração",
-			"R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
+			motorPort: 	["M1", "M2"],
+			slot: 		["1", "2"],
+			index: 		["todos", 1, 2],
+			port: 		["Port1", "Port2", "Port3", "Port4"],
+			aport: 		["1","2","3","4"],
+			direction: 	["andar para a frente", "andar para trás",
+					"virar à direita", "virar à esquerda"],
+			note: 		["C2", "D2", "E2", "F2", "G2", "A2", "B2",
+					"C3", "D3", "E3", "F3", "G3", "A3", "B3",
+					"C4", "D4", "E4", "F4", "G4", "A4", "B4",
+					"C5", "D5", "E5", "F5", "G5", "A5", "B5",
+					"C6", "D6", "E6", "F6", "G6", "A6", "B6",
+					"C7", "D7", "E7", "F7", "G7", "A7", "B7",
+					"C8", "D8"],
+			beats: 		["Metade", "Quarto", "Oitavo", "Inteira", "Dupla"],
+			servovalue: 	[0, 45, 90, 135],
+			motorvalue: 	[255, 100, 75, 50, 0, -50, -75, -100, -255],
+			value: 		[0, 20, 60, 150, 255],
+			buttonStatus: 	["pressionado", "liberado"],
+			ircode: 	["A", "B", "C", "D", "E", "F",
+					"↑", "↓", "←", "→",
+					"Configuração",
+					"R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
 		},
 		url: 'http://gabrielcbe.github.io/scratchx-mbot/mbot-ble-mindmakers.js'
 	};
