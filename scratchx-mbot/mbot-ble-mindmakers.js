@@ -1,6 +1,6 @@
 (function(ext) {
 	//MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-	//v1.2
+	//v1.3
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -179,9 +179,12 @@
 
 
 	//-----mBot Blocks----//
+	var count = 0;
 
 	ext.runBot = function(speed) {
 		//funcionando
+		var count++;
+		if(count < 5){
 		var now = +new Date();
 		if (now - lastmsg > 500) { // 500ms
 			lastmsg = now;
@@ -199,6 +202,8 @@
 				console.log('speed else' ,+speed);
 				window.socket.send(JSON.stringify({comando:DCMOTORS_BACK,valor:speed+",0,0"}));
 			}
+		}
+			count = 0;
 		}
 	}
 	ext.runMotor = function(port, speed) {
@@ -274,23 +279,26 @@
 	}
 	ext.runBuzzer = function(tone, beat) {
 		//funcionando
-		if (beat == "Quarto") {
-			var beat = 1/4;
-		}else if (beat == "Oitavo") {
-			var beat = 1/8;
-		}else if (beat == "Inteira") {
-			var beat = 1;
-		}else if (beat == "Dupla") {
-			var beat = 2;
-		}else{
-			var beat = 1/2;
-		}
+		var count++;
+		if(count < 5){
 		var now = +new Date();
-		if (now - lastmsg > beat) { // bit less than fastest
+		if (now - lastmsg > 500) { // 500ms
 			lastmsg = now;
-			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+','+beat}));
+			if (beat == "Quarto") {				
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/4'}));	
+			}else if (beat == "Oitavo") {	
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/8'}));	
+			}else if (beat == "Inteira") {	
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1'}));	
+			}else if (beat == "Dupla") {	
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',2'}));	
+			}else{	
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));	
+			}
 		} else{
 			console.log('too fast');
+		}
+			count=0;
 		}
 	}
 
