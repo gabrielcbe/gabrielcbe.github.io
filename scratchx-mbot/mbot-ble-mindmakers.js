@@ -1,6 +1,6 @@
 (function(ext) {
 	//MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-	//v1.0
+	//v1.1
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -275,7 +275,7 @@
 	ext.runBuzzer = function(tone, beat) {
 		//funcionando
 		var now = +new Date();
-		if (now - lastmsg > 120) { // bit less than fastest
+		if (now - lastmsg > 1000) { // bit less than fastest
 			lastmsg = now;
 			if (beat == "Quarto") {
 				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/4'}));
@@ -288,6 +288,8 @@
 			}else{
 				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));
 			}
+		} else{
+			console.log('too fast');
 		}
 	}
 
