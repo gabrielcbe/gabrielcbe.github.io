@@ -1,5 +1,6 @@
 (function(ext) {
-	//6.2 wrapping-up
+	//MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
+	//v1.0
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -36,11 +37,11 @@
 	var light=0;
 	// 0 a 400 cm
 	var ultrasound=0;
-	
+
 	// pressed ou released
 	var button;
 	var lastbutton;
-	
+
 	// tecla
 	var ir;
 	var lastir;
@@ -87,11 +88,11 @@
 
 			window.socket.send(msg);
 			console.log('WebSocket Client Connected');
-			
+
 			myStatus = 2;
 			// change status light from yellow to green
 			myMsg = 'ready';
-			
+
 			connected = true;
 			// give the connection time establish
 			window.setTimeout(function() {
@@ -167,19 +168,25 @@
 		}
 		servidorMBOTConectado=true;
 	}
-	
+
 	function registraDesconexaoMBOT(dado) {
 		console.log('entrou para deregistrar');
 		servidorMBOTConectado=false;
 	}
-	
+
 	//----Termina websocket----//
 
 
 	//-----mBot Blocks----//
-	
+
 	ext.runBot = function(speed) {
 		//funcionando
+		if(speed > 255){
+			speed = 255;
+		}
+		if(speed < -255){
+			speed = -255;
+		}
 		if (speed >= 0) {
 			window.socket.send(JSON.stringify({comando:DCMOTORS,valor:speed+",0,0"}));
 		} else  {
@@ -190,6 +197,12 @@
 	}
 	ext.runMotor = function(port, speed) {
 		//funcionando
+		if(speed > 255){
+			speed = 255;
+		}
+		if(speed < -255){
+			speed = -255;
+		}
 		if (port == "M1") {
 			console.log('M1');
 			if (speed >= 0) {
@@ -216,11 +229,23 @@
 	}
 	ext.runServo = function(port, slot, angle) {
 		//funcionando
-		console.log('servo');
+		if(angle > 150){
+			red = 150;
+		}
 		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:port+','+slot+','+angle}));
 	}
 	ext.runLed = function(index, red, green, blue) {
 		//funcionando
+		if(red > 255){
+			red = 255;
+		}
+		if(green > 255){
+			green = 255;
+		}
+		if(blue > 255){
+			blue = 255;
+		}
+
 		if (index == "1") {
 			window.socket.send(JSON.stringify({comando:LEDLEFT,valor:red+","+green+","+blue}));
 		}else if (index == "2") {
@@ -231,9 +256,7 @@
 	}
 	ext.runBuzzer = function(tone, beat) {
 		//funcionando
-		if (beat == "Metade") {
-			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));
-		}else if (beat == "Quarto") {
+		if (beat == "Quarto") {
 			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/4'}));
 		}else if (beat == "Oitavo") {
 			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/8'}));
@@ -242,19 +265,19 @@
 		}else if (beat == "Dupla") {
 			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',2'}));
 		}else{
-			console.log('entrou em nada');
+			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));
 		}
 	}
-	
+
 	ext.getButtonOnBoard = function(status, callback) {
 		//TODO
-		alert('getButtonOnBoard não funciona ainda');
+		alert('getButtonOnBoard doesnt work yet');
 	}
 	ext.whenButtonPressed = function(status, callback) {
 		//TODO
-		alert('whenButtonPressed não funciona ainda');
+		alert('whenButtonPressed doesnt work yet');
 	}
-	
+
 	ext.getLightSensor = function() {
 		//funcionando
 		if (connected == false) {
@@ -283,15 +306,17 @@
 		 }
 	}
 	ext.getIrRemote = function(code, callback) {
-		//TODO - Test it
-		if (connected == false) {
-			alert("Server Not Connected");
-		}else {
-			console.log('vai retornar ir: ',+ir);
-			return ir
-		}
+		//TODO
+		alert('whenButtonPressed doesnt work yet');
+
+		// if (connected == false) {
+		// 	alert("Server Not Connected");
+		// }else {
+		// 	console.log('vai retornar ir: ',+ir);
+		// 	return ir
+		// }
 	}
-	
+
 	ext._shutdown = function () {
 		console.log('_shutdown ');
 		var msg = JSON.stringify({
@@ -299,7 +324,6 @@
 		});
 		status = false;
 		window.socket.send(msg);
-
 	};
 	ext._getStatus = function (status, msg) {
 		return {status: myStatus, msg: myMsg};
@@ -309,18 +333,18 @@
 		blocks: [
 			[" ", "mover motores %d.motorvalue"						, "runBot", 100],
 			[" ", "estabelecer motor%d.motorPort velocidade %d.motorvalue"			, "runMotor", "M1", 0],
-			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue"	, "runServo", "2", "1", 90],
+			[" ", "estabelecer servo Porta %d.aport Slot %d.slot ângulo %d.servovalue"	, "runServo", "1", "1", 90],
 			[" ", "estabelecer led onBoard %d.index R%d.value G%d.value B%d.value"		, "runLed" , "todos", 0, 0, 0],
 			[" ", "tocar tom na nota %d.note batida %d.beats"				, "runBuzzer", "C4", "Metade"],
-			["-"],
-			["h", "quando botão onBoard %m.buttonStatus"					, "whenButtonPressed", "pressionado"],
-			["R", "botão onBoard %m.buttonStatus"						, "getButtonOnBoard", "pressionado"],
+			//["-"],
+			//["h", "quando botão onBoard %m.buttonStatus"					, "whenButtonPressed", "pressionado"],
+			//["R", "botão onBoard %m.buttonStatus"						, "getButtonOnBoard", "pressionado"],
 			["-"],
 			["r", "sensor de luz onBoard"							, "getLightSensor"],
 			["r", "distância do sensor ultrasom na porta 3"					, "getUltrasonic"],
 			["r", "segue linha na porta 2"							, "getLinefollower"],
-			["-"],
-			["r", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
+			//["-"],
+			//["r", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
 			["-"],
 			["R", "cronômetro"								, "getTimer", "0"],
 			[" ", "zerar cronômetro"							, "resetTimer", "0"]
