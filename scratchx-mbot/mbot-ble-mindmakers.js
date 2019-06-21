@@ -1,6 +1,6 @@
 (function(ext) {
 	//MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-	//v1.1
+	//v1.2
 	var socket = null;
 	var connected = false;
 	var myStatus = 1; // initially yellow
@@ -183,7 +183,7 @@
 	ext.runBot = function(speed) {
 		//funcionando
 		var now = +new Date();
-		if (now - lastmsg > 200) { // 200ms
+		if (now - lastmsg > 500) { // 500ms
 			lastmsg = now;
 
 			if(speed > 255){
@@ -204,7 +204,7 @@
 	ext.runMotor = function(port, speed) {
 		//funcionando
 		var now = +new Date();
-		if (now - lastmsg > 200) { // 200ms
+		if (now - lastmsg > 500) { // 500ms
 			lastmsg = now;
 			if(speed > 255){
 				speed = 255;
@@ -240,7 +240,7 @@
 	ext.runServo = function(port, slot, angle) {
 		//funcionando
 		var now = +new Date();
-		if (now - lastmsg > 500) { // 500 ms
+		if (now - lastmsg > 1000) { // 1 s
 			lastmsg = now;
 			if(angle > 150){
 				red = 150;
@@ -274,20 +274,21 @@
 	}
 	ext.runBuzzer = function(tone, beat) {
 		//funcionando
+		if (beat == "Quarto") {
+			var beat = 1/4;
+		}else if (beat == "Oitavo") {
+			var beat = 1/8;
+		}else if (beat == "Inteira") {
+			var beat = 1;
+		}else if (beat == "Dupla") {
+			var beat = 2;
+		}else{
+			var beat = 1/2;
+		}
 		var now = +new Date();
-		if (now - lastmsg > 1000) { // bit less than fastest
+		if (now - lastmsg > beat) { // bit less than fastest
 			lastmsg = now;
-			if (beat == "Quarto") {
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/4'}));
-			}else if (beat == "Oitavo") {
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/8'}));
-			}else if (beat == "Inteira") {
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1'}));
-			}else if (beat == "Dupla") {
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',2'}));
-			}else{
-				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));
-			}
+			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+','+beat}));
 		} else{
 			console.log('too fast');
 		}
