@@ -45,6 +45,7 @@
 	// tecla
 	var ir;
 	var lastir;
+	var lastmsg = +new Date();;
 
 	function recebeValor (componente,valor) {
 		//console.log('componente',componente);
@@ -181,91 +182,112 @@
 
 	ext.runBot = function(speed) {
 		//funcionando
-		if(speed > 255){
-			speed = 255;
-		}
-		if(speed < -255){
-			speed = -255;
-		}
-		if (speed >= 0) {
-			window.socket.send(JSON.stringify({comando:DCMOTORS,valor:speed+",0,0"}));
-		} else  {
-			speed = -speed;
-			console.log('speed else' ,+speed);
-			window.socket.send(JSON.stringify({comando:DCMOTORS_BACK,valor:speed+",0,0"}));
+		var now = +new Date();
+		if (now - lastmsg > 200) { // 200ms
+			lastmsg = now;
+
+			if(speed > 255){
+				speed = 255;
+			}
+			if(speed < -255){
+				speed = -255;
+			}
+			if (speed >= 0) {
+				window.socket.send(JSON.stringify({comando:DCMOTORS,valor:speed+",0,0"}));
+			} else  {
+				speed = -speed;
+				console.log('speed else' ,+speed);
+				window.socket.send(JSON.stringify({comando:DCMOTORS_BACK,valor:speed+",0,0"}));
+			}
 		}
 	}
 	ext.runMotor = function(port, speed) {
 		//funcionando
-		if(speed > 255){
-			speed = 255;
-		}
-		if(speed < -255){
-			speed = -255;
-		}
-		if (port == "M1") {
-			console.log('M1');
-			if (speed >= 0) {
-				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+','+speed}));
-			} else  {
-				speed = -speed;
-				console.log('speed else' ,+speed);
-				window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+','+speed}));
+		var now = +new Date();
+		if (now - lastmsg > 200) { // 200ms
+			lastmsg = now;
+			if(speed > 255){
+				speed = 255;
 			}
-		}else if (port == "M2") {
-			console.log('M2');
-			if (speed >= 0) {
-				console.log('speed >0');
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+','+speed}));
-			} else  {
-				speed = -speed;
-				console.log('speed else' ,+speed);
-				window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+','+speed}));
+			if(speed < -255){
+				speed = -255;
 			}
-		}else{
-			console.log('foi pra nenhuma');
+			if (port == "M1") {
+				console.log('M1');
+				if (speed >= 0) {
+					console.log('speed >0');
+					window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_FORWARD+','+speed}));
+				} else  {
+					speed = -speed;
+					console.log('speed else' ,+speed);
+					window.socket.send(JSON.stringify({comando:DCMOTORM1,valor:DCMOTOR_BACK+','+speed}));
+				}
+			}else if (port == "M2") {
+				console.log('M2');
+				if (speed >= 0) {
+					console.log('speed >0');
+					window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_FORWARD+','+speed}));
+				} else  {
+					speed = -speed;
+					console.log('speed else' ,+speed);
+					window.socket.send(JSON.stringify({comando:DCMOTORM2,valor:DCMOTOR_BACK+','+speed}));
+				}
+			}else{
+				console.log('foi pra nenhuma');
+			}
 		}
 	}
 	ext.runServo = function(port, slot, angle) {
 		//funcionando
-		if(angle > 150){
-			red = 150;
+		var now = +new Date();
+		if (now - lastmsg > 500) { // 500 ms
+			lastmsg = now;
+			if(angle > 150){
+				red = 150;
+			}
+			window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:port+','+slot+','+angle}));
 		}
-		window.socket.send(JSON.stringify({comando:SERVOMOTOR,valor:port+','+slot+','+angle}));
 	}
 	ext.runLed = function(index, red, green, blue) {
 		//funcionando
-		if(red > 255){
-			red = 255;
-		}
-		if(green > 255){
-			green = 255;
-		}
-		if(blue > 255){
-			blue = 255;
-		}
+		var now = +new Date();
+		if (now - lastmsg > 500) { // 500ms
+			lastmsg = now;
+			if(red > 255){
+				red = 255;
+			}
+			if(green > 255){
+				green = 255;
+			}
+			if(blue > 255){
+				blue = 255;
+			}
 
-		if (index == "1") {
-			window.socket.send(JSON.stringify({comando:LEDLEFT,valor:red+","+green+","+blue}));
-		}else if (index == "2") {
-			window.socket.send(JSON.stringify({comando:LEDRIGHT,valor:red+","+green+","+blue}));
-		}else {
-			window.socket.send(JSON.stringify({comando:LEDBOTH,valor:red+","+green+","+blue}));
+			if (index == "1") {
+				window.socket.send(JSON.stringify({comando:LEDLEFT,valor:red+","+green+","+blue}));
+			}else if (index == "2") {
+				window.socket.send(JSON.stringify({comando:LEDRIGHT,valor:red+","+green+","+blue}));
+			}else {
+				window.socket.send(JSON.stringify({comando:LEDBOTH,valor:red+","+green+","+blue}));
+			}
 		}
 	}
 	ext.runBuzzer = function(tone, beat) {
 		//funcionando
-		if (beat == "Quarto") {
-			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/4'}));
-		}else if (beat == "Oitavo") {
-			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/8'}));
-		}else if (beat == "Inteira") {
-			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1'}));
-		}else if (beat == "Dupla") {
-			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',2'}));
-		}else{
-			window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));
+		var now = +new Date();
+		if (now - lastmsg > 120) { // bit less than fastest
+			lastmsg = now;
+			if (beat == "Quarto") {
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/4'}));
+			}else if (beat == "Oitavo") {
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/8'}));
+			}else if (beat == "Inteira") {
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1'}));
+			}else if (beat == "Dupla") {
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',2'}));
+			}else{
+				window.socket.send(JSON.stringify({comando:PLAYNOTE,valor:tone+',1/2'}));
+			}
 		}
 	}
 
@@ -298,12 +320,12 @@
 	}
 	ext.getLinefollower = function() {
 		//funcionando, talvez pode ser melhorado a frequência de captura
-		 if (connected == false) {
-		 	alert("Server Not Connected");
-		 }else {
+		if (connected == false) {
+			alert("Server Not Connected");
+		}else {
 			//console.log('vai retornar line:',+line);
 			return line
-		 }
+		}
 	}
 	ext.getIrRemote = function(code, callback) {
 		//TODO
