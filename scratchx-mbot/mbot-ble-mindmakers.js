@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v1.2
+  //v1.3
   var socket = null;
   var connected = false;
   var myStatus = 1; // initially yellow
@@ -143,11 +143,11 @@
       registraDesconexaoMBOT();
 
       //tenta reconectar ao fechar a conexão
-      setTimeout(statusConnection, 3000);
+      setTimeout(statusConnection, 10000);
     };
 
     if (clienteConectadoMBOT == 'false') {
-      setTimeout(statusConnection, 3000);
+      setTimeout(statusConnection, 10000);
     }
   };
 
@@ -267,8 +267,6 @@
             valor: DCMOTOR_BACK + ',' + speed
           }));
         }
-      } else {
-        console.log('foi pra nenhuma');
       }
     }
   }
