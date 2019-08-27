@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v1.1
+  //v1.2
   var socket = null;
   var connected = false;
   var myStatus = 1; // initially yellow
@@ -216,57 +216,59 @@
   }
   ext.runMotor = function(port, speed) {
     //funcionando
-    if (!lastmsg1) {
-      var lastmsg1 = M
-      var lastmsg2 = 0
+    if (!lastmsg1s) {
+      var lastmsg1s = 0
+      var lastmsg2s = 0
     }
 
-    if (port != lastmsg1) {
-      if (speed != lastmsg2) {
-        lastmsg1 = port;
-        lastmsg2 = speed;
+    if (speed > 255) {
+      speed = 255;
+    }
+    if (speed < -255) {
+      speed = -255;
+    }
 
-        if (speed > 255) {
-          speed = 255;
-        }
-        if (speed < -255) {
-          speed = -255;
-        }
-        if (port == "M1") {
-          console.log('M1');
-          if (speed >= 0) {
-            //console.log('speed >0');
-            window.socket.send(JSON.stringify({
-              comando: DCMOTORM1,
-              valor: DCMOTOR_FORWARD + ',' + speed
-            }));
-          } else {
-            speed = -speed;
-            //console.log('speed else' ,+speed);
-            window.socket.send(JSON.stringify({
-              comando: DCMOTORM1,
-              valor: DCMOTOR_BACK + ',' + speed
-            }));
-          }
-        } else if (port == "M2") {
-          console.log('M2');
-          if (speed >= 0) {
-            //console.log('speed >0');
-            window.socket.send(JSON.stringify({
-              comando: DCMOTORM2,
-              valor: DCMOTOR_FORWARD + ',' + speed
-            }));
-          } else {
-            speed = -speed;
-            //console.log('speed else' ,+speed);
-            window.socket.send(JSON.stringify({
-              comando: DCMOTORM2,
-              valor: DCMOTOR_BACK + ',' + speed
-            }));
-          }
+    if (port == "M1") {
+      if (speed != lastmsg1s) {
+        lastmsg1s = speed;
+        console.log('M1');
+        if (speed >= 0) {
+          //console.log('speed >0');
+          window.socket.send(JSON.stringify({
+            comando: DCMOTORM1,
+            valor: DCMOTOR_FORWARD + ',' + speed
+          }));
         } else {
-          console.log('foi pra nenhuma');
+          speed = -speed;
+          //console.log('speed else' ,+speed);
+          window.socket.send(JSON.stringify({
+            comando: DCMOTORM1,
+            valor: DCMOTOR_BACK + ',' + speed
+          }));
         }
+      }
+    }
+
+    if (port == "M2") {
+      if (speed != lastmsg2s) {
+        lastmsg2s = speed;
+        console.log('M2');
+        if (speed >= 0) {
+          //console.log('speed >0');
+          window.socket.send(JSON.stringify({
+            comando: DCMOTORM2,
+            valor: DCMOTOR_FORWARD + ',' + speed
+          }));
+        } else {
+          speed = -speed;
+          //console.log('speed else' ,+speed);
+          window.socket.send(JSON.stringify({
+            comando: DCMOTORM2,
+            valor: DCMOTOR_BACK + ',' + speed
+          }));
+        }
+      } else {
+        console.log('foi pra nenhuma');
       }
     }
   }
