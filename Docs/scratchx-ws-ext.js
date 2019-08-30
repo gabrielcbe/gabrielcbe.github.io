@@ -24,6 +24,15 @@ const DEMO3 = 'demo3';
 const TESTE = 'teste';
 const MACROS_VALIDAS = [DEMO1, DEMO2, DEMO3, TESTE];
 
+var login;
+var pwd;
+var comando;
+var escola;
+var sala;
+var estacao;
+var complemento;
+var incluiInstrutor;
+
 var questions = [{
     type: 'confirm',
     name: 'opcao',
@@ -110,10 +119,14 @@ var questions3 = [{
 //1st call
 testarIoT()
 
-function testarIoT()
- {
+function testarIoT() {
 
   inquirer.prompt(questions).then(answers => {
+
+    console.log(answers);
+
+    login = answers.login;
+    pwd = answers.senha;
 
     if (answers.opcao) {
       idescola_informado = answers.idescola;
@@ -147,7 +160,14 @@ function recuperaCodigoNomeEscola(resposta) {
 
         inquirer.prompt(questions2).then(answers => {
 
+
+
           configuraEscola(answers.escola);
+          console.log(answers);
+
+
+          var escola = answers.escola;
+
 
           selecionaSalaComando(answers);
 
@@ -162,16 +182,24 @@ function selecionaSalaComando(answers) {
 
   inquirer.prompt(questions3).then(answers => {
 
+    console.log(answers);
+
+    var comando = answers.comando;
+    var sala = answers.salaId;
+    var estacao = answers.estacaoId;
+    var complemento = answers.complemento;
+    var incluiInstrutor = false;
+
     if (answers.opcao == 'Sair')
       return
 
-    var macro;
-    var comando;
 
     if (answers.opcao == DEMO1 || answers.opcao == DEMO2 || answers.opcao == DEMO3 || answers.opcao == TESTE) {
 
       console.log(answers);
-      testaMacros(answers.escola, answers.salaId + '', answers.opcao);
+      console.log("escola ", +escola);
+      console.log("sala ", +sala);
+      testaMacros(escola, sala, answers.opcao);
 
     } else {
 
@@ -179,9 +207,17 @@ function selecionaSalaComando(answers) {
       if (estacaoIdStr != null)
         estacaoIdStr = estacaoIdStr + ''
 
-      console.log(answers);
+      console.log("answers ", +answers);
+      console.log("login ", +login);
+      console.log("pwd ", +pwd);
+      console.log("comando ", +comando);
+      console.log("escola ", +escola);
+      console.log("sala ", +sala);
+      console.log("estacao ", +estacao);
+      console.log("complemento ", +complemento);
+      console.log("incluiInstrutor ", +incluiInstrutor);
 
-      testaComando(answers.login, answers.senha, answers.comando, answers.escola, answers.salaId + '', estacaoIdStr, answers.complemento, false);
+      testaComando(login, pwd, comando, escola, sala, estacao, complemento, incluiInstrutor);
 
     }
 
