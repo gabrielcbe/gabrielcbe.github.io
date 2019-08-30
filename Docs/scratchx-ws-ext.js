@@ -1,5 +1,5 @@
 /*
-  V1.0
+  V1.1
   Teste IoT sala 4.0
   Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -89,7 +89,7 @@ var questions3 = [{
     name: 'comando',
     message: "Selecione um comando",
     //choices: [DESLIGA_MONITOR, LIGA_MONITOR, DESLIGA, EXIBE_IMAGEM, EXECUTA_URL],
-    choices: [DESLIGA_MONITOR, LIGA_MONITOR, DESLIGA, EXIBE_IMAGEM],
+    choices: [OBTEM_INFO, DESLIGA_MONITOR, LIGA_MONITOR, DESLIGA, EXIBE_IMAGEM],
     when: function(answers) {
       return answers.opcao == 'Comando para Sala' || answers.opcao == 'Comando para Estação';
     },
