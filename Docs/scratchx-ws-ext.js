@@ -1,5 +1,5 @@
 /*
-V1.5
+V1.6
 Teste IoT sala 4.0
 Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -9,6 +9,7 @@ var inquirer = require('inquirer');
 var fs = require('fs');
 
 var URL_BASE = 'https://mindmakers.cc/iot/sala';
+//var URL_BASE='http://localhost/api/Sala';
 
 // Comandos
 const DESLIGA = 'off';
