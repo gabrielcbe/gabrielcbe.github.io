@@ -1,5 +1,5 @@
 /*
-V1.6
+V1.7
 Teste IoT sala 4.0
 Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -164,8 +164,6 @@ function recuperaCodigoNomeEscola(resposta) {
 
         inquirer.prompt(questions2).then(answers => {
 
-
-
           //console.log('antes: ' + JSON.stringify(answers));
           configuraEscola(answers.escola);
 
@@ -188,6 +186,7 @@ function selecionaSalaComando(answers) {
     var sala = answers.salaId;
     var estacao = answers.estacaoId;
     var complemento = answers.complemento;
+    var marco = answers.opcao;
     var incluiInstrutor = false;
 
     if (answers.opcao == 'Sair')
@@ -196,9 +195,13 @@ function selecionaSalaComando(answers) {
     if (answers.opcao == DEMO1 || answers.opcao == DEMO2 || answers.opcao == DEMO3 || answers.opcao == TESTE) {
 
       console.log('answersDEMO ' + JSON.stringify(answers));
+      console.log('login ' + login);
+      console.log('pwd ' + pwd);
       console.log('escola ' + escola);
       console.log('sala ' + sala);
-      testaMacros(escola, sala, answers.opcao);
+      console.log('macro ' + macro);
+
+      testaMacros(login, pwd, escola, sala, macro);
 
     } else {
 
@@ -277,7 +280,7 @@ function compare(a, b) {
 }
 
 
-function testaMacros(escolaId, salaId, macro) {
+function testaMacros(login, pwd, escolaId,salaId, macro) {
 
   console.log('entrou para executar macro');
 
@@ -289,7 +292,7 @@ function testaMacros(escolaId, salaId, macro) {
         'senha': pwd,
         'escola': escolaId,
         'sala': salaId,
-        'macro': macro
+        'nomeMacro': macro
       }
     },
     function(error, response, body) {
