@@ -186,7 +186,7 @@ function selecionaSalaComando(answers) {
     var sala = answers.salaId;
     var estacao = answers.estacaoId;
     var complemento = answers.complemento;
-    var marco = answers.opcao;
+    var macro = answers.opcao;
     var incluiInstrutor = false;
 
     if (answers.opcao == 'Sair')
@@ -292,7 +292,7 @@ function testaMacros(login, pwd, escolaId,salaId, macro) {
         'senha': pwd,
         'escola': escolaId,
         'sala': salaId,
-        'nomeMacro': macro
+        'macro': macro
       }
     },
     function(error, response, body) {
