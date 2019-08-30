@@ -1,5 +1,5 @@
 /*
-  V1.1
+  V1.2
   Teste IoT sala 4.0
   Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -198,8 +198,8 @@ function selecionaSalaComando(answers) {
     if (answers.opcao == DEMO1 || answers.opcao == DEMO2 || answers.opcao == DEMO3 || answers.opcao == TESTE) {
 
       console.log(answers);
-      console.log("escola ", +escola);
-      console.log("sala ", +sala);
+      console.log('escola ' + escola);
+      console.log('sala ' + sala);
       testaMacros(escola, sala, answers.opcao);
 
     } else {
@@ -208,15 +208,15 @@ function selecionaSalaComando(answers) {
       if (estacaoIdStr != null)
         estacaoIdStr = estacaoIdStr + ''
 
-      console.log("answers ", +answers);
-      console.log("login ", +login);
-      console.log("pwd ", +pwd);
-      console.log("comando ", +comando);
-      console.log("escola ", +escola);
-      console.log("sala ", +sala);
-      console.log("estacao ", +estacao);
-      console.log("complemento ", +complemento);
-      console.log("incluiInstrutor ", +incluiInstrutor);
+      console.log('answers ' + answers);
+      console.log('login ' + login);
+      console.log('pwd ' + pwd);
+      console.log('comando ' + comando);
+      console.log('escola ' + escola);
+      console.log('sala ' + sala);
+      console.log('estacao ' + estacao);
+      console.log('complemento ' + complemento);
+      console.log('incluiInstrutor ' + incluiInstrutor);
 
       testaComando(login, pwd, comando, escola, sala, estacao, complemento, incluiInstrutor);
 
