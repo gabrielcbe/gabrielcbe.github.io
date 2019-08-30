@@ -1,5 +1,5 @@
 /*
-  V1.3
+  V1.4
   Teste IoT sala 4.0
   Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -163,13 +163,8 @@ function recuperaCodigoNomeEscola(resposta) {
 
 
 
-          console.log('antes: ' +answers);
+          console.log('antes: ' + JSON.stringify(answers));
           configuraEscola(answers.escola);
-          console.log('depois: ' +answers);
-
-
-
-
 
           selecionaSalaComando(answers);
 
@@ -192,7 +187,7 @@ function selecionaSalaComando(answers) {
     var complemento = answers.complemento;
     var incluiInstrutor = false;
 
-    if(answers.complemento == 'undefined')
+    if (answers.complemento == 'undefined')
       complemento = null;
 
 
