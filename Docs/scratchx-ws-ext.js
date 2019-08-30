@@ -1,12 +1,14 @@
 /*
-  V1.4
-  Teste IoT sala 4.0
-  Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
+V1.5
+Teste IoT sala 4.0
+Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
 
 const request = require('request');
 var inquirer = require('inquirer');
 var fs = require('fs');
+
+var URL_BASE = 'https://mindmakers.cc/iot/sala';
 
 // Comandos
 const DESLIGA = 'off';
@@ -124,7 +126,7 @@ function testarIoT() {
 
   inquirer.prompt(questions).then(answers => {
 
-    console.log(answers);
+    //console.log(answers);
 
     login = answers.login;
     pwd = answers.senha;
@@ -163,7 +165,7 @@ function recuperaCodigoNomeEscola(resposta) {
 
 
 
-          console.log('antes: ' + JSON.stringify(answers));
+          //console.log('antes: ' + JSON.stringify(answers));
           configuraEscola(answers.escola);
 
           selecionaSalaComando(answers);
@@ -179,7 +181,7 @@ function selecionaSalaComando(answers) {
 
   inquirer.prompt(questions3).then(answers => {
 
-    console.log(answers);
+    //console.log(answers);
 
     var comando = answers.comando;
     var sala = answers.salaId;
@@ -187,17 +189,12 @@ function selecionaSalaComando(answers) {
     var complemento = answers.complemento;
     var incluiInstrutor = false;
 
-    if (answers.complemento == 'undefined')
-      complemento = null;
-
-
     if (answers.opcao == 'Sair')
       return
 
-
     if (answers.opcao == DEMO1 || answers.opcao == DEMO2 || answers.opcao == DEMO3 || answers.opcao == TESTE) {
 
-      console.log(answers);
+      console.log('answersDEMO ' + JSON.stringify(answers));
       console.log('escola ' + escola);
       console.log('sala ' + sala);
       testaMacros(escola, sala, answers.opcao);
@@ -208,7 +205,7 @@ function selecionaSalaComando(answers) {
       if (estacaoIdStr != null)
         estacaoI = estacaoIdStr + ''
 
-      console.log('answers ' + JSON.stringify(answers));
+      console.log('answersRESTO ' + JSON.stringify(answers));
       console.log('login ' + login);
       console.log('pwd ' + pwd);
       console.log('comando ' + comando);
@@ -247,7 +244,7 @@ function adaptaListaEscolas(listaEscolasRecuperada) {
 function configuraEscola(idEscola) {
 
   console.log(idEscola)
-  var escola = answers.escola;
+  escola = idEscola;
   idescola_informado = idEscola;
 
   escolanome_recuperado = ''
@@ -284,7 +281,7 @@ function testaMacros(escolaId, salaId, macro) {
   console.log('entrou para executar macro');
 
   request({
-      url: 'https://mindmakers.cc/iot/sala/macro',
+      url: URL_BASE + '/macro',
       method: 'POST',
       json: {
         'login': login,
@@ -298,14 +295,14 @@ function testaMacros(escolaId, salaId, macro) {
       console.log('body1: ' + JSON.stringify(body));
       console.log('response1: ' + JSON.stringify(response));
       console.log('error1: ' + JSON.stringify(error));
-      /*
-      if (error) {
-        console.log('Erro tentar executar macro: ' + error);
-      } else {
-        console.log('Macro executada com sucesso! ');
-        console.log(body);
-      }
-      */
+
+      // if (error) {
+      //   console.log('Erro tentar executar macro: ' + error);
+      // } else {
+      //   console.log('Macro executada com sucesso! ');
+      //   console.log(body);
+      // }
+
     }
   );
 
@@ -317,7 +314,7 @@ function testaComando(login, pwd, comando, escola, sala, estacao, complemento, i
   console.log('entrou para executar comando');
 
   request({
-      url: 'https://mindmakers.cc/iot/sala/comando',
+      url: URL_BASE + '/comando',
       method: 'POST',
       json: {
         'login': login,
@@ -334,18 +331,18 @@ function testaComando(login, pwd, comando, escola, sala, estacao, complemento, i
       console.log('body1: ' + JSON.stringify(body));
       console.log('response1: ' + JSON.stringify(response));
       console.log('error1: ' + JSON.stringify(error));
-      /*
-      if (!body.success || error) {
-          if (!body.success)
-            console.log('Erro ao atualizar versÃ£o da estaÃ§Ã£o na plataforma: '+JSON.stringify(body.err));
-          else
-            console.log('Erro ao atualizar versÃ£o da estaÃ§Ã£o na plataforma: '+error);
-      } else {
-          console.log('Sucesso! ');
-          console.log('Erro: ' + erro);
-          console.log('response! ' + response);
-          console.log('body: ' + body);
-      }*/
+
+      // if (!body.success || error) {
+      //   if (!body.success)
+      //     console.log('Erro ao atualizar versão da estção na plataforma: ' + JSON.stringify(body.err));
+      //   else
+      //     console.log('Erro ao atualizar versão da estação na plataforma: ' + error);
+      // } else {
+      //   console.log('Sucesso! ');
+      //   console.log('Erro: ' + erro);
+      //   console.log('response! ' + response);
+      //   console.log('body: ' + body);
+      // }
 
     }
   );
