@@ -107,7 +107,11 @@ var questions3 = [{
   }
 ];
 
-function rotinaAlocacao() {
+//1st call
+testarIoT()
+
+function testarIoT()
+ {
 
   inquirer.prompt(questions).then(answers => {
 
@@ -166,6 +170,7 @@ function selecionaSalaComando(answers) {
 
     if (answers.opcao == DEMO1 || answers.opcao == DEMO2 || answers.opcao == DEMO3 || answers.opcao == TESTE) {
 
+      console.log(answers);
       testaMacros(answers.escola, answers.salaId + '', answers.opcao);
 
     } else {
@@ -174,10 +179,11 @@ function selecionaSalaComando(answers) {
       if (estacaoIdStr != null)
         estacaoIdStr = estacaoIdStr + ''
 
-      testaComando(answers.login, answ.senha, answers.comando, answers.escola, answers.salaId + '', estacaoIdStr, answers.complemento, false);
+      console.log(answers);
+
+      testaComando(answers.login, answers.senha, answers.comando, answers.escola, answers.salaId + '', estacaoIdStr, answers.complemento, false);
 
     }
-
 
   });
 
