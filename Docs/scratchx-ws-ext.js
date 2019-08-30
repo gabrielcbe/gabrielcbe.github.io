@@ -249,8 +249,8 @@ function testaMacros(escolaId, salaId, macro) {
       url: 'https://mindmakers.cc/iot/sala/macro',
       method: 'POST',
       json: {
-        'login': 'fulano',
-        'senha': 'senha1',
+        'login': login,
+        'senha': pwd,
         'escola': escolaId,
         'sala': salaId,
         'macro': macro
