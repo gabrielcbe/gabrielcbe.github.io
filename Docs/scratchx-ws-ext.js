@@ -1,5 +1,5 @@
 /*
-V1.9
+V2.0
 Teste IoT sala 4.0
 Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -17,6 +17,9 @@ const DESLIGA_MONITOR = 'monitoroff';
 const LIGA_MONITOR = 'monitoron';
 const OBTEM_INFO = 'oi';
 const EXIBE_IMAGEM = 'img';
+const NUMERO = 'N';
+const ROBOGODE = 'G';
+const ROBOLADY = 'L';
 // const EXECUTA_URL = 'url';
 // const COMANDOS_VALIDOS = [OBTEM_INFO,DESLIGA,DESLIGA_MONITOR,LIGA_MONITOR,EXIBE_IMAGEM,EXECUTA_URL];
 const COMANDOS_VALIDOS = [OBTEM_INFO, DESLIGA, DESLIGA_MONITOR, LIGA_MONITOR, EXIBE_IMAGEM];
@@ -38,6 +41,7 @@ var estacao;
 var complemento;
 var incluiInstrutor;
 var acao;
+var quantiEstacao;
 
 var questions = [{
     type: 'confirm',
@@ -103,9 +107,21 @@ var questions3 = [{
     type: 'list',
     name: 'acao',
     message: "Selecione uma acao",
-    choices: ['N', 'G', 'L'],
+    choices: [NUMERO, ROBOGODE, ROBOLADY],
     when: function(answers) {
       return answers.opcao == NODERED;
+    },
+  },
+  {
+    type: 'number',
+    name: 'estacaoQt',
+    message: "Informe quantas estações há na sala (no teste, de 1 a 21)",
+    default: 16,
+    when: function(answers) {
+      return answers.opcao == NODERED;
+    },
+    validate: function(valor) {
+      return Number.isInteger(valor) && parseInt(valor) >= 1 && parseInt(valor) <= 21;
     },
   },
   {
@@ -200,6 +216,7 @@ function selecionaSalaComando(answers) {
     var macro = answers.opcao;
     var incluiInstrutor = false;
     var acao = answers.acao;
+    var quantiEstacao = parseInt(answers.estacaoQt);
 
     if (answers.opcao == 'Sair')
       return
@@ -217,7 +234,7 @@ function selecionaSalaComando(answers) {
 
     } else if (answers.opcao == TESTE) {
 
-      for (let j = 0; j < 12; j++) {
+      for (let j = 0; j < quantiEstacao; j++) {
         testaComando(login, pwd, 'img', escola, sala, j, j, incluiInstrutor);
       }
 
