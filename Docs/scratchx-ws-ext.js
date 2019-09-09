@@ -1,5 +1,5 @@
 /*
-V1.8
+V1.9
 Teste IoT sala 4.0
 Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -204,7 +204,7 @@ function selecionaSalaComando(answers) {
     if (answers.opcao == 'Sair')
       return
 
-    if (answers.opcao == DEMO1 || answers.opcao == DEMO2 || answers.opcao == DEMO3 || answers.opcao == TESTE) {
+    if (answers.opcao == DEMO1 || answers.opcao == DEMO2 || answers.opcao == DEMO3) {
 
       console.log('answersDEMO ' + JSON.stringify(answers));
       console.log('login ' + login);
@@ -215,6 +215,12 @@ function selecionaSalaComando(answers) {
 
       testaMacros(login, pwd, escola, sala, macro);
 
+    } else if (answers.opcao == TESTE) {
+
+      for (let j = 0; j < 12; j++) {
+        testaComando(login, pwd, 'img', escola, sala, j, j, incluiInstrutor);
+      }
+
     } else if (answers.opcao == NODERED) {
 
       console.log('answersDEMO ' + JSON.stringify(answers));
@@ -224,7 +230,7 @@ function selecionaSalaComando(answers) {
       //console.log('numero ' + numero);
       console.log('estacao ' + estacao);
 
-      for (let j = 0; j < 11; j++) {
+      for (let j = 0; j < 12; j++) {
         testaNodeRED(acao, escola, sala, j, j);
       }
 
@@ -386,7 +392,7 @@ function testaComando(login, pwd, comando, escola, sala, estacao, complemento, i
 }
 
 
-function testaNodeRED(acao, id1, id2, numero, estacao) {
+async function testaNodeRED(acao, id1, id2, numero, estacao) {
 
   console.log('entrou para executar NodeRED');
 
