@@ -1,5 +1,5 @@
 /*
-V1.7
+V1.8
 Teste IoT sala 4.0
 Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -9,7 +9,7 @@ var inquirer = require('inquirer');
 var fs = require('fs');
 
 var URL_BASE = 'https://mindmakers.cc/iot/sala';
-//var URL_BASE='http://localhost/api/Sala';
+//var URL_BASE = 'http://localhost/api/sala';
 
 // Comandos
 const DESLIGA = 'off';
@@ -26,7 +26,8 @@ const DEMO1 = 'demo1';
 const DEMO2 = 'demo2';
 const DEMO3 = 'demo3';
 const TESTE = 'teste';
-const MACROS_VALIDAS = [DEMO1, DEMO2, DEMO3, TESTE];
+const NODERED = 'nodered';
+const MACROS_VALIDAS = [DEMO1, DEMO2, DEMO3, TESTE, NODERED];
 
 var login;
 var pwd;
@@ -36,6 +37,7 @@ var sala;
 var estacao;
 var complemento;
 var incluiInstrutor;
+var acao;
 
 var questions = [{
     type: 'confirm',
@@ -73,7 +75,7 @@ var questions3 = [{
     type: 'list',
     name: 'opcao',
     message: "Selecione a opção de teste",
-    choices: [DEMO1, DEMO2, DEMO3, TESTE, 'Comando para Sala', 'Comando para Estação', 'Sair']
+    choices: [DEMO1, DEMO2, DEMO3, TESTE, NODERED, 'Comando para Sala', 'Comando para Estação', 'Sair']
   },
   {
     type: 'number',
@@ -95,6 +97,15 @@ var questions3 = [{
     choices: [OBTEM_INFO, DESLIGA_MONITOR, LIGA_MONITOR, DESLIGA, EXIBE_IMAGEM],
     when: function(answers) {
       return answers.opcao == 'Comando para Sala' || answers.opcao == 'Comando para Estação';
+    },
+  },
+  {
+    type: 'list',
+    name: 'acao',
+    message: "Selecione uma acao",
+    choices: ['N', 'G', 'L'],
+    when: function(answers) {
+      return answers.opcao == NODERED;
     },
   },
   {
@@ -188,6 +199,7 @@ function selecionaSalaComando(answers) {
     var complemento = answers.complemento;
     var macro = answers.opcao;
     var incluiInstrutor = false;
+    var acao = answers.acao;
 
     if (answers.opcao == 'Sair')
       return
@@ -202,6 +214,22 @@ function selecionaSalaComando(answers) {
       console.log('macro ' + macro);
 
       testaMacros(login, pwd, escola, sala, macro);
+
+    } else if (answers.opcao == NODERED) {
+
+      console.log('answersDEMO ' + JSON.stringify(answers));
+      console.log('acao ' + acao);
+      console.log('escola ' + escola);
+      console.log('sala ' + sala);
+      //console.log('numero ' + numero);
+      console.log('estacao ' + estacao);
+
+      for (let j = 0; j < 11; j++) {
+        testaNodeRED(acao, escola, sala, j, j);
+      }
+
+      //testaNodeRED(acao, escola, sala, numero, estacao);
+
 
     } else {
 
@@ -280,7 +308,7 @@ function compare(a, b) {
 }
 
 
-function testaMacros(login, pwd, escolaId,salaId, macro) {
+function testaMacros(login, pwd, escolaId, salaId, macro) {
 
   console.log('entrou para executar macro');
 
@@ -291,7 +319,11 @@ function testaMacros(login, pwd, escolaId,salaId, macro) {
         'login': login,
         'senha': pwd,
         'escola': escolaId,
+        'idescola': escolaId,
+        'estacoes': estacao,
+        'estacao': estacao,
         'sala': salaId,
+        'nomemacro': macro,
         'macro': macro
       }
     },
@@ -347,6 +379,42 @@ function testaComando(login, pwd, comando, escola, sala, estacao, complemento, i
       //   console.log('response! ' + response);
       //   console.log('body: ' + body);
       // }
+
+    }
+  );
+
+}
+
+
+function testaNodeRED(acao, id1, id2, numero, estacao) {
+
+  console.log('entrou para executar NodeRED');
+
+  request({
+      url: URL_BASE + '/code',
+      method: 'POST',
+      json: {
+        'acao': acao,
+        'id1': id1,
+        'id2': id2,
+        'numero': numero,
+        'estacao': estacao
+      }
+    },
+    function(error, response, body) {
+
+      if (!body.success || error) {
+        if (!body.success)
+          console.log('Erro ao executar código: ' + JSON.stringify(body.err));
+        else
+          console.log('Erro ao executar código: ' + error);
+      } else {
+        console.log('Via NodeRED executado com Sucesso! ');
+        console.log('body: ' + body);
+        //   console.log('Macro executada com sucesso! ');
+        //   console.log(body);
+
+      }
 
     }
   );
