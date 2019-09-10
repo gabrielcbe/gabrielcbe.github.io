@@ -211,7 +211,7 @@ function selecionaSalaComando(answers) {
 
     var comando = answers.comando;
     var sala = answers.salaId;
-    var estacao = answers.estacaoId;
+    var estacaoIdStr = answers.estacaoId;
     var complemento = answers.complemento;
     var macro = answers.opcao;
     var incluiInstrutor = false;
@@ -244,7 +244,7 @@ function selecionaSalaComando(answers) {
       console.log('acao ' + acao);
       console.log('escola ' + escola);
       console.log('sala ' + sala);
-      //console.log('numero ' + numero);
+      console.log('numero ' + quantiEstacao);
       console.log('estacao ' + estacao);
 
       for (let j = 0; j < 12; j++) {
@@ -256,9 +256,9 @@ function selecionaSalaComando(answers) {
 
     } else {
 
-      estacaoIdStr = answers.estacaoId
-      if (estacaoIdStr != null)
-        estacaoI = estacaoIdStr + ''
+      // estacaoIdStr = answers.estacaoId
+      // if (estacaoIdStr != null)
+      //   estacaoIdStr = estacaoIdStr + ''
 
       console.log('answersRESTO ' + JSON.stringify(answers));
       console.log('login ' + login);
@@ -266,11 +266,11 @@ function selecionaSalaComando(answers) {
       console.log('comando ' + comando);
       console.log('escola ' + escola);
       console.log('sala ' + sala);
-      console.log('estacao ' + estacao);
+      console.log('estacao ' + estacaoIdStr);
       console.log('complemento ' + complemento);
       console.log('incluiInstrutor ' + incluiInstrutor);
 
-      testaComando(login, pwd, comando, escola, sala, estacao, complemento, incluiInstrutor);
+      testaComando(login, pwd, comando, escola, sala, estacaoIdStr, complemento, incluiInstrutor);
 
     }
 
@@ -433,7 +433,7 @@ async function testaNodeRED(acao, id1, id2, numero, estacao) {
           console.log('Erro ao executar código: ' + error);
       } else {
         console.log('Via NodeRED executado com Sucesso! ');
-        console.log('body: ' + body);
+        console.log('body: ' + JSON.stringify(body));
         //   console.log('Macro executada com sucesso! ');
         //   console.log(body);
 
