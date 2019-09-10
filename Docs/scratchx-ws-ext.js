@@ -1,5 +1,5 @@
 /*
-V2.0
+V2.1
 Teste IoT sala 4.0
 Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -43,6 +43,8 @@ var complemento;
 var incluiInstrutor;
 var acao;
 var quantiEstacao;
+var frase;
+var fraseOBJ = [];
 
 var questions = [{
     type: 'confirm',
@@ -148,6 +150,16 @@ var questions3 = [{
   }
 ];
 
+var questions4 = [{
+  type: 'input',
+  name: 'frase',
+  message: "Digite uma frase a ser exibida",
+  validate: function(valor) {
+    return parseInt(valor.length) >= 1 && parseInt(valor.length) <= 21;
+  }
+}];
+
+
 //1st call
 testarIoT()
 
@@ -222,7 +234,7 @@ function selecionaSalaComando(answers) {
     if (answers.opcao == 'Sair')
       return
 
-    if (answers.opcao == DEMO1 || answers.opcao == DEMO2) {
+    if (answers.opcao == DEMO1) {
 
       console.log('answersDEMO ' + JSON.stringify(answers));
       console.log('login ' + login);
@@ -233,11 +245,26 @@ function selecionaSalaComando(answers) {
 
       testaMacros(login, pwd, escola, sala, macro);
 
+    } else if (answers.opcao == DEMO2) {
+      //testaMacros(login, pwd, escola, sala, macro);
+
+      inquirer.prompt(questions4).then(answers => {
+
+        console.log('respostas' + JSON.stringify(answers));
+        frase = answers.frase + '';
+
+        for (let j = 0; j < frase.length; j++) {
+          console.log(frase.charAt(j - 1));
+          testaComando(login, pwd, 'img', escola, sala, j, frase.charAt(j - 1), incluiInstrutor);
+        }
+
+      });
+
     } else if (answers.opcao == DEMO3) {
 
       for (let j = 0; j < MINDMAKERS.length; j++) {
-        console.log(MINDMAKERS[j]);
-        testaComando(login, pwd, 'img', escola, sala, j, MINDMAKERS[j], incluiInstrutor); //ou j-1 em MINDMAKERS
+        console.log(MINDMAKERS[j - 1]);
+        testaComando(login, pwd, 'img', escola, sala, j, MINDMAKERS[j - 1], incluiInstrutor);
       }
 
     } else if (answers.opcao == TESTE) {
