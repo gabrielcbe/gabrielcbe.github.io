@@ -250,24 +250,18 @@ function selecionaSalaComando(answers) {
 
       inquirer.prompt(questions4).then(answers => {
 
-        //console.log('respostas' + JSON.stringify(answers));
         frase = answers.frase + '';
-        //let frase = ;
-
-        // for (let j = 0; j < frase.length; j++) {
-        //   console.log(frase.charAt(j - 1));
-        //   testaComando(login, pwd, 'img', escola, sala, j, frase.charAt(j - 1), incluiInstrutor);
-        // }
 
         let fraseOBJ = Array.from(frase.toLowerCase()); //teste jeito mais seguro ES6
 
-        for (let j = 0; j < fraseOBJ.length; j++) {
+        for (let j = 1; j <= fraseOBJ.length; j++) {
           console.log(fraseOBJ[j]);
 
           if (fraseOBJ[j] == ' ') {
+            console.log('vai mandar robogode na estação ' + j);
             testaNodeRED('G', escola, sala, 5, j);
           } else {
-            testaComando(login, pwd, 'img', escola, sala, j, fraseOBJ[j], incluiInstrutor);
+            testaComando(login, pwd, 'img', escola, sala, j, fraseOBJ[j - 1], incluiInstrutor);
           }
         }
 
@@ -277,7 +271,7 @@ function selecionaSalaComando(answers) {
 
       for (let j = 0; j < MINDMAKERS.length; j++) {
         console.log(MINDMAKERS[j]); //ver se tem que começar de 0 ou de 1
-        testaComando(login, pwd, 'img', escola, sala, j, MINDMAKERS[j], incluiInstrutor);
+        testaComando(login, pwd, 'img', escola, sala, j + 1, MINDMAKERS[j], incluiInstrutor);
       }
 
     } else if (answers.opcao == TESTE) {
@@ -295,7 +289,7 @@ function selecionaSalaComando(answers) {
       console.log('numero ' + quantiEstacao);
       console.log('estacao ' + estacao);
 
-      for (let j = 0; j < 12; j++) {
+      for (let j = 1; j < 16; j++) {
         testaNodeRED(acao, escola, sala, j, j);
       }
 
@@ -403,11 +397,11 @@ function testaMacros(login, pwd, escolaId, salaId, macro) {
       console.log('response1: ' + JSON.stringify(response));
       console.log('error1: ' + JSON.stringify(error));
 
-      // if (error) {
-      //   console.log('Erro tentar executar macro: ' + error);
-      // } else {
-      //   console.log('Macro executada com sucesso! ');
-      //   console.log(body);
+      // if (!body.success || error) {
+      //   if (!body.success)
+      //     console.log('Erro ao atualizar versão da estção na plataforma: ' + JSON.stringify(body.err));
+      //   else
+      //     console.log('Erro ao atualizar versão da estação na plataforma: ' + error);
       // }
 
     }
@@ -435,16 +429,17 @@ function testaComando(login, pwd, comando, escola, sala, estacao, complemento, i
       }
     },
     function(error, response, body) {
-      console.log('body1: ' + JSON.stringify(body));
-      console.log('response1: ' + JSON.stringify(response));
-      console.log('error1: ' + JSON.stringify(error));
+      // console.log('body1: ' + JSON.stringify(body));
+      // console.log('response1: ' + JSON.stringify(response));
+      // console.log('error1: ' + JSON.stringify(error));
 
-      // if (!body.success || error) {
-      //   if (!body.success)
-      //     console.log('Erro ao atualizar versão da estção na plataforma: ' + JSON.stringify(body.err));
-      //   else
-      //     console.log('Erro ao atualizar versão da estação na plataforma: ' + error);
-      // } else {
+      if (!body.success || error) {
+        if (!body.success)
+          console.log('Erro ao atualizar versão da estção na plataforma: ' + JSON.stringify(body.err));
+        else
+          console.log('Erro ao atualizar versão da estação na plataforma: ' + error);
+      }
+      //else {
       //   console.log('Sucesso! ');
       //   console.log('Erro: ' + erro);
       //   console.log('response! ' + response);
