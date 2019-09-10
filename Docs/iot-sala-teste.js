@@ -276,7 +276,7 @@ function selecionaSalaComando(answers) {
 
     } else if (answers.opcao == TESTE) {
 
-      for (let j = 1; j < quantiEstacao; j++) {
+      for (let j = 1; j <= quantiEstacao; j++) {
         testaComando(login, pwd, 'img', escola, sala, j, j, incluiInstrutor);
       }
 
@@ -289,7 +289,7 @@ function selecionaSalaComando(answers) {
       console.log('numero ' + quantiEstacao);
       console.log('estacao ' + estacao);
 
-      for (let j = 1; j < 16; j++) {
+      for (let j = 1; j <= 16; j++) {
         testaNodeRED(acao, escola, sala, j, j);
       }
 
