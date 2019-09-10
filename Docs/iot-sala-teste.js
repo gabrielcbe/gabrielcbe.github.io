@@ -252,18 +252,18 @@ function selecionaSalaComando(answers) {
 
         //console.log('respostas' + JSON.stringify(answers));
         frase = answers.frase + '';
-        let frase = frase.toLowercase();
+        //let frase = ;
 
         // for (let j = 0; j < frase.length; j++) {
         //   console.log(frase.charAt(j - 1));
         //   testaComando(login, pwd, 'img', escola, sala, j, frase.charAt(j - 1), incluiInstrutor);
         // }
 
-        let fraseOBJ = Array.from(frase); //teste jeito mais seguro ES6
+        let fraseOBJ = Array.from(frase.toLowerCase()); //teste jeito mais seguro ES6
 
         for (let j = 0; j < fraseOBJ.length; j++) {
-          console.log(fraseOBJ[j - 1]);
-          testaComando(login, pwd, 'img', escola, sala, j, fraseOBJ[j - 1], incluiInstrutor);
+          console.log(fraseOBJ[j]);
+          testaComando(login, pwd, 'img', escola, sala, j, fraseOBJ[j], incluiInstrutor);
         }
 
       });
@@ -271,13 +271,13 @@ function selecionaSalaComando(answers) {
     } else if (answers.opcao == DEMO3) {
 
       for (let j = 0; j < MINDMAKERS.length; j++) {
-        console.log(MINDMAKERS[j - 1]);
-        testaComando(login, pwd, 'img', escola, sala, j, MINDMAKERS[j - 1], incluiInstrutor);
+        console.log(MINDMAKERS[j]); //ver se tem que começar de 0 ou de 1
+        testaComando(login, pwd, 'img', escola, sala, j, MINDMAKERS[j], incluiInstrutor);
       }
 
     } else if (answers.opcao == TESTE) {
 
-      for (let j = 0; j < quantiEstacao; j++) {
+      for (let j = 1; j < quantiEstacao; j++) {
         testaComando(login, pwd, 'img', escola, sala, j, j, incluiInstrutor);
       }
 
