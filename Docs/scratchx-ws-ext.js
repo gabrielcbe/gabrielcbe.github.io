@@ -20,6 +20,7 @@ const EXIBE_IMAGEM = 'img';
 const NUMERO = 'N';
 const ROBOGODE = 'G';
 const ROBOLADY = 'L';
+const MINDMAKERS = ['m', 'i', 'n', 'd', 'm', 'a', 'k', 'e', 'r', 's'];
 // const EXECUTA_URL = 'url';
 // const COMANDOS_VALIDOS = [OBTEM_INFO,DESLIGA,DESLIGA_MONITOR,LIGA_MONITOR,EXIBE_IMAGEM,EXECUTA_URL];
 const COMANDOS_VALIDOS = [OBTEM_INFO, DESLIGA, DESLIGA_MONITOR, LIGA_MONITOR, EXIBE_IMAGEM];
@@ -221,7 +222,7 @@ function selecionaSalaComando(answers) {
     if (answers.opcao == 'Sair')
       return
 
-    if (answers.opcao == DEMO1 || answers.opcao == DEMO2 || answers.opcao == DEMO3) {
+    if (answers.opcao == DEMO1 || answers.opcao == DEMO2) {
 
       console.log('answersDEMO ' + JSON.stringify(answers));
       console.log('login ' + login);
@@ -231,6 +232,13 @@ function selecionaSalaComando(answers) {
       console.log('macro ' + macro);
 
       testaMacros(login, pwd, escola, sala, macro);
+
+    } else if (answers.opcao == DEMO3) {
+
+      for (let j = 0; j < MINDMAKERS.length; j++) {
+        console.log(MINDMAKERS[j]);
+        testaComando(login, pwd, 'img', escola, sala, j, MINDMAKERS[j], incluiInstrutor); //ou j-1 em MINDMAKERS
+      }
 
     } else if (answers.opcao == TESTE) {
 
