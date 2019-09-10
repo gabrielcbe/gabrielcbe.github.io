@@ -1,5 +1,5 @@
 /*
-V2.2
+V2.3
 Teste IoT sala 4.0
 Copyright(c) Mind Makers Editora Educacional Ltda. Todos os direitos reservados
 */
@@ -263,7 +263,12 @@ function selecionaSalaComando(answers) {
 
         for (let j = 0; j < fraseOBJ.length; j++) {
           console.log(fraseOBJ[j]);
-          testaComando(login, pwd, 'img', escola, sala, j, fraseOBJ[j], incluiInstrutor);
+
+          if (fraseOBJ[j] == ' ') {
+            testaNodeRED('G', escola, sala, 5, j);
+          } else {
+            testaComando(login, pwd, 'img', escola, sala, j, fraseOBJ[j], incluiInstrutor);
+          }
         }
 
       });
