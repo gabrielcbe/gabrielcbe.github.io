@@ -252,17 +252,18 @@ function selecionaSalaComando(answers) {
 
         //console.log('respostas' + JSON.stringify(answers));
         frase = answers.frase + '';
+        let frase = frase.toLowercase();
 
         // for (let j = 0; j < frase.length; j++) {
         //   console.log(frase.charAt(j - 1));
         //   testaComando(login, pwd, 'img', escola, sala, j, frase.charAt(j - 1), incluiInstrutor);
         // }
 
-        let fraseOBJ = Array.from(frase.toLowercase());  //teste jeito mais seguro ES6
+        let fraseOBJ = Array.from(frase); //teste jeito mais seguro ES6
 
         for (let j = 0; j < fraseOBJ.length; j++) {
-          console.log(fraseOBJ[j-1]);
-          testaComando(login, pwd, 'img', escola, sala, j, fraseOBJ[j-1], incluiInstrutor);
+          console.log(fraseOBJ[j - 1]);
+          testaComando(login, pwd, 'img', escola, sala, j, fraseOBJ[j - 1], incluiInstrutor);
         }
 
       });
