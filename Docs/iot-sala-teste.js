@@ -17,9 +17,9 @@ const DESLIGA_MONITOR = 'monitoroff';
 const LIGA_MONITOR = 'monitoron';
 const OBTEM_INFO = 'oi';
 const EXIBE_IMAGEM = 'img';
-const NUMERO = 'N';
-const ROBOGODE = 'G';
-const ROBOLADY = 'L';
+const NUMERO = 'numero';
+const ROBOGODE = 'robogode';
+const ROBOLADY = 'robolady';
 const MINDMAKERS = ['m', 'i', 'n', 'd', 'm', 'a', 'k', 'e', 'r', 's'];
 // const EXECUTA_URL = 'url';
 // const COMANDOS_VALIDOS = [OBTEM_INFO,DESLIGA,DESLIGA_MONITOR,LIGA_MONITOR,EXIBE_IMAGEM,EXECUTA_URL];
@@ -27,10 +27,10 @@ const COMANDOS_VALIDOS = [OBTEM_INFO, DESLIGA, DESLIGA_MONITOR, LIGA_MONITOR, EX
 
 // Macros
 const DEMO1 = 'demo1';
-const DEMO2 = 'demo2';
-const DEMO3 = 'demo3';
-const TESTE = 'teste';
-const NODERED = 'nodered';
+const DEMO2 = 'escreve-frase';
+const DEMO3 = 'escreve-mindmakers';
+const TESTE = 'escreve-numeros';
+const NODERED = 'nodered-manda-img';
 const MACROS_VALIDAS = [DEMO1, DEMO2, DEMO3, TESTE, NODERED];
 
 var login;
@@ -121,7 +121,7 @@ var questions3 = [{
     message: "Informe quantas estações há na sala (no teste, de 1 a 21)",
     default: 16,
     when: function(answers) {
-      return answers.opcao == NODERED;
+      return answers.opcao == NODERED || answers.opcao == TESTE;
     },
     validate: function(valor) {
       return Number.isInteger(valor) && parseInt(valor) >= 1 && parseInt(valor) <= 21;
@@ -228,8 +228,16 @@ function selecionaSalaComando(answers) {
     var complemento = answers.complemento;
     var macro = answers.opcao;
     var incluiInstrutor = false;
-    var acao = answers.acao;
     var quantiEstacao = parseInt(answers.estacaoQt);
+
+    if(answers.acao == NUMERO ){
+      var acao = 'N';
+    }else if (answers.acao == ROBOGODE){
+      var acao = 'G';
+    }else if (answers.acao == ROBOLADY){
+      var acao = 'L';
+    }
+
 
     if (answers.opcao == 'Sair')
       return
@@ -254,10 +262,10 @@ function selecionaSalaComando(answers) {
 
         let fraseOBJ = Array.from(frase.toLowerCase()); //teste jeito mais seguro ES6
 
-        for (let j = 1; j <= fraseOBJ.length; j++) {
-          console.log(fraseOBJ[j]);
+        for (let j = 1; j < fraseOBJ.length; j++) {
+          console.log(fraseOBJ[j - 1]);
 
-          if (fraseOBJ[j] == ' ') {
+          if (fraseOBJ[j - 1] == ' ') {
             console.log('vai mandar robogode na estação ' + j);
             testaNodeRED('G', escola, sala, 5, j);
           } else {
@@ -276,8 +284,8 @@ function selecionaSalaComando(answers) {
 
     } else if (answers.opcao == TESTE) {
 
-      for (let j = 1; j <= quantiEstacao; j++) {
-        testaComando(login, pwd, 'img', escola, sala, j, j, incluiInstrutor);
+      for (let k = 1; k < quantiEstacao; k++) {
+        testaComando(login, pwd, 'img', escola, sala, k, k, incluiInstrutor);
       }
 
     } else if (answers.opcao == NODERED) {
@@ -289,7 +297,7 @@ function selecionaSalaComando(answers) {
       console.log('numero ' + quantiEstacao);
       console.log('estacao ' + estacao);
 
-      for (let j = 1; j <= 16; j++) {
+      for (let j = 1; j < quantiEstacao; j++) {
         testaNodeRED(acao, escola, sala, j, j);
       }
 
@@ -373,7 +381,7 @@ function compare(a, b) {
 }
 
 
-function testaMacros(login, pwd, escolaId, salaId, macro) {
+async function testaMacros(login, pwd, escolaId, salaId, macro) {
 
   console.log('entrou para executar macro');
 
@@ -410,7 +418,7 @@ function testaMacros(login, pwd, escolaId, salaId, macro) {
 }
 
 
-function testaComando(login, pwd, comando, escola, sala, estacao, complemento, incluiInstrutor) {
+async function testaComando(login, pwd, comando, escola, sala, estacao, complemento, incluiInstrutor) {
 
   console.log('entrou para executar comando');
 
@@ -436,8 +444,8 @@ function testaComando(login, pwd, comando, escola, sala, estacao, complemento, i
       if (!body.success || error) {
         if (!body.success)
           console.log('Erro ao atualizar versão da estção na plataforma: ' + JSON.stringify(body.err));
-        else
-          console.log('Erro ao atualizar versão da estação na plataforma: ' + error);
+        else if (error)
+          console.log('Erro ao atualizar versão da estação na plataforma: ' + JSON.stringify(error));
       }
       //else {
       //   console.log('Sucesso! ');
@@ -473,7 +481,7 @@ async function testaNodeRED(acao, id1, id2, numero, estacao) {
         if (!body.success)
           console.log('Erro ao executar código: ' + JSON.stringify(body.err));
         else
-          console.log('Erro ao executar código: ' + error);
+          console.log('Erro ao executar código: ' + JSON.stringify(error));
       } else {
         console.log('Via NodeRED executado com Sucesso! ');
         console.log('body: ' + JSON.stringify(body));
