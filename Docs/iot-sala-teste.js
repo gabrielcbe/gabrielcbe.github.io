@@ -230,11 +230,11 @@ function selecionaSalaComando(answers) {
     var incluiInstrutor = false;
     var quantiEstacao = parseInt(answers.estacaoQt);
 
-    if(answers.acao == NUMERO ){
+    if (answers.acao == NUMERO) {
       var acao = 'N';
-    }else if (answers.acao == ROBOGODE){
+    } else if (answers.acao == ROBOGODE) {
       var acao = 'G';
-    }else if (answers.acao == ROBOLADY){
+    } else if (answers.acao == ROBOLADY) {
       var acao = 'L';
     }
 
@@ -290,12 +290,12 @@ function selecionaSalaComando(answers) {
 
     } else if (answers.opcao == NODERED) {
 
-      console.log('answersDEMO ' + JSON.stringify(answers));
-      console.log('acao ' + acao);
-      console.log('escola ' + escola);
-      console.log('sala ' + sala);
-      console.log('numero ' + quantiEstacao);
-      console.log('estacao ' + estacao);
+      // console.log('answersDEMO ' + JSON.stringify(answers));
+      // console.log('acao ' + acao);
+      // console.log('escola ' + escola);
+      // console.log('sala ' + sala);
+      // console.log('numero ' + quantiEstacao);
+      // console.log('estacao ' + estacao);
 
       for (let j = 1; j < quantiEstacao; j++) {
         testaNodeRED(acao, escola, sala, j, j);
