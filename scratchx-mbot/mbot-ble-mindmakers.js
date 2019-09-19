@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v1.5
+  //v1.6
   var myStatus = 1; // initially yellow
   var myMsg = 'not_ready';
   var clienteConectadoMBOT = false;
@@ -20,7 +20,7 @@
   const DCMOTOR_BACK = 'back';
   const DCMOTORS = 'dcmotors';
   const DCMOTORS_BACK = 'dcmotorsBack';
-  const DCMOTORS_RIGHT = 'dcmotorsRight';
+  const DCMOTORS_RIGMetadeHT = 'dcmotorsRight';
   const DCMOTORS_LEFT = 'dcmotorsLeft';
   const SERVOMOTOR = 'servomotor';
   const LEDLEFT = 'ledleft';
@@ -422,23 +422,23 @@
 
   var descriptor = {
     blocks: [
-      [" ", "move motors %d.motorvalue",                                        "runBot",     100],
-      [" ", "set motor%d.motorPort speed %d.motorvalue",             "runMotor",   "M1", 0],
-      [" ", "set servo Port %d.aport Slot %d.slot angle %d.servovalue", "runServo",   "1", "1", 90],
-      [" ", "set LED onBoard %d.index R%d.value G%d.value B%d.value",     "runLed",     "todos", 0, 0, 0],
-      [" ", "play note %d.note beat %d.beats",                          "runBuzzer",  "C4", "Metade"],
+      [" ", "move motors %d.motorvalue",                                          "runBot",     100],
+      [" ", "set motor%d.motorPort speed %d.motorvalue",                          "runMotor",   "M1", 0],
+      [" ", "set servo Port %d.aport Slot %d.slot angle %d.servovalue",           "runServo",   "1", "1", 90],
+      [" ", "set LED onBoard %d.index R%d.value G%d.value B%d.value",             "runLed",     "all", 0, 0, 0],
+      [" ", "play note %d.note beat %d.beats",                                    "runBuzzer",  "C4", "1/4"],
       //["-"],
       //["h", "quando botão onBoard %m.buttonStatus"					, "whenButtonPressed", "pressionado"],
       //["R", "botão onBoard %m.buttonStatus"						, "getButtonOnBoard", "pressionado"],
       ["-"],
-      ["r", "light sensor onBoard",                                              "getLightSensor"],
-      ["r", "ultrasound sensor port 3",                            "getUltrasonic"],
-      ["r", "line-follower port 2",                                             "getLinefollower"],
+      ["r", "light sensor onBoard",                                               "getLightSensor"],
+      ["r", "ultrasound sensor port 3",                                           "getUltrasonic"],
+      ["r", "line-follower port 2",                                               "getLinefollower"],
       //["-"],
       //["r", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
       ["-"],
-      ["R", "timer",                                                         "getTimer",   "0"],
-      [" ", "reset timer",                                                   "resetTimer", "0"]
+      ["R", "timer",                                                              "getTimer",   "0"],
+      [" ", "reset timer",                                                        "resetTimer", "0"]
     ],
     menus: {
       motorPort: ["M1", "M2"],
