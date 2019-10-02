@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v2.2 subscricao de sensores teste
+  //v2.3 simple subscription
   var myStatus = 1; // initially yellow
   var myMsg = 'not_ready';
   var clienteConectadoMBOT = false;
@@ -186,20 +186,20 @@
     var dif = 0;
 
     try {
-      dif = new Date() - ultimoComandoDateMap.get(com);
+      dif = new Date() - ultimoComandoDateMap.get(comando);
     } catch (e) {}
 
-    if (com == BUZZER && ultimoComandoValorMap.get(BUZZER)) {
-      var tmin = ultimoComandoValorMap.get(com)
+    if (comando == BUZZER && ultimoComandoValorMap.get(BUZZER)) {
+      var tmin = ultimoComandoValorMap.get(comando)
       tmin = math.eval(tmin);
       console.log('tmin ' + tmin);
     }
 
-    if ((com == BUZZER && dif < 200) || (com != BUZZER && (ultimoComandoValorMap.get(com) == val && dif < 500)))
+    if ((comando == BUZZER && dif < 200) || (comando != BUZZER && (ultimoComandoValorMap.get(comando) == valor && dif < 500)))
       return
 
-    ultimoComandoValorMap.set(com, val);
-    ultimoComandoDateMap.set(com, new Date());
+    ultimoComandoValorMap.set(comando, valor);
+    ultimoComandoDateMap.set(comando, new Date());
 
     waitForSocketConnection(window.socket, function() {
       window.socket.send(JSON.stringify({
