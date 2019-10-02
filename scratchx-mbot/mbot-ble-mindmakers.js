@@ -1,10 +1,14 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v1.6
+  //v1.7 subscricao de sensores teste
   var myStatus = 1; // initially yellow
   var myMsg = 'not_ready';
   var clienteConectadoMBOT = false;
   var sala = "1";
+
+  const SUBSCRICAO = 'subscricao';
+  var subscrito = false;
+  var sensores = ["false", "false", "false"];
 
   const LINESENSOR = 'linesensor';
   const ULTRASOUNDSENSOR = 'ultrasoundsensor';
@@ -27,6 +31,9 @@
   const LEDRIGHT = 'ledright';
   const LEDBOTH = 'ledboth';
   const PLAYNOTE = 'playnote';
+
+  var ultimoComandoValorMap = new Map();
+  var ultimoComandoDateMap = new Map();
 
   // 0,1,2 ou 3
   var line = 0;
@@ -162,6 +169,40 @@
 
   function sendMessagemBot(comando, valor) {
     //alert(comando + ',' + valor)
+
+    if (!subscrito) {
+      console.log("entrou pra subscrever " + vsensores)
+      var vsensores = sensores[0] + ',' + sensores[1] + ',' + sensores[2];
+      console.log("entrou pra subscrever " + vsensores)
+      subscrito = true;
+      sendMessagemBot(SUBSCRICAO, vsensores)
+    } else {
+      var v2 = sensores[0] + ',' + sensores[1] + ',' + sensores[2];
+      if (JSON.stringify(v2) != JSON.stringify(vsensores)) {
+        console.log("entrou pra resubscrever " + v2)
+        sendMessagemBot(SUBSCRICAO, v2);
+
+      }
+    }
+
+    var dif = 0;
+
+    try {
+      dif = new Date() - ultimoComandoDateMap.get(com);
+    } catch (e) {}
+
+    if (com == BUZZER && ultimoComandoValorMap.get(BUZZER)) {
+      var tmin = ultimoComandoValorMap.get(com)
+      tmin = math.eval(tmin);
+      console.log('tmin ' + tmin);
+    }
+
+    if ((com == BUZZER && dif < 200) || (com != BUZZER && (ultimoComandoValorMap.get(com) == val && dif < 500)))
+      return
+
+    ultimoComandoValorMap.set(com, val);
+    ultimoComandoDateMap.set(com, new Date());
+
     waitForSocketConnection(window.socket, function() {
       window.socket.send(JSON.stringify({
         comando: comando,
@@ -169,6 +210,9 @@
       }));
 
       waitForSocketConnection(window.socket, function() {
+        if (comando == SUBSCRICAO)
+          subscrito = true;
+
         console.log('mBot comando: ' + comando + ' valor: ' + valor);
       });
 
@@ -374,6 +418,7 @@
 
   ext.getLightSensor = function() {
     //funcionando
+    sensores[1] = "true";
     if (clienteConectadoMBOT == false) {
       alert("Server Not Connected");
     } else {
@@ -383,6 +428,7 @@
   }
   ext.getUltrasonic = function() {
     //funcionando
+    sensores[2] = "true";
     if (clienteConectadoMBOT == false) {
       alert("Server Not Connected");
     } else {
@@ -391,6 +437,7 @@
     }
   }
   ext.getLinefollower = function() {
+    sensores[0] = "true";
     //funcionando, talvez pode ser melhorado a frequência de captura
     if (clienteConectadoMBOT == false) {
       alert("Server Not Connected");
@@ -422,23 +469,23 @@
 
   var descriptor = {
     blocks: [
-      [" ", "move motors %d.motorvalue",                                          "runBot",     100],
-      [" ", "set motor%d.motorPort speed %d.motorvalue",                          "runMotor",   "M1", 0],
-      [" ", "set servo Port %d.aport Slot %d.slot angle %d.servovalue",           "runServo",   "1", "1", 90],
-      [" ", "set LED onBoard %d.index R%d.value G%d.value B%d.value",             "runLed",     "all", 0, 0, 0],
-      [" ", "play note %d.note beat %d.beats",                                    "runBuzzer",  "C4", "1/4"],
+      [" ", "move motors %d.motorvalue", "runBot", 100],
+      [" ", "set motor%d.motorPort speed %d.motorvalue", "runMotor", "M1", 0],
+      [" ", "set servo Port %d.aport Slot %d.slot angle %d.servovalue", "runServo", "1", "1", 90],
+      [" ", "set LED onBoard %d.index R%d.value G%d.value B%d.value", "runLed", "all", 0, 0, 0],
+      [" ", "play note %d.note beat %d.beats", "runBuzzer", "C4", "1/4"],
       //["-"],
       //["h", "quando botão onBoard %m.buttonStatus"					, "whenButtonPressed", "pressionado"],
       //["R", "botão onBoard %m.buttonStatus"						, "getButtonOnBoard", "pressionado"],
       ["-"],
-      ["r", "light sensor onBoard",                                               "getLightSensor"],
-      ["r", "ultrasound sensor port 3",                                           "getUltrasonic"],
-      ["r", "line-follower port 2",                                               "getLinefollower"],
+      ["r", "light sensor onBoard", "getLightSensor"],
+      ["r", "ultrasound sensor port 3", "getUltrasonic"],
+      ["r", "line-follower port 2", "getLinefollower"],
       //["-"],
       //["r", "controle remoto %m.ircodes pressionado"					, "getIrRemote", "A"],
       ["-"],
-      ["R", "timer",                                                              "getTimer",   "0"],
-      [" ", "reset timer",                                                        "resetTimer", "0"]
+      ["R", "timer", "getTimer", "0"],
+      [" ", "reset timer", "resetTimer", "0"]
     ],
     menus: {
       motorPort: ["M1", "M2"],
@@ -447,15 +494,15 @@
       port: ["Port1", "Port2", "Port3", "Port4"],
       aport: ["1", "2", "3", "4"],
       direction: ["forward", "reverse",
-                  "turn right", "turn left"
+        "turn right", "turn left"
       ],
       note: ["C2", "D2", "E2", "F2", "G2", "A2", "B2",
-              "C3", "D3", "E3", "F3", "G3", "A3", "B3",
-              "C4", "D4", "E4", "F4", "G4", "A4", "B4",
-              "C5", "D5", "E5", "F5", "G5", "A5", "B5",
-              "C6", "D6", "E6", "F6", "G6", "A6", "B6",
-              "C7", "D7", "E7", "F7", "G7", "A7", "B7",
-              "C8", "D8"
+        "C3", "D3", "E3", "F3", "G3", "A3", "B3",
+        "C4", "D4", "E4", "F4", "G4", "A4", "B4",
+        "C5", "D5", "E5", "F5", "G5", "A5", "B5",
+        "C6", "D6", "E6", "F6", "G6", "A6", "B6",
+        "C7", "D7", "E7", "F7", "G7", "A7", "B7",
+        "C8", "D8"
       ],
       beats: ["1/2", "1/4", "1/8", "1", "2"],
       servovalue: [0, 45, 90, 135],
@@ -463,9 +510,9 @@
       value: [0, 20, 60, 150, 255],
       buttonStatus: ["pressed", "released"],
       ircode: ["A", "B", "C", "D", "E", "F",
-                "↑", "↓", "←", "→",
-                "settings",
-                "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"
+        "↑", "↓", "←", "→",
+        "settings",
+        "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"
       ],
     },
     url: 'http://gabrielcbe.github.io/scratchx-mbot/mbot-ble-mindmakers.js'
