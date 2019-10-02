@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v1.8 subscricao de sensores teste
+  //v2.0 subscricao de sensores teste
   var myStatus = 1; // initially yellow
   var myMsg = 'not_ready';
   var clienteConectadoMBOT = false;
@@ -182,7 +182,6 @@
       // if (JSON.stringify(v2) != JSON.stringify(vsensores)) {
       //   //console.log("entrou pra resubscrever " + v2)
         //sendMessagemBot(SUBSCRICAO, v2);
-      }
     }
 
     var dif = 0;
