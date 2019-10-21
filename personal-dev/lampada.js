@@ -148,37 +148,37 @@ process.stdin.on('keypress', (str, key) => {
     //  console.log(`You pressed the "${str}" key`);
     if (key.name == '0') {
       lampComms.write(ledColorWhite0, true, function(error) {
-        //   console.log("Write Led Color1 OK");
+
       });
     }
     if (key.name == '1') {
       lampComms.write(ledColorWhite100, true, function(error) {
-        //   console.log("Write Led Color1 OK");
+
       });
     }
     if (key.name == '2') {
       lampComms.write(ledColorWhite50, true, function(error) {
-        // console.log("Write Led Color2 OK");
+
       });
     }
     if (key.name == '3') {
       lampComms.write(ledColorWhite10, true, function(error) {
-        //console.log("Barulho");
+
       });
     }
     if (key.name == 'r') {
       lampComms.write(ledColorRed, true, function(error) {
-        //console.log("servo a 0 graus");
+
       });
     }
     if (key.name == 'g') {
       lampComms.write(ledColorGreen, true, function(error) {
-        //console.log("servo a 45 graus");
+
       });
     }
     if (key.name == 'b') {
       lampComms.write(ledColorBlue, true, function(error) {
-        //console.log("servo a 90 graus");
+
       });
     }
 
