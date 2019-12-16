@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v3.3 validando desconexão
+  //v3.4 validando desconexão
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -21,7 +21,7 @@
     DCMOTOR_BACK = 'back',
     DCMOTORS = 'dcmotors',
     DCMOTORS_BACK = 'dcmotorsBack',
-    DCMOTORS_RIGMetadeHT = 'dcmotorsRight',
+    DCMOTORS_RIGHT = 'dcmotorsRight',
     DCMOTORS_LEFT = 'dcmotorsLeft',
     SERVOMOTOR = 'servomotor',
     LEDLEFT = 'ledleft',
@@ -36,6 +36,7 @@
   var line = 0;
   var light = 0;
   var ultrasound = 0;
+  var min = -1;
 
   // pressed ou released
   var button, lastbutton;
@@ -132,7 +133,7 @@
 
       clientMBOT.onerror = function() {
         myStatus = 1;
-        myMsg = 'not_ready'
+        myMsg = 'not_ready';
 
         console.log('Erro de conexão');
         registraDesconexaoMBOT();
@@ -140,10 +141,10 @@
 
       clientMBOT.onclose = function(e) {
         myStatus = 1;
-        myMsg = 'not_ready'
+        myMsg = 'not_ready';
 
         console.log('echo-protocol Client Closed');
-        registraDesconexaoMBOT();
+        registraDesconexaoMBOT(e);
 
         //tenta reconectar 10 segundos depois de fechar a conexão
         // setTimeout(statusConnection, 10000);
@@ -153,13 +154,15 @@
       //   setTimeout(statusConnection, 10000);
       // }
     }
-  };
+  }
 
   //1st time calling function
   statusConnection();
 
   function registraDesconexaoMBOT(dado) {
-    console.log('entrou para deregistrar');
+    if (dado !== undefined)
+      console.log('entrou para deregistrar');
+
     clienteConectadoMBOT = false;
 
     if (clientMBOT || clientMBOT !== undefined) {
@@ -172,7 +175,7 @@
   }
 
   function sendMessagemBot(comando, valor, cb) {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       statusConnection();
     }
 
@@ -183,14 +186,14 @@
     } catch (e) {}
 
     if (comando == BUZZER && ultimoComandoValorMap.get(BUZZER)) {
-      var tmin = ultimoComandoValorMap.get(comando)
-      tmin = eval(beat) * 1000;
+      var tmin = ultimoComandoValorMap.get(comando);
+      tmin = eval(valor) * 1000;
       console.log('tmin ' + tmin);
     }
 
     if ((comando == BUZZER && dif < 200) || (comando != BUZZER && (ultimoComandoValorMap.get(comando) == valor && dif < 500))) {
-      console.log('return para evitar travamento mbot')
-      return
+      console.log('return para evitar travamento mbot');
+      return;
     }
 
 
@@ -213,7 +216,7 @@
       });
 
     });
-  };
+  }
 
   function waitForSocketConnectionMBOT(socket, callback) { //Valida que ws está aberta antes de mandar msg
     setTimeout(
@@ -227,7 +230,7 @@
           waitForSocketConnectionMBOT(socket, callback);
         }
       }, 5);
-  };
+  }
 
   //----Termina websocket----//
 
@@ -235,20 +238,20 @@
   //-----mBot Blocks----//
 
   ext.runBot = function(speed) {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       statusConnection();
     } else {
       speed = parseInt(speed, 10);
 
       if (!lastmsg) {
-        var lastmsg = -1
+        lastmsg = -1;
       }
 
       if (speed != lastmsg) {
         //tentativa de tratar mensagens duplicadas
         lastmsg = speed;
 
-        if (speed == undefined || speed == '') {
+        if (speed === undefined || speed === '') {
           speed = 0;
         } else if (speed > 255) {
           speed = 255;
@@ -260,7 +263,7 @@
 
           let comando = DCMOTORM1;
           let valor = DCMOTOR_FORWARD + ',' + speed;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -269,7 +272,7 @@
 
           let comando = DCMOTORM1;
           let valor = DCMOTOR_BACK + ',' + speed;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -278,7 +281,7 @@
         if (speed >= 0) {
           let comando = DCMOTORM2;
           let valor = DCMOTOR_FORWARD + ',' + speed;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -287,7 +290,7 @@
 
           let comando = DCMOTORM2;
           let valor = DCMOTOR_BACK + ',' + speed;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -295,14 +298,15 @@
 
       }
     }
-  }
+  };
+
   ext.runMotor = function(motor, speed) {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       statusConnection();
     } else {
       speed = parseInt(speed, 10);
 
-      if (speed == undefined || speed == '') {
+      if (speed === undefined || speed === '') {
         speed = 0;
       } else if (speed > 255) {
         speed = 255;
@@ -316,7 +320,7 @@
 
           let comando = DCMOTORM1;
           let valor = DCMOTOR_FORWARD + ',' + speed;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -325,7 +329,7 @@
 
           let comando = DCMOTORM1;
           let valor = DCMOTOR_BACK + ',' + speed;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -337,7 +341,7 @@
 
           let comando = DCMOTORM2;
           let valor = DCMOTOR_FORWARD + ',' + speed;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -346,7 +350,7 @@
 
           let comando = DCMOTORM2;
           let valor = DCMOTOR_BACK + ',' + speed;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -358,7 +362,7 @@
 
           let comando = DCMOTORS;
           let valor = speed + ",0,0";
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -367,7 +371,7 @@
 
           let comando = DCMOTORS_BACK;
           let valor = speed + ",0,0";
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -376,9 +380,9 @@
       }
 
     }
-  }
+  };
   ext.runServo = function(connector, slot, angle) {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       statusConnection();
     } else {
       slot = parseInt(slot, 10);
@@ -390,21 +394,21 @@
         lastmsg = now;
         if (angle > 150) {
           angle = 150;
-        } else if (angle < 5 || angle == undefined || angle == '') {
+        } else if (angle < 5 || angle === undefined || angle === '') {
           angle = 5;
         }
 
         let comando = SERVOMOTOR;
         let valor = connector + ',' + slot + ',' + angle;
-        sendMessagemBot(comando, valor, (c, v) => {
+        sendMessagemBot(comando, valor, function(c, v) {
           console.log('fez: ' + c + ' ,' + v);
         });
 
       }
     }
-  }
+  };
   ext.runLed = function(index, red, green, blue) {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       statusConnection();
     } else {
       red = parseInt(red, 10);
@@ -416,17 +420,17 @@
         lastmsg = now;
         if (red > 255) {
           red = 255;
-        } else if (red < 0 || red == undefined || red == '') {
+        } else if (red < 0 || red === undefined || red === '') {
           red = 0;
         }
         if (green > 255) {
           green = 255;
-        } else if (green < 0 || green == undefined || green == '') {
+        } else if (green < 0 || green === undefined || green === '') {
           green = 0;
         }
         if (blue > 255) {
           blue = 255;
-        } else if (blue < 0 || blue == undefined || blue == '') {
+        } else if (blue < 0 || blue === undefined || blue === '') {
           blue = 0;
         }
 
@@ -434,7 +438,7 @@
 
           let comando = LEDLEFT;
           let valor = red + "," + green + "," + blue;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -442,7 +446,7 @@
 
           let comando = LEDRIGHT;
           let valor = red + "," + green + "," + blue;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
@@ -450,17 +454,17 @@
 
           let comando = LEDBOTH;
           let valor = red + "," + green + "," + blue;
-          sendMessagemBot(comando, valor, (c, v) => {
+          sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
         }
       }
     }
-  }
+  };
 
   ext.runBuzzer = function(tone, beat) {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       statusConnection();
     } else {
       if (min < 125)
@@ -475,7 +479,7 @@
 
         let comando = PLAYNOTE;
         let valor = tone + ',' + beat;
-        sendMessagemBot(comando, valor, (c, v) => {
+        sendMessagemBot(comando, valor, function(c, v) {
           console.log('fez: ' + c + ' ,' + v);
         });
 
@@ -485,46 +489,46 @@
 
       }
     }
-  }
+  };
 
   ext.getButtonOnBoard = function(status, callback) {
     //TODO
-    alert('getButtonOnBoard doesnt work yet');
-  }
+    alert('getButtonOnBoard doesnt work yet' + status + callback);
+  };
   ext.whenButtonPressed = function(status, callback) {
     //TODO
-    alert('whenButtonPressed doesnt work yet');
-  }
+    alert('getButtonOnBoard doesnt work yet' + status + callback);
+  };
 
   ext.getLightSensor = function() {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       //alert("Server Not Connected");
       statusConnection();
     }
     return light;
 
-  }
+  };
   ext.getUltrasonic = function() {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       //alert("Server Not Connected");
       statusConnection();
     }
     return ultrasound;
 
-  }
+  };
   ext.getLinefollower = function() {
-    if (clienteConectadoMBOT == false) {
+    if (clienteConectadoMBOT === false) {
       //alert("Server Not Connected");
       statusConnection();
     }
     return line;
 
-  }
+  };
 
   ext.getIrRemote = function(code, callback) {
     //TODO
-    alert('whenButtonPressed doesnt work yet');
-  }
+    alert('getButtonOnBoard doesnt work yet' + status + callback);
+  };
 
   ext._shutdown = function() {
     console.log('_shutdown ');
@@ -534,7 +538,7 @@
     //status = false;
 
     myStatus = 1;
-    myMsg = 'not_ready'
+    myMsg = 'not_ready';
 
     //clientMBOT.send(msg);
   };
