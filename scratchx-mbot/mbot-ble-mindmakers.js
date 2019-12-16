@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v3.5 
+  //v3.7
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -50,22 +50,22 @@
     //console.log('componente', componente);
     //console.log('valor', valor);
 
-    clienteConectadoMBOT = true;
+    //clienteConectadoMBOT = true;
 
     if (componente == LINESENSOR) {
       if(line ==-1 ){
-          console.log('recebeu: ' + componente + ',' + valor);
+          console.log('subscreveu para : ' + componente + ',' + valor);
       }
       line = parseInt(valor);
     } else if (componente == ULTRASOUNDSENSOR) {
       if(ultrasound ==-1 ){
-          console.log('recebeu: ' + componente + ',' + valor);
+          console.log('subscreveu para : ' + componente + ',' + valor);
       }
       ultrasound = Math.trunc(parseFloat(valor));
 
     } else if (componente == LIGHTSENSOR) {
       if(light ==-1 ){
-          console.log('recebeu: ' + componente + ',' + valor);
+          console.log('subscreveu para : ' + componente + ',' + valor);
       }
       light = Math.trunc(parseFloat(valor));
 
@@ -139,6 +139,7 @@
       clientMBOT.onerror = function() {
         myStatus = 1;
         myMsg = 'not_ready';
+        clienteConectadoMBOT = false;
 
         console.log('Erro de conexão');
         registraDesconexaoMBOT();
@@ -147,17 +148,12 @@
       clientMBOT.onclose = function(e) {
         myStatus = 1;
         myMsg = 'not_ready';
+        clienteConectadoMBOT = false;
 
         console.log('echo-protocol Client Closed');
         registraDesconexaoMBOT(e);
-
-        //tenta reconectar 10 segundos depois de fechar a conexão
-        // setTimeout(statusConnection, 10000);
       };
 
-      // if (clienteConectadoMBOT == 'false') {
-      //   setTimeout(statusConnection, 10000);
-      // }
     }
   }
 
@@ -283,7 +279,7 @@
 
         }
 
-        if (speed >= 0) {
+        if (speed <= 0) {
           let comando = DCMOTORM2;
           let valor = DCMOTOR_FORWARD + ',' + speed;
           sendMessagemBot(comando, valor, function(c, v) {
