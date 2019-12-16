@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v3.1 refactoring
+  //v3.3 validando desconexão
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -33,9 +33,9 @@
   var ultimoComandoDateMap = new Map();
 
 
-  var line = 0,
-    light = 0,
-    ultrasound = 0;
+  var line = 0;
+  var light = 0;
+  var ultrasound = 0;
 
   // pressed ou released
   var button, lastbutton;
@@ -46,19 +46,22 @@
   var lastmsg = +new Date();
 
   function recebeValor(componente, valor) {
-    //console.log('componente',componente);
-    //console.log('valor',valor);
+    console.log('componente', componente);
+    console.log('valor', valor);
 
     clienteConectadoMBOT = true;
 
     if (componente == LINESENSOR) {
       line = parseInt(valor);
+      console.log('recebeu: ' + componente + ',' + valor + ',line: ' + line);
 
     } else if (componente == ULTRASOUNDSENSOR) {
       ultrasound = Math.trunc(parseFloat(valor));
+      console.log('recebeu: ' + componente + ',' + valor + ',ultrasound: ' + ultrasound);
 
     } else if (componente == LIGHTSENSOR) {
       light = Math.trunc(parseFloat(valor));
+      console.log('recebeu: ' + componente + ',' + valor + ',light: ' + light);
 
     } else if (componente == BUTTON) {
       button = valor;
@@ -159,7 +162,7 @@
     console.log('entrou para deregistrar');
     clienteConectadoMBOT = false;
 
-    if (clientMBOT && clientMBOT !== undefined) {
+    if (clientMBOT || clientMBOT !== undefined) {
       clientMBOT.close();
       console.log('Connection closed');
     }
