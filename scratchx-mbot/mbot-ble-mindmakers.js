@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v3.7
+  //v3.8
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -32,7 +32,7 @@
   var ultimoComandoValorMap = new Map();
   var ultimoComandoDateMap = new Map();
 
-
+  var activeSensors = [false,false,false];
   var line = -1;
   var light = -1;
   var ultrasound = -1;
@@ -92,6 +92,7 @@
   }
 
   //----Inicia websocket----//
+  var limiteReconexao = 0;
 
   function statusConnection() {
 
@@ -101,6 +102,11 @@
       return;
 
     } else {
+      limiteReconexao++;
+        if(limiteReconexao>10){
+          cosole.log('limite de reconexões atingido');
+          return;
+        }
 
       clientMBOT = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
       //console.log('WebSocket Client Trying to Connect');
@@ -118,7 +124,7 @@
         clientMBOT.send(msg);
         console.log('WebSocket Client Connected');
 
-        sendMessagemBot(SUBSCRICAO, "true,true,true"); //simple subscription
+        //sendMessagemBot(SUBSCRICAO, "true,true,true"); //simple subscription
 
       };
 
@@ -219,7 +225,8 @@
     });
   }
 
-  function waitForSocketConnectionMBOT(socket, callback) { //Valida que ws está aberta antes de mandar msg
+  //Valida que ws está aberta antes de mandar msg
+  function waitForSocketConnectionMBOT(socket, callback) {
     setTimeout(
       function() {
         if (socket.readyState === socket.OPEN) {
@@ -506,7 +513,15 @@
       //alert("Server Not Connected");
       statusConnection();
     }
-    return light;
+
+    if(activeSensors[1] === false){
+      activeSensors[1] = true;
+      let valor = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
+      console.log('ativando sendor de segue linha: ' + valor);
+      sendMessagemBot(SUBSCRICAO, valor);
+    } else {
+      return light;
+    }
 
   };
   ext.getUltrasonic = function() {
@@ -514,7 +529,14 @@
       //alert("Server Not Connected");
       statusConnection();
     }
-    return ultrasound;
+    if(activeSensors[2] === false){
+      activeSensors[2] = true;
+      let valor = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
+      console.log('ativando sendor de segue linha: ' + valor);
+      sendMessagemBot(SUBSCRICAO, valor);
+    } else {
+      return ultrasound;
+    }
 
   };
   ext.getLinefollower = function() {
@@ -522,7 +544,15 @@
       //alert("Server Not Connected");
       statusConnection();
     }
-    return line;
+
+    if(activeSensors[0] === false){
+      activeSensors[0] = true;
+      let valor = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
+      console.log('ativando sendor de segue linha: ' + valor);
+      sendMessagemBot(SUBSCRICAO, valor);
+    } else {
+      return line;
+    }
 
   };
 
