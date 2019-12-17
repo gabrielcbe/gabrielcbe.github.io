@@ -124,7 +124,7 @@
         clientMBOT.send(msg);
         console.log('WebSocket Client Connected');
 
-        //sendMessagemBot(SUBSCRICAO, "true,true,true"); //simple subscription
+        sendMessagemBot(SUBSCRICAO, "false,false,false"); //simple subscription
 
       };
 
