@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v3.9
+  //v4.0
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -181,7 +181,7 @@
 
   }
 
-  function sendMessagemBot(comando, valor, cb) {
+  function sendMessagemBot(comando, valorSend, cb) {
     if (clienteConectadoMBOT === false) {
       statusConnection();
     }
@@ -194,17 +194,17 @@
 
     if (comando == BUZZER && ultimoComandoValorMap.get(BUZZER)) {
       var tmin = ultimoComandoValorMap.get(comando);
-      tmin = eval(valor) * 1000;
+      tmin = eval(valorSend) * 1000;
       console.log('tmin ' + tmin);
     }
 
-    if ((comando == BUZZER && dif < 200) || (comando != BUZZER && (ultimoComandoValorMap.get(comando) == valor && dif < 500))) {
+    if ((comando == BUZZER && dif < 200) || (comando != BUZZER && (ultimoComandoValorMap.get(comando) == valorSend && dif < 500))) {
       console.log('return para evitar travamento mbot');
       return;
     }
 
 
-    ultimoComandoValorMap.set(comando, valor);
+    ultimoComandoValorMap.set(comando, valorSend);
     ultimoComandoDateMap.set(comando, new Date());
 
 
@@ -212,13 +212,13 @@
       //alert(comandoMBOT + ',' + valorMBOT)
       clientMBOT.send(JSON.stringify({
         comando: comando,
-        valor: valor
+        valor: valorSend
       }));
 
       waitForSocketConnectionMBOT(clientMBOT, function() {
         //console.log('mBot comando: ' + comandoMBOT + ' valor: ' + valorMBOT);
         if (cb !== undefined) {
-          cb(comando, valor);
+          cb(comando, valorSend);
         }
       });
 
