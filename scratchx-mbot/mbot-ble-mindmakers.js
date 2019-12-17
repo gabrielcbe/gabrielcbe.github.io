@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v4.1
+  //v4.2
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -275,6 +275,12 @@
             console.log('fez: ' + c + ' ,' + v);
           });
 
+          comando = DCMOTORM2;
+          valor = DCMOTOR_FORWARD + ',' + speed;
+          sendMessagemBot(comando, valor, function(c, v) {
+            console.log('fez: ' + c + ' ,' + v);
+          });
+
         } else {
           speed = -speed;
 
@@ -284,25 +290,14 @@
             console.log('fez: ' + c + ' ,' + v);
           });
 
-        }
-
-        if (speed >= 0) {
-          let comando = DCMOTORM2;
-          let valor = DCMOTOR_FORWARD + ',' + speed;
-          sendMessagemBot(comando, valor, function(c, v) {
-            console.log('fez: ' + c + ' ,' + v);
-          });
-
-        } else {
-          speed = -speed;
-
-          let comando = DCMOTORM2;
-          let valor = DCMOTOR_BACK + ',' + speed;
+          comando = DCMOTORM2;
+          valor = DCMOTOR_BACK + ',' + speed;
           sendMessagemBot(comando, valor, function(c, v) {
             console.log('fez: ' + c + ' ,' + v);
           });
 
         }
+
 
       }
     }
