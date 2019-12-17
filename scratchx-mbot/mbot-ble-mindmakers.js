@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v3.8
+  //v3.9
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -516,9 +516,9 @@
 
     if(activeSensors[1] === false){
       activeSensors[1] = true;
-      let valor = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
-      console.log('ativando sendor de segue linha: ' + valor);
-      sendMessagemBot(SUBSCRICAO, valor);
+      let ativos = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
+      console.log('ativando sendor de segue linha: ' + ativos);
+      sendMessagemBot(SUBSCRICAO, ativos);
     } else {
       return light;
     }
@@ -531,9 +531,9 @@
     }
     if(activeSensors[2] === false){
       activeSensors[2] = true;
-      let valor = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
-      console.log('ativando sendor de segue linha: ' + valor);
-      sendMessagemBot(SUBSCRICAO, valor);
+      let ativos = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
+      console.log('ativando sendor de segue linha: ' + ativos);
+      sendMessagemBot(SUBSCRICAO, ativos);
     } else {
       return ultrasound;
     }
@@ -547,9 +547,9 @@
 
     if(activeSensors[0] === false){
       activeSensors[0] = true;
-      let valor = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
-      console.log('ativando sendor de segue linha: ' + valor);
-      sendMessagemBot(SUBSCRICAO, valor);
+      let ativos = activeSensors[0] + activeSensors[1] + activeSensors[2] + "";
+      console.log('ativando sendor de segue linha: ' + ativos);
+      sendMessagemBot(SUBSCRICAO, ativos);
     } else {
       return line;
     }
