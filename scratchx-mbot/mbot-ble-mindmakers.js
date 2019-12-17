@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v4.3
+  //v4.4 - serviço estabilizado, subscrição por demanda
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -32,7 +32,7 @@
   var ultimoComandoValorMap = new Map();
   var ultimoComandoDateMap = new Map();
 
-  var activeSensors = [false,false,false];
+  var activeSensors = [false, false, false];
   var line = -1;
   var light = -1;
   var ultrasound = -1;
@@ -53,19 +53,22 @@
     //clienteConectadoMBOT = true;
 
     if (componente == LINESENSOR) {
-      if(line ==-1 ){
-          console.log('subscreveu para : ' + componente + ',' + valor);
+      clienteConectadoMBOT = true;
+      if (line == -1) {
+        console.log('subscreveu para : ' + componente + ',' + valor);
       }
       line = parseInt(valor);
     } else if (componente == ULTRASOUNDSENSOR) {
-      if(ultrasound ==-1 ){
-          console.log('subscreveu para : ' + componente + ',' + valor);
+      clienteConectadoMBOT = true;
+      if (ultrasound == -1) {
+        console.log('subscreveu para : ' + componente + ',' + valor);
       }
       ultrasound = Math.trunc(parseFloat(valor));
 
     } else if (componente == LIGHTSENSOR) {
-      if(light ==-1 ){
-          console.log('subscreveu para : ' + componente + ',' + valor);
+      clienteConectadoMBOT = true;
+      if (light == -1) {
+        console.log('subscreveu para : ' + componente + ',' + valor);
       }
       light = Math.trunc(parseFloat(valor));
 
@@ -103,10 +106,10 @@
 
     } else {
       limiteReconexao++;
-        if(limiteReconexao>10){
-          cosole.log('limite de reconexões atingido');
-          return;
-        }
+      if (limiteReconexao > 10) {
+        cosole.log('limite de reconexões atingido');
+        return;
+      }
 
       clientMBOT = new WebSocket("ws://127.0.0.1:8081", 'echo-protocol');
       //console.log('WebSocket Client Trying to Connect');
@@ -132,7 +135,7 @@
 
       clientMBOT.onmessage = function(message) {
 
-        clienteConectadoMBOT = true;
+        //clienteConectadoMBOT = true;
         myStatus = 2;
         myMsg = 'ready';
 
@@ -511,7 +514,7 @@
       statusConnection();
     }
 
-    if(activeSensors[1] === false){
+    if (activeSensors[1] === false) {
       activeSensors[1] = true;
       let ativos = activeSensors[0] + "," + activeSensors[1] + "," + activeSensors[2];
       console.log('ativando sendor de segue linha: ' + ativos);
@@ -526,7 +529,7 @@
       //alert("Server Not Connected");
       statusConnection();
     }
-    if(activeSensors[2] === false){
+    if (activeSensors[2] === false) {
       activeSensors[2] = true;
       let ativos = activeSensors[0] + "," + activeSensors[1] + "," + activeSensors[2];
       console.log('ativando sendor de segue linha: ' + ativos);
@@ -542,7 +545,7 @@
       statusConnection();
     }
 
-    if(activeSensors[0] === false){
+    if (activeSensors[0] === false) {
       activeSensors[0] = true;
       let ativos = activeSensors[0] + "," + activeSensors[1] + "," + activeSensors[2];
       console.log('ativando sendor de segue linha: ' + ativos);
