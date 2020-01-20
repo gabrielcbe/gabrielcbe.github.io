@@ -1,19 +1,9 @@
 [{
-    "name": "MT6_template_fotos",
-    "subtitle": "Template para enviar fotos para o ML4K, projeto MT6 Visao Computacional",
-    "description": "Template do aplicativo para enviar fotos para ML4K e IBM Watson.",
-    "link": "",
-    "thumbnail": "ml4k_thumb.png",
-    "screenshot": "tela1_photo.png",
-    "zip": "MT6_template_fotos.aia"
-  },
-  {
-    "name": "MT6_template_classificacao",
-    "subtitle": "Template para classificar fotos usando a rede treinada no ML4K, projeto MT6 Visao Computacional",
-    "description": "Template para classificar fotos usando a rede treinada no ML4K e IBM Watson.",
-    "link": "",
-    "thumbnail": "ml4k_thumb.png",
-    "screenshot": "tela1_photo.png",
-    "zip": "MT6_template_classificacao.aia"
-  }
-]
+  "name": "VisaoComputacional_MT6_ref",
+  "subtitle": "Referencia MT6 Visao Computacional com ML4K",
+  "description": "Solução de Referência com projeto de referencia do ML4K.",
+  "link": "",
+  "thumbnail": "ml4k_thumb.png",
+  "screenshot": "tela1_photo.png",
+  "zip": "VisaoComputacional_MT6_ref.aia"
+}]
