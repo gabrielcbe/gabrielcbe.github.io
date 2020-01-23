@@ -116,7 +116,7 @@ NetsBloxMorph.prototype.cloudMenu = function () {
     if (SnapCloud.username && this.room.isOwner()) {
         menu.addLine();
         menu.addItem(
-            'Collaborators...',
+            localize('Collaborators')+'...',
             'manageCollaborators'
         );
     }
@@ -438,9 +438,9 @@ NetsBloxMorph.prototype.projectMenu = function () {
     }
 
     item = [
-        'Services...',
+        localize('Services...'),
         function () {
-            var names = this.getMediaList('servicelibs'),
+            var names = this.getMediaList('rpc'),
                 headerText = localize('Import') + ' ' + localize('Service'),
                 mediaMenu = new MenuMorph(
                     myself,
@@ -451,7 +451,7 @@ NetsBloxMorph.prototype.projectMenu = function () {
                 mediaMenu.addItem(
                     item.name,
                     function () {
-                        var url = myself.resourceURL('servicelibs', item.fileName);
+                        var url = myself.resourceURL('rpc', item.fileName);
                         myself.droppedText(myself.getURL(url), name);
                     },
                     item.help
@@ -459,7 +459,7 @@ NetsBloxMorph.prototype.projectMenu = function () {
             });
             mediaMenu.popup(myself.world(), myself.controlBar.projectButton.bottomLeft());
         },
-        'Select services to include in this project.'
+        localize('Select services to include in this project.')
     ];
     menu.items.splice(menu.items.length-2, 0, item);
 
