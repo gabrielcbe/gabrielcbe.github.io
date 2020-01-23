@@ -343,9 +343,9 @@ IDE_Morph.prototype.openIn = function (world) {
         this.loadNewProject = true;
         this.setLanguage(this.userLanguage, this.interpretUrlAnchors);
     } else {
+        //this.setLanguage('pt_BR');
         this.interpretUrlAnchors();
     }
-    this.initializeEmbeddedAPI();
     window.dispatchEvent(new CustomEvent("ideLoaded"));
 };
 
@@ -1278,12 +1278,6 @@ IDE_Morph.prototype.createPalette = function (forSearching) {
         }
     };
 
-    this.palette.contents.reactToDropOf = function(droppedMorph) {
-        if (droppedMorph instanceof BlockMorph) {
-            droppedMorph.destroy();
-        }
-    };
-
     this.palette.setWidth(this.logo.width());
     this.add(this.palette);
     if (this.isAppMode) this.palette.hide();
@@ -2057,10 +2051,8 @@ IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
     SnapActions.addSound(sound, this.currentSprite, true);
 };
 
-IDE_Morph.prototype.droppedText = function (aString, name, fileType) {
-    var lbl = name ? name.split('.')[0] : '',
-        ext = name ? name.slice(name.lastIndexOf('.') + 1).toLowerCase() : '';
-
+IDE_Morph.prototype.droppedText = function (aString, name) {
+    var lbl = name ? name.split('.')[0] : '';
     if (aString.indexOf('<project') === 0) {
         location.hash = '';
         SnapActions.disableCollaboration();
@@ -2085,17 +2077,6 @@ IDE_Morph.prototype.droppedText = function (aString, name, fileType) {
     if (aString.indexOf('<media') === 0) {
         return this.openMediaString(aString);
     }
-
-    // check for encoded data-sets, CSV, JSON
-    if (fileType.indexOf('csv') !== -1 || ext === 'csv') {
-        return this.openDataString(aString, lbl, 'csv');
-    }
-    if (fileType.indexOf('json') !== -1 || ext === 'json') {
-        return this.openDataString(aString, lbl, 'json');
-    }
-
-    // import as plain text data
-    this.openDataString(aString, lbl, 'text');
 };
 
 IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
@@ -2336,10 +2317,11 @@ IDE_Morph.prototype.applySavedSettings = function () {
     }
 
     // language
-    if (language && language !== 'en') {
+    //if (language && language !== 'en') {   //Alteracão fazer pt_BR o default se não houver outra configurada
+    if (language) {
         this.userLanguage = language;
     } else {
-        this.userLanguage = null;
+        this.userLanguage = 'pt_BR';
     }
 
     //  click
@@ -2590,14 +2572,14 @@ IDE_Morph.prototype.cloudMenu = function () {
             'Login...',
             'initializeCloud'
         );
-        menu.addItem(
-            'Signup...',
-            'createCloudAccount'
-        );
-        menu.addItem(
-            'Reset Password...',
-            'resetCloudPassword'
-        );
+        // menu.addItem(
+        //     'Signup...',
+        //     'createCloudAccount'
+        // );
+        // menu.addItem(
+        //     'Reset Password...',
+        //     'resetCloudPassword'
+        // );
         if (SnapActions.isCollaborating() && SnapActions.sessionId) {
             menu.addLine();
             menu.addItem(
@@ -2610,10 +2592,10 @@ IDE_Morph.prototype.cloudMenu = function () {
             localize('Logout') + ' ' + SnapCloud.username,
             'logout'
         );
-        menu.addItem(
-            'Change Password...',
-            'changeCloudPassword'
-        );
+        // menu.addItem(
+        //     'Change Password...',
+        //     'changeCloudPassword'
+        // );
     }
     if (shiftClicked) {
         menu.addLine();
@@ -4642,119 +4624,6 @@ IDE_Morph.prototype.openMediaString = function (str) {
     this.showMessage('Imported Media Module.', 2);
 };
 
-IDE_Morph.prototype.openScriptString = function (str) {
-    var msg,
-        myself = this;
-    this.nextSteps([
-        function () {
-            msg = myself.showMessage('Opening script...');
-        },
-        function () {nop(); }, // yield (bug in Chrome)
-        function () {
-            myself.rawOpenScriptString(str);
-        },
-        function () {
-            msg.destroy();
-        }
-    ]);
-};
-
-IDE_Morph.prototype.rawOpenScriptString = function (str) {
-    var xml,
-        script,
-        scripts = this.currentSprite.scripts;
-
-    if (Process.prototype.isCatchingErrors) {
-        try {
-            xml = this.serializer.parse(str, this.currentSprite);
-            script = this.serializer.loadScript(xml, this.currentSprite);
-        } catch (err) {
-            this.showMessage('Load failed: ' + err);
-        }
-    } else {
-        xml = this.serializer.loadScript(str, this.currentSprite);
-        script = this.serializer.loadScript(xml, this.currentSprite);
-    }
-    script.setPosition(this.world().hand.position());
-    scripts.add(script);
-    scripts.adjustBounds();
-    scripts.lastDroppedBlock = script;
-    scripts.recordDrop(
-		{
-            origin: this.palette,
-            position: this.palette.center()
-        }
-    );
-    this.showMessage(
-        'Imported Script.',
-        2
-    );
-};
-
-IDE_Morph.prototype.openDataString = function (str, name, type) {
-    var msg,
-        myself = this;
-    this.nextSteps([
-        function () {
-            msg = myself.showMessage('Opening data...');
-        },
-        function () {nop(); }, // yield (bug in Chrome)
-        function () {
-            myself.rawOpenDataString(str, name, type);
-        },
-        function () {
-            msg.destroy();
-        }
-    ]);
-};
-
-IDE_Morph.prototype.rawOpenDataString = function (str, name, type) {
-    var myself = this,
-        data, vName, dlg,
-        globals = this.currentSprite.globalVariables();
-
-    function newVarName(name) {
-        var existing = globals.names(),
-            ix = name.indexOf('\('),
-            stem = (ix < 0) ? name : name.substring(0, ix),
-            count = 1,
-            newName = stem;
-        while (contains(existing, newName)) {
-            count += 1;
-            newName = stem + '(' + count + ')';
-        }
-        return newName;
-    }
-
-    switch (type) {
-        case 'csv':
-            data = Process.prototype.parseCSV(str);
-            break;
-        case 'json':
-            data = Process.prototype.parseJSON(str);
-            break;
-        default: // assume plain text
-            data = str;
-    }
-    vName = newVarName(name || 'data');
-    return SnapActions.addVariable(vName, true).then(function() {
-        globals.setVar(vName, data);
-        myself.currentSprite.toggleVariableWatcher(vName, true); // global
-        myself.flushBlocksCache('variables');
-        myself.currentCategory = 'variables';
-        myself.categories.children.forEach(function (each) {
-            each.refresh();
-        });
-        myself.refreshPalette(true);
-        if (data instanceof List) {
-            dlg = new TableDialogMorph(data);
-            dlg.labelString = localize(dlg.labelString) + ': ' + vName;
-            dlg.createLabel();
-            dlg.popUp(myself.world());
-        }
-    });
-};
-
 IDE_Morph.prototype.openProject = function (name) {
     var str;
     if (name) {
@@ -5445,7 +5314,7 @@ IDE_Morph.prototype.userSetStageSize = function () {
         },
         this
     ).promptVector(
-        "Stage size",
+        localize("Stage size"),
         StageMorph.prototype.dimensions,
         new Point(480, 360),
         'Stage width',
