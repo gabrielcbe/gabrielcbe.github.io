@@ -1,6 +1,6 @@
 (function(ext) {
   //MindMakers ScratchX extension for mBot working via own BLE server and WebSocket
-  //v4.4 - serviço estabilizado, subscrição por demanda
+  //v4.5 - serviço estabilizado, subscrição por demanda
   var myStatus = 1,
     myMsg = 'not_ready',
     clienteConectadoMBOT = false,
@@ -570,6 +570,7 @@
 
     myStatus = 1;
     myMsg = 'not_ready';
+    clientMBOT.close();
 
     //clientMBOT.send(msg);
   };
